@@ -15,6 +15,12 @@
  * amount. Write a function to compute the fewest number of coins that you need
  * to make up that amount. If that amount of money cannot be made up by any
  * combination of the coins, return `-1`.
+ *
+ * @Category DP,DFS+Memo
+ * @Ideas
+ * 遍历每个硬币，若遍历到硬币值小于钱数i（比如不能用值为5的硬币去更新dp[3]）时，用dp[i - coins[j]]+1来更新dp[i]
+ * dp[i]=min(dp[i], dp[i-coins[j]]+1)
+ * 其中coins[j]为第j个硬币，而i-coins[j]为钱数i减去硬币的值，剩余的钱数在dp数组中找到值，然后加1和当前dp数组中的值做比较取较小的来更新dp数组
  */
 class Solution {
 public:
