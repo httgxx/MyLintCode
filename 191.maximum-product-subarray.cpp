@@ -13,7 +13,7 @@
  *
  * Find the contiguous subarray within an array (containing at least one
  * number) which has the largest product.
-  *
+ *
  * @Category DP,DFS+Memo
  * @Ideas
  *  A[i]可正可负,若为正则应该乘以上一步的最大值,若为负则应该乘以上一步的最小值，所以必须记录每一步的最大值f(i)和最小值g(i)
