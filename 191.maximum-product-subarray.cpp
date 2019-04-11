@@ -16,11 +16,11 @@
   *
  * @Category DP,DFS+Memo
  * @Ideas
- * A[i]可正可负,若为正则应该乘以上一步的最大值,若为负则应该乘以上一步的最小值，所以必须记录每一步的最大值f(i)和最小值g(i)
- * maxV[i] = max(i=1~n-1 | f[i-1]*A[i], g[i-1]*A[i], A[i])
- * minV[i] = min(i=1~n-1 | f[i-1]*A[i], g[i-1]*A[i], A[i])
- * init： f[0]=A[0], g[0]=A[0]
- * 从左往右更新 返回max(i=0~n-1|f[i])
+ *  A[i]可正可负,若为正则应该乘以上一步的最大值,若为负则应该乘以上一步的最小值，所以必须记录每一步的最大值f(i)和最小值g(i)
+ *  maxV[i] = max(i=1~n-1 | maxV[i-1]*A[i], minV[i-1]*A[i], A[i])
+ *  minV[i] = min(i=1~n-1 | maxV[i-1]*A[i], minV[i-1]*A[i], A[i])
+ *  init： f[0]=A[0], g[0]=A[0]
+ *  从左往右更新 返回max(i=0~n-1|f[i])
  */
 class Solution {
 public:
