@@ -51,7 +51,7 @@ public:
      * @param n: positive integer (1 <= n <= 100)
      * @return: An integer
      */
-    int uniquePaths(int m, int n) {
+    int uniquePaths1(int m, int n) { //2维
         vector<vector<int>> dp(m, vector<int>(n, 0));
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
@@ -66,7 +66,7 @@ public:
 		return dp[m - 1][n - 1];
     }
 
-    int uniquePaths2(int m, int n) {  // 降维
+    int uniquePaths(int m, int n) {  // 降维
         vector<int> dp(n, 1);  // 第1行初始值:从左上角到第1行的每个格子都只有1种走法
         for (int i = 1; i < m; ++i) {  // 第1行已赋值,从第2行开始
             for (int j = 1; j < n; ++j) {  // 第1列都是1,从第2列开始
