@@ -19,13 +19,30 @@
  *
  * @Category DP
  * @Ideas
- * 2维 dp[i][j]=dp[i-1][j]+dp[i][j-1]
- * init dp[i][j]=1
- * return dp[m-1][n-1]
- * 降成1维 一层一层更新 每层从左到右列更新
- * for i=1~m-1
- *    for j=1 j: dp[j]+=dp[j-1]
- * return dp[n-1]
+ * S1: T=O(mn) S=O(mn)
+ * dp[i][j]=从左上角到第i行第j列有多少种走法
+ * =到上邻居的走法+到做邻居的走法
+ * =dp[i-1][j]+dp[i][j-1](到)
+ * 初始 dp[0][j]=dp[i][0]=1 //i=0~m-1,j=0~n-1
+ * 顺序 上到下i=0->m-1,左到右j=0->n-1 
+ * 返回 dp[m-1][n-1]
+ * 
+ * S2: T=O(mn) S=O(n)
+ * 降维 只用存当前行的每列 
+ * 新值=旧值/上一行当前列(左上角到上邻居的走法)+当前行前一列(左上角到到左邻居的走法)
+ * dp[j]=从左上角到当前行的第j列有多少种走法
+ * dp[j]+=dp[j-1] //+=而不是=
+ * 顺序 上到下i=0->m-1,左到右j=0->n-1 
+ * 返回 dp[n-1]
+ * 
+ * S3: T=O(min(m,n)) S=O(1)
+ * 总共走m-1+n-1=m+n-2步 要么向下 要么向右 走法就是从m+n-2步中选取min(m,n)-1步的方法
+ * 即求组和数C(m+n-2,min(m,n)-1)
+ * //排列公式P(n,k)=n*(n-1)*...*(n-k+1)=n!/(n-k)!
+ * //组和公式C(n,k)=排列P(n,k)/k!(无序)=n!/(k!*(n-k)!)
+ * 
+ * BF: T=O(?) S=O(stack?)
+ * 递归 count(row,col) = count(row-1,col)+cont(row,col-1) 有重复计算
  */
 class Solution {
 public:
@@ -35,9 +52,24 @@ public:
      * @return: An integer
      */
     int uniquePaths(int m, int n) {
-        vector<int> dp(n, 1); //init all cells in row 0
-        for (int i = 1; i < m; ++i) { //start with 1
-            for (int j = 1; j < n; ++j) { //start with 1
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = 1;
+                }
+                else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+		return dp[m - 1][n - 1];
+    }
+
+    int uniquePaths2(int m, int n) {  // 降维
+        vector<int> dp(n, 1);  // 第1行初始值:从左上角到第1行的每个格子都只有1种走法
+        for (int i = 1; i < m; ++i) {  // 第1行已赋值,从第2行开始
+            for (int j = 1; j < n; ++j) {  // 第1列都是1,从第2列开始
                 dp[j] += dp[j - 1];
             }
         }
