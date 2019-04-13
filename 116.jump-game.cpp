@@ -62,4 +62,13 @@ public:
         }
         return true;
     }
+
+    bool canJump2(const vector<int> &A) {  // DP T=O(n) S=O(n^2)
+        vector<int> dp(A.size(), 0);
+        for (int i = 1; i < A.size(); ++i) {
+            dp[i] = max(dp[i - 1], A[i - 1]) - 1;
+            if (dp[i] < 0) return false;
+        }
+        return true;
+    }
 };
