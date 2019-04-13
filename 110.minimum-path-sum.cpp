@@ -16,19 +16,12 @@
  * 
  * @Category DP
  * @Ideas
+ * DP T=O(mn) S=O(mn)
  * dp[i]表示到[i][j]位置的最小路径和
- * 
- * 
- * 
- * 
- * 
-        // if i==0(第一行) j>0(第一列以后) 上一步只能是左边一格, dp[0][j]=dp[0][j-1] + grid[0][j]
-        // else if j==0(第一列) i>0(第一行以后) 上一步只能是上边一格, dp[i][0]=dp[i-1][0] + grid[i][0]
-        // else if(i>0 && j>0) dp[i][[j] = min(dp[i-1][j],dp[i][j-1]) + grid[i][j]
-        // => 通式 dp[i][j] = if(i==0 && j>1) dp[i][j-1] + grid[i][j]
-        //                    else if(j==0 && i>1) dp[i-1][j] + grid[i][j]
-        //                    else if(i>0 && j>0) min(dp[i][j-1],dp[i-1][j]) + grid[i][j]
-
+ * = grid[i][j] +
+ * 第一列//j==0 && i>1: 左格值 dp[i-1][0]
+ * 第一行//i==0 && j>1: 上格值 dp[0][j-1]
+ * 中间行和中间列//rest: 左格和上格的较小值 min(dp[i-1][j],dp[i][j-1])
  */
 class Solution {
 public:
