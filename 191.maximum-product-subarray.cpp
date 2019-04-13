@@ -16,13 +16,23 @@
  *
  * @Category DP,DFS+Memo
  * @Ideas
- *  f[i]表示以[i]为结尾的子串的最大乘积
- *  g[i]表示以[i]为结尾的子串的最小乘积
+ *  S0: DP T=O(n) S=O(n)
+ *  f[i],g[i]分别表示以[i]为结尾的子串的最大，最小乘积
  *  [i]>0则乘以f[i-1]更大,[i]<0则乘以g[i-1]更大,[i]也参加比较因可能前极值>0但<1
- *  f[i]=max(a[i], max{a[i-1]*f[i-1],a[i]*g[i-1]}|i>=1)
- *  g[i]=min(a[i], min{a[i-1]*f[i-1],a[i]*g[i-1]}|i>=1) 
+ *  f[i]=max(f[i-1]*a[i], a[i], g[i-1]*a[i])
+ *  g[i]=min(g[i-1]*a[i], a[i], f[i-1]*a[i]) 
  *  初始 f[0]=g[0]=a[0]
  *  返回 f[0]~f[n-1]中的最大值 即m=max(m,f[i]) for i=0~n-1
+ * 
+ *  S1: DP+空间优化
+ *  只用2个变量而不是2个数组来存当前位置的最大和最小值,算下个位置前更新这2变量
+ *  res = curMax = curMin = a[0]
+ *  for(i=1~n-1)
+ *      mx=curMax, mn=curMin
+ *      curMax= max (mx*a[i], a[i], mn*a[i])
+ *      curMin= min (mn*a[i], a[i], mx*a[i])
+ *      res=max(res, curMax)
+ *  return res
  */
 class Solution {
 public:
