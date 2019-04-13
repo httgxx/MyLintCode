@@ -25,8 +25,8 @@
  * @Category DP
  * @Idea
  * 当前房子刷红色的最小花费=当前房子刷红色的钱 + min(刷到上一个房子用绿色的最小花费,刷到上一个房子用蓝色的最小花费)
- * dp[i][j]表示刷到第i+1房子用颜色j的最小花费
- * dp[i][j] = costs[i][j] + min(dp[i - 1][(j + 1) % 3], dp[i - 1][(j + 2) % 3])；
+ * dp[i][j]表示刷前i+1个房子([0]~[i])且房子[i]刷成颜色j的最小花费
+ * dp[i][j] = min(dp[i-1][(j+1)%3],dp[i-1][(j+2)%3]) + costs[i][j]即房子[i]刷成颜色j的花费；
  */
 class Solution {
 public:
@@ -37,7 +37,7 @@ public:
     int minCost(vector<vector<int>> &costs) {
         if (costs.empty() || costs[0].empty()) { return 0; }
         vector<vector<int>> dp = costs;  // dp[i][j]初始化为costs[i][j]
-        for (int i = 1; i < dp.size(); ++i) {
+        for (int i = 1; i < dp.size(); ++i) {  // i=1~n-1
             for (int j = 0; j < 3; ++j) {
                 dp[i][j] += min(dp[i - 1][(j + 1) % 3], dp[i - 1][(j + 2) % 3]);
             }
