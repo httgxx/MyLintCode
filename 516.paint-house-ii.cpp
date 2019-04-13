@@ -23,8 +23,14 @@
  *
  * @Category DP
  * @Idea
- * S1: min1和min2来记录之前房子的最小和次小的花费的颜色，如果当前房子颜色和min1相同，那么我们用min2对应的值计算，反之我们用min1对应的值
- * S2: 用3个变量不用dp[][]来节省空间
+ * S1: DP T=O(n) S=O(n)
+ * 用min1和min2记录刷到前房子的花费最小和次小时前房子刷的颜色
+ * 当前房子颜色=min1则用min2算刷到当前房子的最小花费,反之用min1算
+ * 每次用当前行min,max更新min1,min2
+ * 
+ * S0: DP T=O(nK^2) S=O(nK)
+ * dp[i][j]表示刷房子([0]~[i])且房子[i]刷成颜色j的最小花费
+ * dp[i][j] = min{dp[i-1][k]}|k!=j + costs[i][j]即把房子[i]刷成颜色j的花费；
  */
 class Solution {
 public:
@@ -32,9 +38,9 @@ public:
      * @param costs: n x k cost matrix
      * @return: an integer, the minimum cost to paint all houses
      */
-    int minCostII(vector<vector<int>> &costs) {
+    int minCostII0(const vector<vector<int>> &costs) {
         if (costs.empty() || costs[0].empty()) return 0;
-        vector<vector<int>> dp = costs;
+        vector<vector<int>> dp = costs;  // 初始化dp[i][j]=cost[i][j]
         int min1 = -1, min2 = -1;
         for (int i = 0; i < dp.size(); ++i) {
             int last1 = min1, last2 = min2;
@@ -54,22 +60,26 @@ public:
         }
         return dp.back()[min1];
     }
-	
-	int minCostII2(vector<vector<int>>& costs) {
+
+    int minCostII(vector<vector<int>>& costs) {
         if (costs.empty() || costs[0].empty()) return 0;
-        int min1 = 0, min2 = 0, idx1 = -1;
-        for (int i = 0; i < costs.size(); ++i) {
-            int m1 = INT_MAX, m2 = m1, id1 = -1;
-            for (int j = 0; j < costs[i].size(); ++j) {
-                int cost = costs[i][j] + (j == idx1 ? min2 : min1);
-                if (cost < m1) {
-                    m2 = m1; m1 = cost; id1 = j;
-                } else if (cost < m2) {
-                    m2 = cost;
+        int lastMin1 = 0, lastMin2 = 0, lastCol = -1;  // 坑:0而不是INT_MAX
+        for (int i = 0; i < costs.size(); ++i) {  // 房子[i]
+            int curMin1 = INT_MAX, curMin2 = curMin1, curCol = -1;
+            for (int j = 0; j < costs[i].size(); ++j) {  // 颜色[j]
+                int cost = costs[i][j] + (j == lastCol ? lastMin2 : lastMin1);
+                if (cost < curMin1) {
+                    curMin2 = curMin1;
+                    curMin1 = cost;
+                    curCol = j;
+                } else if (cost < curMin2) {
+                    curMin2 = cost;
                 }
             }
-            min1 = m1; min2 = m2; idx1 = id1;
+            lastMin1 = curMin1;
+            lastMin2 = curMin2;
+            lastCol = curCol;
         }
-        return min1;
+        return lastMin1;
     }
 };
