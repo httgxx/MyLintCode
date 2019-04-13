@@ -22,7 +22,7 @@
  * @Ideas
  * DP // T=O(n) S=O(1)
  * 最多买卖1次的最大获利
- * = max{第i天卖的获利=第i天价格-第i天之前的最低价}|i=1~n-1
+ * = max{第i天卖的获利=第i天价格-第i天之前的最低价}|每天
  */
 class Solution {
 public:
