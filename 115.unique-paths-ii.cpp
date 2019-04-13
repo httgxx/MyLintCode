@@ -12,11 +12,18 @@
  * Testcase Example:  '[[0]]'
  *
  * Follow up for "Unique Paths":
- * 
  * Now consider if some obstacles are added to the grids. How many unique paths
  * would there be?
- * 
  * An obstacle and empty space is marked as 1 and 0 respectively in the grid.
+ * 
+ * @Category DP
+ * @Ideas
+ * DP T=O(mn) S=O(mn)
+ * dp[j]=从左上角到当前行的第j列有多少种走法
+ * dp[j]+=dp[j-1]|当前行[j]!=1 //+=而不是=
+ * 顺序 上到下i=0->m-1,左到右j=0->n-1 
+ * 返回 dp[n-1]
+ * 
  */
 class Solution {
 public:
@@ -32,7 +39,9 @@ public:
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (obstacleGrid[i][j] == 1) dp[j] = 0;
-                else if (j > 0) dp[j] += dp[j - 1];
+                else if (j > 0) {
+                    dp[j] += dp[j - 1];
+                }
             }
         }   
         return dp[n - 1];
