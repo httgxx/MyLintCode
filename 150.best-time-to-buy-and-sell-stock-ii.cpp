@@ -18,11 +18,12 @@
  * transactions at the same time (ie, you must sell the stock before you buy
  * again).
  * 
- * @Category DP,枚举
+ * @Category DP,贪心
  * @Ideas
  * DP // T=O(n) S=O(1)
  * 可以买卖任意次的最大获利
  * = 求和(每天只要比前一天股价高就进行买卖)
+ * 坑: 只能从第2天开始卖 i=1~n-1
  */
 class Solution {
 public:
@@ -32,7 +33,7 @@ public:
      */
     int maxProfit(vector<int> &prices) {
         int res = 0;
-        for (int i = 1; i < prices.size(); ++i) {
+        for (int i = 1; i < prices.size(); ++i) {  // 坑:i从1开始
             res += max(prices[i] - prices[i - 1], 0);
         }
         return res;
