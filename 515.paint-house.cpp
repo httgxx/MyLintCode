@@ -21,6 +21,12 @@
  * x `3` cost matrix. For example, `costs[0][0]` is the cost of painting house
  * `0` with color red; `costs[1][2]` is the cost of painting house `1` with
  * color green, and so on... Find the minimum cost to paint all houses.
+ *
+ * @Category DP
+ * @Idea
+ * 当前房子刷红色的最小花费=当前房子刷红色的钱 + min(刷到上一个房子用绿色的最小花费,刷到上一个房子用蓝色的最小花费)
+ * dp[i][j]表示刷到第i+1房子用颜色j的最小花费
+ * dp[i][j] = costs[i][j] + min(dp[i - 1][(j + 1) % 3], dp[i - 1][(j + 2) % 3])；
  */
 class Solution {
 public:
@@ -30,7 +36,7 @@ public:
      */
     int minCost(vector<vector<int>> &costs) {
         if (costs.empty() || costs[0].empty()) { return 0; }
-        vector<vector<int>> dp = costs;
+        vector<vector<int>> dp = costs;  // dp[i][j]初始化为costs[i][j]
         for (int i = 1; i < dp.size(); ++i) {
             for (int j = 0; j < 3; ++j) {
                 dp[i][j] += min(dp[i - 1][(j + 1) % 3], dp[i - 1][(j + 2) % 3]);
