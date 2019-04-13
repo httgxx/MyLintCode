@@ -16,7 +16,7 @@
  *
  * @Category DP,DFS+Memo
  * @Ideas
- *  S0: DP T=O(n) S=O(n)
+ *  S0: DP //T=O(n) S=O(n)
  *  f[i],g[i]分别表示以[i]为结尾的子串的最大，最小乘积
  *  [i]>0则乘以f[i-1]更大,[i]<0则乘以g[i-1]更大,[i]也参加比较因可能前极值>0但<1
  *  f[i]=max(f[i-1]*a[i], a[i], g[i-1]*a[i])
@@ -24,7 +24,7 @@
  *  初始 f[0]=g[0]=a[0]
  *  返回 f[0]~f[n-1]中的最大值 即m=max(m,f[i]) for i=0~n-1
  * 
- *  S1: DP+空间优化
+ *  S1: DP+空间优化 //T=O(n) S=O(1)
  *  只用2个变量而不是2个数组来存当前位置的最大和最小值,算下个位置前更新这2变量
  *  res = curMax = curMin = a[0]
  *  for(i=1~n-1)
@@ -51,7 +51,7 @@ public:
         return res;
     }
 
-    int maxProduct0(const vector<int> &nums) {
+    int maxProduct0(const vector<int> &nums) {  // DP
         vector<int> f = { nums[0] };
         vector<int> g = { nums[0] };
         int m = f[0];
