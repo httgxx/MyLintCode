@@ -33,9 +33,8 @@ public:
      * @return: Maximum profit
      */
     int maxProfit(vector<int> &prices) {
-        if (prices.empty()) { return 0; }  // 坑:特例
         int res = 0;
-        for (int i = 1; i < prices.size(); ++i) {  // 坑:-1
+        for (int i = 1; i < prices.size(); ++i) {
             res += max(prices[i] - prices[i - 1], 0);
         }
         return res;
