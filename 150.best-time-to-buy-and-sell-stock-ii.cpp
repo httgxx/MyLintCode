@@ -23,6 +23,8 @@
  * DP // T=O(n) S=O(1)
  * 可以买卖任意次的最大获利
  * = 求和(每天只要比前一天股价高就进行买卖)
+ * 坑: prices为空的特例
+ * 坑: i=1~
  */
 class Solution {
 public:
@@ -33,8 +35,8 @@ public:
     int maxProfit(vector<int> &prices) {
         if (prices.empty()) { return 0; }  // 坑:特例
         int res = 0;
-        for (int i = 0; i < prices.size() - 1; ++i) {  // 坑:-1
-            res += max(prices[i + 1] - prices[i], 0);
+        for (int i = 1; i < prices.size(); ++i) {  // 坑:-1
+            res += max(prices[i] - prices[i - 1], 0);
         }
         return res;
     }
