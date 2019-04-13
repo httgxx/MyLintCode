@@ -16,11 +16,13 @@
  *
  * @Category DP,DFS+Memo
  * @Ideas
- *  A[i]可正可负,若为正则应该乘以上一步的最大值,若为负则应该乘以上一步的最小值，所以必须记录每一步的最大值f(i)和最小值g(i)
- *  maxV[i] = max(i=1~n-1 | maxV[i-1]*A[i], minV[i-1]*A[i], A[i])
- *  minV[i] = min(i=1~n-1 | maxV[i-1]*A[i], minV[i-1]*A[i], A[i])
- *  init： f[0]=A[0], g[0]=A[0]
- *  从左往右更新 返回max(i=0~n-1|f[i])
+ *  f[i]表示以[i]为结尾的子串的最大乘积
+ *  g[i]表示以[i]为结尾的子串的最小乘积
+ *  [i]>0则乘以f[i-1]更大,[i]<0则乘以g[i-1]更大,[i]也参加比较因可能前极值>0但<1
+ *  f[i]=max(a[i], max{a[i-1]*f[i-1],a[i]*g[i-1]}|i>=1)
+ *  g[i]=min(a[i], min{a[i-1]*f[i-1],a[i]*g[i-1]}|i>=1) 
+ *  初始 f[0]=g[0]=a[0]
+ *  返回 f[0]~f[n-1]中的最大值 即m=max(m,f[i]) for i=0~n-1
  */
 class Solution {
 public:
@@ -33,8 +35,8 @@ public:
         vector<int> g = { nums[0] };
         int m = f[0];
         for (int i = 1; i < nums.size(); ++i) {
-            f.push_back(max(max(f[i - 1] * nums[i], g[i - 1] * nums[i]), nums[i]));
-            g.push_back(min(min(f[i - 1] * nums[i], g[i - 1] * nums[i]), nums[i]));
+            f.push_back(max(nums[i], max(f[i - 1] * nums[i], g[i - 1] * nums[i])));
+            g.push_back(min(nums[i], min(f[i - 1] * nums[i], g[i - 1] * nums[i])));
             m = max(m, f[i]);
         }
         return m;
