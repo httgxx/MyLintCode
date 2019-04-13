@@ -32,7 +32,7 @@ public:
      * @return: Maximum profit
      */
     int maxProfit(const vector<int> &prices) {
-        if (prices.size() < 2) { return 0; }  // 只能第二天卖
+        if (prices.size() < 2) { return 0; }  // 只能第1天之后卖
 
         int profit = 0, buy = prices[0];
         for (int i = 1; i < prices.size(); ++i) {  // 从第2天开始可以选一天卖了
