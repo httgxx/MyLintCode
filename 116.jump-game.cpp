@@ -45,8 +45,8 @@ public:
      * @param A: A list of integers
      * @return: A boolean
      */
-    bool canJump(const vector<int> &A) {  // 贪心 T=O(n) S=O(1)
-        int n = A.size(), reach = 0;
+    bool canJump0(const vector<int> &A) {  // 贪心 T=O(n) S=O(1)
+        int n = A.size(), reach = 0;  // 当前能到的最远位置
         for (int i = 0; i < n; ++i) {
             if (reach < i || reach >= n - 1) { break; }
             reach = max(reach, i + A[i]);
@@ -55,20 +55,27 @@ public:
     }
 
     bool canJump1(const vector<int> &A) {  // DP T=O(n) S=O(n)
-        vector<int> dp(A.size(), 0);
-        for (int i = 1; i < A.size(); ++i) {
+        int n = A.size();
+        vector<int> dp(n, 0);  // 在位置i后还能跳的最大步数
+        for (int i = 1; i < n; ++i) {
             dp[i] = max(dp[i - 1], A[i - 1]) - 1;
             if (dp[i] < 0) return false;
         }
         return true;
     }
 
-    bool canJump2(const vector<int> &A) {  // DP T=O(n) S=O(n^2)
-        vector<int> dp(A.size(), 0);
-        for (int i = 1; i < A.size(); ++i) {
-            dp[i] = max(dp[i - 1], A[i - 1]) - 1;
-            if (dp[i] < 0) return false;
+    bool canJump(const vector<int> &A) {  // DP T=O(n) S=O(n^2)
+        int n = A.size();
+        vector<bool> dp(n, false);  // 能否跳到位置i
+        dp[0] = true;
+        for (int i = 1; i < n; ++i) {
+            for (int k = 0; k < n; ++k) {  // 能否找到之前一个位置k
+                if (dp[k] && k + A[k] >= i) {  // k可达且通过k可跳到i
+                    dp[i] = true;
+                    break;
+                }
+            }
         }
-        return true;
+        return dp[n - 1];
     }
 };
