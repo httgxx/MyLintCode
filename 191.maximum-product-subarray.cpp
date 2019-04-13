@@ -28,9 +28,9 @@
  *  只用2个变量而不是2个数组来存当前位置的最大和最小值,算下个位置前更新这2变量
  *  res = curMax = curMin = a[0]
  *  for(i=1~n-1)
- *      mx=curMax, mn=curMin
- *      curMax= max (mx*a[i], a[i], mn*a[i])
- *      curMin= min (mn*a[i], a[i], mx*a[i])
+ *      in preMax=curMax, preMin=curMin
+ *      curMax= max (preMax*a[i], a[i], preMin*a[i])
+ *      curMin= min (preMin*a[i], a[i], preMax*a[i])
  *      res=max(res, curMax)
  *  return res
  */
@@ -40,13 +40,26 @@ public:
      * @param nums: An array of integers
      * @return: An integer
      */
-    int maxProduct(vector<int> &nums) {
+    int maxProduct(const vector<int> &nums) {  // DP+空间优化
+        int curMax = nums[0], curMin = nums[0], res = nums[0];
+        for (int i = 1; i < nums.size(); ++i) {
+            int preMax = curMax, preMin = curMin;
+            curMax = max(nums[i], max(preMax * nums[i], preMin * nums[i]));
+            curMin = min(nums[i], min(preMax * nums[i], preMin * nums[i]));
+            res = max(res, curMax);
+        }
+        return res;
+    }
+
+    int maxProduct0(const vector<int> &nums) {
         vector<int> f = { nums[0] };
         vector<int> g = { nums[0] };
         int m = f[0];
         for (int i = 1; i < nums.size(); ++i) {
-            f.push_back(max(nums[i], max(f[i - 1] * nums[i], g[i - 1] * nums[i])));
-            g.push_back(min(nums[i], min(f[i - 1] * nums[i], g[i - 1] * nums[i])));
+            f.push_back(
+                max(nums[i], max(f[i - 1] * nums[i], g[i - 1] * nums[i])));
+            g.push_back(
+                min(nums[i], min(f[i - 1] * nums[i], g[i - 1] * nums[i])));
             m = max(m, f[i]);
         }
         return m;
