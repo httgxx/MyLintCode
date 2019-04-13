@@ -26,7 +26,8 @@
  * S1: DP T=O(n) S=O(n)
  * 用min1和min2记录刷到前房子的花费最小和次小时前房子刷的颜色
  * 当前房子颜色=min1则用min2算刷到当前房子的最小花费,反之用min1算
- * 每次用当前行min,max更新min1,min2
+ * 每次用当前行min1,min2新上一行的min1,min2
+ * 坑:min,旧min1,min2的初始值是0而不是INT_MAX
  * 
  * S0: DP T=O(nK^2) S=O(nK)
  * dp[i][j]表示刷房子([0]~[i])且房子[i]刷成颜色j的最小花费
