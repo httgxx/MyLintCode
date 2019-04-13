@@ -26,6 +26,8 @@
  * 初始 dp[0][0]=dp[0][1]=0
  * 顺序 i=0~n-1 j=0~1
  * 返回 min(dp[n][0],dp[n][1])
+ * 坑 前i位则i=1~n而不是0~n-1
+ * 坑 ?:最好加括号否则很容易优先级错误
  */
 class Solution {
 public:
@@ -42,7 +44,7 @@ public:
             for (int j = 0; j < 2; ++j) {  // 第i位[i-1]不同情况
                 for (int k = 0; k < 2; ++k) {  // 第i-1位[i-2]不同情况
                     if (k == 0 && j == 1) { continue; }  // 跳过非法情况
-                    dp[i][j] = min(dp[i][j],
+                    dp[i][j] = min(dp[i][j], 
                         dp[i - 1][k] + (nums[i - 1] != j ? 1 : 0));  // 坑:括号
                 }
             }
