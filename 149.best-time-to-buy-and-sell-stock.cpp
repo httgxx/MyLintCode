@@ -23,6 +23,7 @@
  * DP // T=O(n) S=O(1)
  * 最多买卖1次的最大获利
  * = max{第i天卖的获利=第i天价格-第i天之前的最低价}|每天
+ * 坑: 使用prices[0]前须处理
  */
 class Solution {
 public:
@@ -31,7 +32,8 @@ public:
      * @return: Maximum profit
      */
     int maxProfit(const vector<int> &prices) {
-        if (prices.empty()) { return 0; }  // 特例
+        if (prices.size() < 2) { return 0; }  // 只能第二天卖
+
         int profit = 0, buy = prices[0];
         for (int i = 1; i < prices.size(); ++i) {  // 从第2天开始可以选一天卖了
             profit = max(profit, prices[i] - buy);  // 当天卖获利=当天-之前最低
