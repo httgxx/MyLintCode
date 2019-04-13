@@ -21,8 +21,8 @@
  * @Category DP,枚举
  * @Ideas
  * DP // T=O(n) S=O(1)
- * 最多买卖1次的最大利润
- * = max(第i天价格//卖出价-第i天为止最低价//买入价)|i=0~n-1
+ * 最多买卖1次的最大获利
+ * = max{第i天卖的获利=第i天价格-第i天之前的最低价}|i=1~n-1
  */
 class Solution {
 public:
@@ -31,10 +31,11 @@ public:
      * @return: Maximum profit
      */
     int maxProfit(const vector<int> &prices) {
-        int profit = 0, buy = INT_MAX;
-        for (int price : prices) {
-            buy = min(buy, price);  // 记录当天为止最低价格作为买入价
-            profit = max(profit, price - buy);  // 记录当天卖出能得最高获利
+        if (prices.empty()) { return 0; }  // 特例
+        int profit = 0, buy = prices[0];
+        for (int i = 1; i < prices.size(); ++i) {  // 从第2天开始可以选一天卖了
+            profit = max(profit, prices[i] - buy);  // 当天卖获利=当天-之前最低
+            buy = min(buy, prices[i]);  // 更新目前位置最低价
         }
         return profit;
     }
