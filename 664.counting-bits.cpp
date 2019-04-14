@@ -33,8 +33,8 @@ public:
         }
         return res;
     }
-	
-	vector<int> countBits2(int num) {
+
+    vector<int> countBits2(int num) {
         vector<int> res{0};
         for (int i = 1; i <= num; ++i) {
             if (i % 2 == 0) res.push_back(res[i / 2]);
