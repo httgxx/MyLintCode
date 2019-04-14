@@ -19,22 +19,23 @@
  *
  * @Category DP,Combination
  * @Ideas
- * S1: DP T=O(mn) S=O(mn)
- * dp[i][j]=从左上角到第i行第j列有多少种走法
- * =到上邻居的走法+到左邻居的走法
- * =dp[i-1][j]+dp[i][j-1]
- * 初始 dp[0][j]=dp[i][0]=1 //i=0~m-1,j=0~n-1
- * 顺序 上到下i=0->m-1,左到右j=0->n-1 (也可以左到右,上到下)
- * 返回 dp[m-1][n-1]
- * 
- * S2: DP T=O(mn) S=O(min(m,n))
- * 降维 只存当前行的每列 (或只存当前列的每行)
+ * S1: DP T=O(mn) S=O(min(m,n))
+ * 1维 只存当前行的每列 (或只存当前列的每行)
  * // 优化 以m和n中小的那个大小来存 大的那个做外循环
  * 新值=旧值/上一行当前列(左上角到上邻居的走法)+当前行前一列(左上角到到左邻居的走法)
  * dp[j]=从左上角到当前行的第j列有多少种走法
  * dp[j]+=dp[j-1] //+=而不是=
  * 顺序 上到下i=0->m-1,左到右j=0->n-1 
  * 返回 dp[n-1]
+ * 坑: 初始化dp[i]=1后从i=1,j=1开始循环
+ * 
+ * S2: DP T=O(mn) S=O(mn)
+ * 2维 dp[i][j]=从左上角到第i行第j列有多少种走法
+ * =到上邻居的走法+到左邻居的走法
+ * =dp[i-1][j]+dp[i][j-1]
+ * 初始 dp[0][j]=dp[i][0]=1 //i=0~m-1,j=0~n-1
+ * 顺序 上到下i=0->m-1,左到右j=0->n-1 (也可以左到右,上到下)
+ * 返回 dp[m-1][n-1]
  * 
  * S3: Combination T=O(min(m,n)) S=O(1)
  * 总共走m-1+n-1=m+n-2步 要么向下 要么向右 走法就是从m+n-2步中选取min(m,n)-1步的方法
@@ -53,7 +54,20 @@ public:
      * @param n: positive integer (1 <= n <= 100)
      * @return: An integer
      */
-    int uniquePaths0(int m, int n) {  // 2维
+    int uniquePaths(int m, int n) {  // 降维 + min优化
+        if (m < n) { return uniquePaths(n, m); }  // 优化:按min的大小存dp值
+
+        // n <= m, 小的那个作为dp[]的大小,优化空间
+        vector<int> dp(n, 1);  // 第1行初始:左上角到第1行每格都只有1种走法
+        for (int i = 1; i < m; ++i) {  // 坑:第1行已赋值,从第2行开始
+            for (int j = 1; j < n; ++j) {  // 第1列都是1,从第2列开始
+                dp[j] += dp[j - 1];
+            }
+        }
+        return dp[n-1];
+    }
+
+    int uniquePaths1(int m, int n) {  // 2维
         vector<vector<int>> dp(m, vector<int>(n, 0));
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
@@ -67,19 +81,7 @@ public:
         return dp[m - 1][n - 1];
     }
 
-    int uniquePaths(int m, int n) {  // 降维 + min优化
-        if (n < m) { return uniquePaths(n, m); }  // 优化:按min的大小存dp值
-
-        vector<int> dp(n, 1);  // 第1行初始:左上角到第1行每格都只有1种走法
-        for (int i = 1; i < m; ++i) {  // 第1行已赋值,从第2行开始
-            for (int j = 1; j < n; ++j) {  // 第1列都是1,从第2列开始
-                dp[j] += dp[j - 1];
-            }
-        }
-        return dp[n-1];
-    }
-
-    int uniquePaths1(int m, int n) {  // 组合
+    int uniquePaths2(int m, int n) {  // 组合
         int small = m < n ? m - 1 : n - 1;  // 优化:C(m+n-2,min(m-1,n-1))
         double num = 1, denom = 1;  // 坑:必须用double计算阶乘
         for (int i = 1; i <= small; ++i) {  // k=1~min(m-1,n-1)
