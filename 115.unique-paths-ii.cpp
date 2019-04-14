@@ -20,10 +20,14 @@
  * @Ideas
  * DP T=O(mn) S=O(mn)
  * dp[j]=从左上角到当前行的第j列有多少种走法
+ * dp[0]=0
  * dp[j]+=dp[j-1]|当前行[j]!=1 //+=而不是=
  * 顺序 上到下i=0->m-1,左到右j=0->n-1 
  * 返回 dp[n-1]
- * 
+ * 坑: 特例a[0][0]==1则直接返回0
+ * 坑: dp[j] += dp[j-1] +=而不是=
+ * 坑: 只初始化dp[0]=0而不是1,且之后i和j从0而不是1开始循环
+ * 坑: [i][j]!=1时须j>0时才dp[j]+=dp[j-1]即只从第二列才开始累加
  */
 class Solution {
 public:
@@ -32,7 +36,8 @@ public:
      * @return: An integer
      */
     int uniquePathsWithObstacles(vector<vector<int>> &obstacleGrid) {
-        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
+        if (obstacleGrid.empty() || obstacleGrid[0].empty() ||
+            obstacleGrid[0][0] == 1) return 0;
         int m = obstacleGrid.size(), n = obstacleGrid[0].size();
         vector<long> dp(n, 0);
         dp[0] = 1;
