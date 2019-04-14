@@ -21,9 +21,10 @@
  * @Category DP,Greedy
  * @Ideas
  * S1: 贪心 T=O(n) S=O(1)
- * 左到右计算位置i时能到最远位置reach=max(前个reach,当前位置i+位置i的弹跳力n[i])
+ * 左到右计算每个位置i时能到达的最远位置reach=max(旧reach, i+n[i]//当前位置+该位置的弹跳力)
  * 一旦reach<i(不能跳到终点)或reach>=n-1(已可跳到终点)中断返回,否则继续计算
- * 坑:必须先判断再计算
+ * 初始 reach=0
+ * 坑:必须先判断是否已知不可到达(reach<i)或可到达(reach>=n-1),再计算更新reach
  *
  * S2: DP T=O(n) S=O(n)
  * dp[i]表示到达位置i时可再跳的最大步数 
@@ -48,7 +49,7 @@ public:
     bool canJump0(const vector<int> &A) {  // 贪心 T=O(n) S=O(1)
         int n = A.size(), reach = 0;  // 当前能到的最远位置
         for (int i = 0; i < n; ++i) {
-            if (reach < i || reach >= n - 1) { break; }
+            if (reach < i || reach >= n - 1) { break; }  // 当前可达最远须>=i
             reach = max(reach, i + A[i]);
         }
         return reach >= n - 1;
@@ -59,7 +60,7 @@ public:
         vector<int> dp(n, 0);  // 在位置i后还能跳的最大步数
         for (int i = 1; i < n; ++i) {
             dp[i] = max(dp[i - 1], A[i - 1]) - 1;
-            if (dp[i] < 0) return false;
+            if (dp[i] < 0) return false;  // 每个位置的还可跳最大步数须>=0
         }
         return true;
     }
