@@ -18,8 +18,12 @@
  * @Ideas
  * DP // T=O(n) S=T(n)
  * 最长上升子序列LIS
- * 每个[i]要么直接接在旧LIS尾形成更长LIS,要么替换所有不同长度的旧LIS的尾巴中最小的>=[i]的值
+ * 相同长度的LIS末尾越小越有可能append新的更大数形成更长LIS
+ * 记录每种长度的LIS的最小末尾数: ends[i]=所有长度为i的LIS的末尾的最小值 
+ * 每次访问到新数,用它去替换ends中第1个>=新数的LIS末尾
  * 
+ * 注: 若LIS不允许重复数,则ends不允许有重复数; 如果LIS允许重复数,则ends允许有重复数
+ *     两种情况下都是用a[i]去替换第一个ends[k]>=a[j] 
  */
 class Solution {
 public:
