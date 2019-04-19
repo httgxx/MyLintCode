@@ -27,7 +27,7 @@
  * 用min1和min2记录刷到前房子的花费最小和次小时前房子刷的颜色
  * 当前房子颜色=min1则用min2算刷到当前房子的最小花费,反之用min1算
  * 每次用当前行min1,min2新上一行的min1,min2
- * 坑:min,旧min1,min2的初始值是0而不是INT_MAX
+ * 坑:
  * 
  * S0: DP T=O(nK^2) S=O(nK)
  * dp[i][j]表示刷房子([0]~[i])且房子[i]刷成颜色j的最小花费
@@ -39,48 +39,55 @@ public:
      * @param costs: n x k cost matrix
      * @return: an integer, the minimum cost to paint all houses
      */
-    int minCostII0(const vector<vector<int>> &costs) {
-        if (costs.empty() || costs[0].empty()) return 0;
-        vector<vector<int>> dp = costs;  // 初始化dp[i][j]=cost[i][j]
-        int min1 = -1, min2 = -1;
-        for (int i = 0; i < dp.size(); ++i) {
-            int last1 = min1, last2 = min2;
-            min1 = -1; min2 = -1;
-            for (int j = 0; j < dp[i].size(); ++j) {
-                if (j != last1) {
-                    dp[i][j] += last1 < 0 ? 0 : dp[i - 1][last1];
-                } else {
-                    dp[i][j] += last2 < 0 ? 0 : dp[i - 1][last2];
-                }
-                if (min1 < 0 || dp[i][j] < dp[i][min1]) {
-                    min2 = min1; min1 = j;
-                } else if (min2 < 0 || dp[i][j] < dp[i][min2]) {
-                    min2 = j;
+    int minCostII(const vector<vector<int>>& costs) {
+        if (costs.empty() || costs[0].empty()) return 0;  // 特例
+        int m = costs.size(), n = costs[0].size();
+        int min1 = 0, min2 = 0, lastCol = -1;  // 当前总共花费的最小和次小值
+        for (int i = 0; i < m; ++i) {  // 刷到房子[i]
+            // 看房子[i]刷哪种颜色能使总花费最小,记录最小和次小总花费
+            // 没刷一个新房子就单独算最小,所以起始总是INT_MAX
+            int mn1 = INT_MAX, mn2 = INT_MAX, mn1Col = -1;
+            for (int j = 0; j < n; ++j) {  // 房子[i]刷成颜色j
+                int cost = costs[i][j] + (j != lastCol ? min1 : min2);
+                if (cost < mn1) {  // 新最小值,更新次小值和最小值对应的颜色
+                    mn2 = mn1;
+                    mn1 = cost;
+                    mn1Col = j;
+                } else if (cost < mn2) {  // 新次小值,最小值和对应颜色不变
+                    mn2 = cost;
                 }
             }
+            // 算完一个房子,更新当前总花费的最小和次小,继续刷下一个房子
+            min1 = mn1;
+            min2 = mn2;
+            lastCol = mn1Col;
         }
-        return dp.back()[min1];
+        return min1;
     }
 
-    int minCostII(vector<vector<int>>& costs) {
+    int minCostII0(const vector<vector<int>> &costs) {
         if (costs.empty() || costs[0].empty()) return 0;
-        int lastMin1 = 0, lastMin2 = 0, lastCol = -1;  // 坑:0而不是INT_MAX
-        for (int i = 0; i < costs.size(); ++i) {  // 房子[i]
-            int curMin1 = INT_MAX, curMin2 = curMin1, curCol = -1;
-            for (int j = 0; j < costs[i].size(); ++j) {  // 颜色[j]
-                int cost = costs[i][j] + (j == lastCol ? lastMin2 : lastMin1);
-                if (cost < curMin1) {
-                    curMin2 = curMin1;
-                    curMin1 = cost;
-                    curCol = j;
-                } else if (cost < curMin2) {
-                    curMin2 = cost;
+        int m = costs.size(), n = costs[0].size();
+
+        int lastMin1Col = 0, lastMin2Col = 0;
+        vector<vector<int>> dp = costs;  // 初始化dp[i][j]=cost[i][j]
+        for (int i = 0; i < m; ++i) {
+            int curMin1Col = lastMin1Col, curMin2Col = lastMin2Col;
+            for (int j = 0; j < n; ++j) {
+                if (i > 0) {  // 从刷第2个房子开始才累加刷前面房子的花费
+                    dp[i][j] += j != lastMin1Col
+                        ? dp[i - 1][lastMin1Col]   // 累加前房子最小花费
+                        : dp[i - 1][lastMin2Col];  // 累加前房子次小花费
+                }
+                if (dp[i][j] < dp[i][lastMin1Col]) {  // 新最小值
+                    curMin2Col = curMin1Col;
+                    curMin1Col = j;
+                } else if (dp[i][j] < dp[i][lastMin2Col]) {  // 新次小值
+                    curMin2Col = j;
                 }
             }
-            lastMin1 = curMin1;
-            lastMin2 = curMin2;
-            lastCol = curCol;
+            lastMin1Col = curMin1Col, lastMin2Col = curMin2Col;
         }
-        return lastMin1;
+        return dp.back()[lastMin1Col];
     }
 };
