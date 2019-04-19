@@ -24,12 +24,15 @@
  * @Category DP
  * @Idea
  * S1: DP T=O(n) S=O(n)
- * 用min1和min2记录刷到前房子的花费最小和次小时前房子刷的颜色
- * 当前房子颜色=min1则用min2算刷到当前房子的最小花费,反之用min1算
- * 每次用当前行min1,min2新上一行的min1,min2
- * 坑:
+ * min1和min2记录之前房子总花费最小和次小值,min1Col记录最小值对应的前房子颜色.
+ * 当前房子颜色!=min1Col时用min1算新的总花费,=minCol1则用反之用min2算新总花费.
+ * 每刷一个新房子后将当前最小和次小值当作新的总花费的最小和次小
+ * 坑:全局min1和min2的初始值时0而不是INT_MAX,因为会先用来赋值而不是比较
+ *    全局min1和min2只在2处使用:1)算当前最小值时 2)被当前最小值更新时
+ * 坑:局部curMin1和curMin2的初始值是INT_MAX而不是0,因为会先用来比较才再被更新
+ *    局部curMin1和curMin2只在颜色j的循环内使用,在房子i的循环内被初始化
  * 
- * S0: DP T=O(nK^2) S=O(nK)
+ * S0: DP T=O(mn^2) S=O(mn)
  * dp[i][j]表示刷房子([0]~[i])且房子[i]刷成颜色j的最小花费
  * dp[i][j] = min{dp[i-1][k]}|k!=j + costs[i][j]即把房子[i]刷成颜色j的花费；
  */
@@ -39,11 +42,12 @@ public:
      * @param costs: n x k cost matrix
      * @return: an integer, the minimum cost to paint all houses
      */
-    int minCostII1(const vector<vector<int>>& costs) {
+    int minCostII(const vector<vector<int>>& costs) {
         if (costs.empty() || costs[0].empty()) return 0;  // 特例
         int m = costs.size(), n = costs[0].size();
         // 当前总共花费的最小和次小值
         // 坑1:初始值不是INT_MAX而是0,因为会先用来计算而不是比较
+        // 坑2:全局最小值只在2处使用:1)算当前最小值时 2)被当前最小值更新时
         int min1 = 0, min2 = 0, lastCol = -1;
         for (int i = 0; i < m; ++i) {  // 刷到房子[i]
             // 每刷1新房子就计算刷完它后当前总花费的最小和次小
@@ -67,7 +71,7 @@ public:
         return min1;
     }
 
-    int minCostII(const vector<vector<int>> &costs) {
+    int minCostII1(const vector<vector<int>> &costs) {
         if (costs.empty() || costs[0].empty()) return 0;  // 特例
         int m = costs.size(), n = costs[0].size();
         // 当前总共花费最小和次小对应的颜色
