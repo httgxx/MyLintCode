@@ -44,50 +44,51 @@ public:
         int m = costs.size(), n = costs[0].size();
         int min1 = 0, min2 = 0, lastCol = -1;  // 当前总共花费的最小和次小值
         for (int i = 0; i < m; ++i) {  // 刷到房子[i]
-            // 看房子[i]刷哪种颜色能使总花费最小,记录最小和次小总花费
-            // 没刷一个新房子就单独算最小,所以起始总是INT_MAX
-            int mn1 = INT_MAX, mn2 = INT_MAX, mn1Col = -1;
+            // 每刷1新房子就计算刷完它后当前总花费的最小和次小,起始总是INT_MAX
+            int curMin1 = INT_MAX, curMin2 = INT_MAX, curMin1Col = -1;
             for (int j = 0; j < n; ++j) {  // 房子[i]刷成颜色j
                 int cost = costs[i][j] + (j != lastCol ? min1 : min2);
-                if (cost < mn1) {  // 新最小值,更新次小值和最小值对应的颜色
-                    mn2 = mn1;
-                    mn1 = cost;
-                    mn1Col = j;
-                } else if (cost < mn2) {  // 新次小值,最小值和对应颜色不变
-                    mn2 = cost;
+                if (cost < curMin1) {  // 新最小值,更新次小值和最小值对应的颜色
+                    curMin2 = curMin1;
+                    curMin1 = cost;
+                    curMin1Col = j;
+                } else if (cost < curMin2) {  // 新次小值,最小值和对应颜色不变
+                    curMin2 = cost;
                 }
             }
-            // 算完一个房子,更新当前总花费的最小和次小,继续刷下一个房子
-            min1 = mn1;
-            min2 = mn2;
-            lastCol = mn1Col;
+            // 确定当前房子刷的颜色后,更新当前总花费的最小和次小,继续刷下个房子
+            min1 = curMin1;
+            min2 = curMin2;
+            lastCol = curMin1Col;
         }
         return min1;
     }
 
-    int minCostII0(const vector<vector<int>> &costs) {
-        if (costs.empty() || costs[0].empty()) return 0;
+    int minCostII1(const vector<vector<int>> &costs) {
+        if (costs.empty() || costs[0].empty()) return 0;  // 特例
         int m = costs.size(), n = costs[0].size();
-
-        int lastMin1Col = 0, lastMin2Col = 0;
+        int min1Col = 0, min2Col = 0;  // 当前总共花费最小和次小对应的颜色
         vector<vector<int>> dp = costs;  // 初始化dp[i][j]=cost[i][j]
         for (int i = 0; i < m; ++i) {
-            int curMin1Col = lastMin1Col, curMin2Col = lastMin2Col;
+            // 每刷1新房子就计算刷完它后总花费最小和次小对应的颜色,起始总是-1
+            int curMin1Col = -1, curMin2Col = -1;
             for (int j = 0; j < n; ++j) {
                 if (i > 0) {  // 从刷第2个房子开始才累加刷前面房子的花费
-                    dp[i][j] += j != lastMin1Col
-                        ? dp[i - 1][lastMin1Col]   // 累加前房子最小花费
-                        : dp[i - 1][lastMin2Col];  // 累加前房子次小花费
+                    dp[i][j] += j != min1Col
+                        ? dp[i - 1][min1Col]   // 累加前房子最小花费
+                        : dp[i - 1][min2Col];  // 累加前房子次小花费
                 }
-                if (dp[i][j] < dp[i][lastMin1Col]) {  // 新最小值
-                    curMin2Col = curMin1Col;
+                if (dp[i][j] < dp[i][min1Col]) {  // 新最小值
+                    curMin2Col = min1Col;
                     curMin1Col = j;
-                } else if (dp[i][j] < dp[i][lastMin2Col]) {  // 新次小值
+                } else if (dp[i][j] < dp[i][min1Col]) {  // 新次小值
                     curMin2Col = j;
                 }
             }
-            lastMin1Col = curMin1Col, lastMin2Col = curMin2Col;
+            // 确定当前房子刷的颜色后,更新当前总花费的最小和次小,继续刷下个房子
+            min1Col = curMin1Col;
+            min2Col = curMin2Col;
         }
-        return dp.back()[lastMin1Col];
+        return dp.back()[min1Col];
     }
 };
