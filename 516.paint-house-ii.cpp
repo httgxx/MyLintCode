@@ -42,14 +42,17 @@ public:
     int minCostII(const vector<vector<int>>& costs) {
         if (costs.empty() || costs[0].empty()) return 0;  // 特例
         int m = costs.size(), n = costs[0].size();
-        int min1 = 0, min2 = 0, lastCol = -1;  // 当前总共花费的最小和次小值
+        // 当前总共花费的最小和次小值
+        // 坑1:初始值不是INT_MAX而是0,因为会先用来计算而不是比较
+        int min1 = 0, min2 = 0, lastCol = -1;
         for (int i = 0; i < m; ++i) {  // 刷到房子[i]
-            // 每刷1新房子就计算刷完它后当前总花费的最小和次小,起始总是INT_MAX
+            // 每刷1新房子就计算刷完它后当前总花费的最小和次小
+            // 坑2:初始值不是0而是INT_MAX,因为会先被用来比较再被更新
             int curMin1 = INT_MAX, curMin2 = INT_MAX, curMin1Col = -1;
             for (int j = 0; j < n; ++j) {  // 房子[i]刷成颜色j
                 int cost = costs[i][j] + (j != lastCol ? min1 : min2);
                 if (cost < curMin1) {  // 新最小值,更新次小值和最小值对应的颜色
-                    curMin2 = curMin1;
+                    curMin2 = curMin1;  // 坑3:不是=minMin1而是=curMin1
                     curMin1 = cost;
                     curMin1Col = j;
                 } else if (cost < curMin2) {  // 新次小值,最小值和对应颜色不变
@@ -64,13 +67,16 @@ public:
         return min1;
     }
 
-    int minCostII1(const vector<vector<int>> &costs) {
+    int minCostII(const vector<vector<int>> &costs) {
         if (costs.empty() || costs[0].empty()) return 0;  // 特例
         int m = costs.size(), n = costs[0].size();
-        int min1Col = 0, min2Col = 0;  // 当前总共花费最小和次小对应的颜色
+        // 当前总共花费最小和次小对应的颜色
+        // 坑1:初始值不是-1而是0,因为会先用来计算而不是比较
+        int min1Col = 0, min2Col = 0;
         vector<vector<int>> dp = costs;  // 初始化dp[i][j]=cost[i][j]
         for (int i = 0; i < m; ++i) {
-            // 每刷1新房子就计算刷完它后总花费最小和次小对应的颜色,起始总是-1
+            // 每刷1新房子就计算刷完它后总花费最小和次小对应的颜色
+            // 坑2:初始值不是0而是-1,因为会先被用来比较再被更新
             int curMin1Col = -1, curMin2Col = -1;
             for (int j = 0; j < n; ++j) {
                 if (i > 0) {  // 从刷第2个房子开始才累加刷前面房子的花费
@@ -79,7 +85,7 @@ public:
                         : dp[i - 1][min2Col];  // 累加前房子次小花费
                 }
                 if (dp[i][j] < dp[i][min1Col]) {  // 新最小值
-                    curMin2Col = min1Col;
+                    curMin2Col = curMin1Col;  // 坑3:不是=minMin1而是=curMin1
                     curMin1Col = j;
                 } else if (dp[i][j] < dp[i][min1Col]) {  // 新次小值
                     curMin2Col = j;
