@@ -39,7 +39,7 @@ public:
      * @param costs: n x k cost matrix
      * @return: an integer, the minimum cost to paint all houses
      */
-    int minCostII(const vector<vector<int>>& costs) {
+    int minCostII1(const vector<vector<int>>& costs) {
         if (costs.empty() || costs[0].empty()) return 0;  // 特例
         int m = costs.size(), n = costs[0].size();
         // 当前总共花费的最小和次小值
@@ -71,23 +71,30 @@ public:
         if (costs.empty() || costs[0].empty()) return 0;  // 特例
         int m = costs.size(), n = costs[0].size();
         // 当前总共花费最小和次小对应的颜色
-        // 坑1:初始值不是-1而是0,因为会先用来计算而不是比较
-        int min1Col = 0, min2Col = 0;
+        // 坑1:初始值不是0而是-1,因为会先用来比较
+        // 坑2:全局最小值只在2处使用:1)算当先最小值时 2)被当前最小值更新时
+        int min1Col = -1, min2Col = -1;
         vector<vector<int>> dp = costs;  // 初始化dp[i][j]=cost[i][j]
         for (int i = 0; i < m; ++i) {
             // 每刷1新房子就计算刷完它后总花费最小和次小对应的颜色
-            // 坑2:初始值不是0而是-1,因为会先被用来比较再被更新
+            // 坑3:初始值不是0而是-1,因为会先被用来比较再被更新
             int curMin1Col = -1, curMin2Col = -1;
             for (int j = 0; j < n; ++j) {
                 if (i > 0) {  // 从刷第2个房子开始才累加刷前面房子的花费
+                    // min1Col和min2Col应该在i=0时就被更新而不会为-1
                     dp[i][j] += j != min1Col
                         ? dp[i - 1][min1Col]   // 累加前房子最小花费
                         : dp[i - 1][min2Col];  // 累加前房子次小花费
                 }
-                if (dp[i][j] < dp[i][min1Col]) {  // 新最小值
-                    curMin2Col = curMin1Col;  // 坑3:不是=minMin1而是=curMin1
+                // 发现新最小值
+                // 坑4: curMin1Col而不是min1Col
+                if (curMin1Col < 0 || dp[i][j] < dp[i][curMin1Col]) {
+                    curMin2Col = curMin1Col;  // 坑4:不是=minMin1而是=curMin1
                     curMin1Col = j;
-                } else if (dp[i][j] < dp[i][min1Col]) {  // 新次小值
+                }
+                // 发现新次小值
+                // 坑5: curMin2Col而不是min2Col
+                else if (curMin2Col < 0 || dp[i][j] < dp[i][curMin2Col]) {
                     curMin2Col = j;
                 }
             }
