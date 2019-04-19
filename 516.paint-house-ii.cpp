@@ -23,18 +23,24 @@
  *
  * @Category DP
  * @Idea
- * S1: DP T=O(n) S=O(n)
- * min1和min2记录之前房子总花费最小和次小值,min1Col记录最小值对应的前房子颜色.
- * 当前房子颜色!=min1Col时用min1算新的总花费,=minCol1则用反之用min2算新总花费.
- * 每刷一个新房子后将当前最小和次小值当作新的总花费的最小和次小
+ * S1: DP T=O(mn) S=O(1)
+ * 全局min1和min2记录刷前面房子[0~n-1]总花费最小和次小值,min1Col记录最小值对应的前房子颜色.
+ * 局部curMin1和curMin2记录当前房子[i]刷的各种颜色j中总花费的最小和次小值
+ * 当前房子[i]颜色!=min1Col时 curMin1=
+ *     ,=minCol1则用反之用min2算新总花费.
+ *     
+ *     每刷一个新房子后用局部最小值更新全局最小值
  * 坑:全局min1和min2的初始值时0而不是INT_MAX,因为会先用来赋值而不是比较
  *    全局min1和min2只在2处使用:1)算当前最小值时 2)被当前最小值更新时
  * 坑:局部curMin1和curMin2的初始值是INT_MAX而不是0,因为会先用来比较才再被更新
  *    局部curMin1和curMin2只在颜色j的循环内使用,在房子i的循环内被初始化
  * 
  * S0: DP T=O(mn^2) S=O(mn)
- * dp[i][j]表示刷房子([0]~[i])且房子[i]刷成颜色j的最小花费
- * dp[i][j] = min{dp[i-1][k]}|k!=j + costs[i][j]即把房子[i]刷成颜色j的花费；
+ * min1Col和min2Col记录之前房子总花费最小和次小值对应的颜色.
+ * dp[i][j]表示刷到房子[i]且刷成颜色j时最小的总共花费
+ * dp[i][j] = costs[i][j] +
+ *   if (i>0 && j!=min1Col) dp[i-1][min1Col]
+ *   else if (i>0 && j==min1Col) dp[i-1][min1Co2]
  */
 class Solution {
 public:
