@@ -30,7 +30,11 @@
  * =max{dp[k]|k<i且a[k]<a[i]} + 1
  * 初始 dp[0]=1
  * 顺序 i=0~n-1, k=i~i-1
- * 坑:
+ * 返回 max(dp[i])
+ * 注: 若LIS不允许重复数,则ends不允许有重复数,要找a[k]<a[i]
+ *     若LIS允许重复数,则ends允许有重复数,要找a[k]<=a[i]
+ * 坑: dp[]初始化为1而不是0
+ * 坑: 返回max(dp[i])而不是dp[n-1] 因为最长LIS可能是以任1个[i]结尾
  */
 class Solution {
 public:
