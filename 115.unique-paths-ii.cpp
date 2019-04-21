@@ -16,7 +16,7 @@
  * would there be?
  * An obstacle and empty space is marked as 1 and 0 respectively in the grid.
  * 
- * @Category DP
+ * @Category DP(按情况叠加型)
  * @Ideas
  * DP T=O(mn) S=O(mn)
  * dp[j]=从左上角到当前行的第j列有多少种走法
