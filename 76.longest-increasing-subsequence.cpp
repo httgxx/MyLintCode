@@ -42,7 +42,7 @@ public:
      * @param nums: An integer array
      * @return: The length of LIS (longest increasing subsequence)
      */
-    int longestIncreasingSubsequence1(const vector<int> &nums) {
+    int longestIncreasingSubsequence(const vector<int> &nums) {
         vector<int> ends;
         for (int i = 0; i < nums.size(); ++i) {
             int left = 0, right = ends.size();  // ends可能已增长故每次重算right
@@ -66,12 +66,28 @@ public:
         return ends.size();
     }
 
-    int longestIncreasingSubsequence(const vector<int> &nums) {
+    int longestIncreasingSubsequence1(const vector<int> &nums) {
         int n = nums.size();
         if (n < 2) { return n; }
         int res = 0;
         vector<int> dp(n, 1);  // 坑:初始值为1而不是0!
-        vector<int> parent(n);  // 坑:必须指定大小,多开空间不要紧
+        for (int i = 1; i < n; ++i) {  // 以[i]结尾
+            for (int k = 0; k < i; ++k) {  // 找[i]前面[k]<[i]
+                if (nums[k] < nums[i]) {
+                    dp[i] = max(dp[i], dp[k] + 1);
+                }
+            }
+            res = max(res, dp[i]);  // 坑:最后不是返回dp[n-1]而是max(dp[i])
+        }
+        return res;
+    }
+
+    int longestIncreasingSubsequence1Path(const vector<int> &nums) {
+        int n = nums.size();
+        if (n < 2) { return n; }
+        int res = 0;
+        vector<int> dp(n, 1);  // 坑:初始值为1而不是0!
+        vector<int> parent(n);  // 坑:必须指定大小,打印路径多开空间不要紧
         int node = 0;
         for (int i = 1; i < n; ++i) {  // 以[i]结尾
             for (int k = 0; k < i; ++k) {  // 找[i]前面[k]<[i]
