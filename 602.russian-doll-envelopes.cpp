@@ -43,15 +43,15 @@ public:
         vector<int> dp;  // 坑:不能初始化时设dp[]的大小,因为长度会不断增大
         for (int i = 0; i < n; ++i) {  // 找基于高度的LIS
             int left = 0, right = dp.size(), h = envelopes[i].second;
-            while (left < right) {  // 二分找到第1个高度>=height的信封
-                int mid = left + (right - left) / 2;
-                if (dp[mid] < h) { left = mid + 1; }
-                else { right = mid; }  // dp[mid]>=h但还继续往左找最左边>=h的数
+            if (right == 0 || h > dp.back()) {
+                dp.push_back(h);  // 新的最大高度,增长LIS
             }
-            if (right >= dp.size()) {
-                dp.push_back(h);  // 没找到即height是目前最高的,增长LIS
-            }
-            else {
+            else {  // 此时dp已经有至少1个数值
+                while (left < right) {  // 二分找到第1个高度>=height的信封
+                    int mid = left + (right - left) / 2;
+                    if (dp[mid] < h) { left = mid + 1; }
+                    else { right = mid; }  // dp[mid]>=h但还继续往左找最左边>=h的数
+                }
                 dp[right] = h;  // 找到了这样的高度,用height替换降低它
             }
         }
