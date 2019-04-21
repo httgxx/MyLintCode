@@ -34,7 +34,7 @@ public:
      */
     int maxProfit(int k, vector<int> &prices) {
         if (prices.empty()) return 0;
-        if (k >= prices.size()) return solveMaxProfit(prices);
+        if (k >= prices.size()/2) return solveMaxProfit(prices);
         int g[k + 1] = {0};
         int l[k + 1] = {0};
         for (int i = 0; i < prices.size() - 1; ++i) {
