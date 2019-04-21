@@ -71,13 +71,27 @@ public:
         if (n < 2) { return n; }
         int res = 0;
         vector<int> dp(n, 1);  // 坑:初始值为1而不是0!
+        vector<int> parent(n);  // 坑:必须指定大小,多开空间不要紧
+        int node = 0;
         for (int i = 1; i < n; ++i) {  // 以[i]结尾
             for (int k = 0; k < i; ++k) {  // 找[i]前面[k]<[i]
                 if (nums[k] < nums[i]) {
                     dp[i] = max(dp[i], dp[k] + 1);
+                    if (dp[i] == dp[k] + 1) {
+                        parent[i] = k;  // 更新当前节点的前驱结点
+                    }
                 }
             }
             res = max(res, dp[i]);  // 坑:最后不是返回dp[n-1]而是max(dp[i])
+            if (res == dp[i]) { node = i; }  // 更新终点
+        }
+        vector<int> path(res);
+        for (int i = res - 1; i >= 0; --i) {  // 倒着打印路径
+            path[i] = node;
+            node = parent[node];
+        }
+        for (int i = 0; i < res; ++i) {
+            cout << path[i];
         }
         return res;
     }
