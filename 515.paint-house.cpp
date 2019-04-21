@@ -22,10 +22,10 @@
  * `0` with color red; `costs[1][2]` is the cost of painting house `1` with
  * color green, and so on... Find the minimum cost to paint all houses.
  *
- * @Category DP
+ * @Category DP(叠加比较型)
  * @Idea
- * 当前房子刷红色的最小花费=当前房子刷红色的钱 + min(刷到上一个房子用绿色的最小花费,刷到上一个房子用蓝色的最小花费)
- * dp[i][j]表示刷前i+1个房子([0]~[i])且房子[i]刷成颜色j的最小花费
+ * 当前房子刷红色的最小花费=当前房子刷红色的钱 + min(刷到上个房子用绿色的最小花费,刷到上一个房子用蓝色的最小花费)
+ * dp[i][j]表示刷房子([0]~[i])且房子[i]刷成颜色j的最小花费
  * dp[i][j] = min(dp[i-1][(j+1)%3],dp[i-1][(j+2)%3]) + costs[i][j]即房子[i]刷成颜色j的花费；
  */
 class Solution {
