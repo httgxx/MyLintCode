@@ -17,7 +17,7 @@
  * 
  * How many possible unique paths are there?
  *
- * @Category DP,Combination
+ * @Category DP(前构型),Combination
  * @Ideas
  * S1: DP T=O(mn) S=O(min(m,n))
  * 1维 只存当前行的每列 (或只存当前列的每行)
