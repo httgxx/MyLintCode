@@ -16,15 +16,19 @@
  * Design an algorithm to find the **maximum** profit. You may complete at most
  * _two_ transactions.
  * 
- * @Category DP
+ * @Category DP(按情况叠加比较型)
  * @Ideas
- * DP // T=O(n) S=O(1)
  * 最多可买卖2次的最大获利
- * 
+ * DP // T=O(n) S=O(1)
+ 
+ 
  * S2: DP(比较型 2次遍历),枚举
  * DP  // T=O(n) S=O(n)
  * 第一次左到右,求只交易1次的话第i天的最大收益 p1[i]=max(p1[i-1],[i]-第1天到前一天为止的最小价格)
  * 第二次右到左,求第i天以后交易1次的最大收益 p2=max(p2,[i]-第i天到最后一天为止的最大价格 + p1[i])
+ * 坑:vector要定义大小否则之后[]会index溢出
+ * 坑:第一次遍历计算的每天最大值都得存(之后用来计算第2次交易的最大值),第二次遍历只用存当前最大值
+ * 坑:左扫右时i=2开始++i,右扫左时i=n-2开始--i
  */
 class Solution {
 public:
