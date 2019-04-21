@@ -21,15 +21,14 @@
  * `0` with color `0`; `costs[1][2]` is the cost of painting house `1` with
  * color `2`, and so on... Find the minimum cost to paint all houses.
  *
- * @Category DP
+ * @Category DP(按情况叠加比较型)
  * @Idea
  * S1: DP T=O(mn) S=O(1)
  * 全局min1和min2记录刷前面房子[0~n-1]总花费最小和次小值,min1Col记录最小值对应的前房子颜色.
- * 局部curMin1和curMin2记录当前房子[i]刷的各种颜色j中总花费的最小和次小值
- * 当前房子[i]颜色!=min1Col时 curMin1=
- *     ,=minCol1则用反之用min2算新总花费.
- *     
- *     每刷一个新房子后用局部最小值更新全局最小值
+ * 局部curMin1和curMin2记录当前房子[i]刷颜色j时总花费的最小和次小值
+ * 若当前房子[i]颜色!=min1Col则总花费cost=costs[i][j]+min1,否则=costs[i][j]+min2
+ * 每次处理完一种颜色后,用cost更新局部最小值和次小值
+ * 每刷完1个房子后,用局部最小值更新全局最小值
  * 坑:全局min1和min2的初始值时0而不是INT_MAX,因为会先用来赋值而不是比较
  *    全局min1和min2只在2处使用:1)算当前最小值时 2)被当前最小值更新时
  * 坑:局部curMin1和curMin2的初始值是INT_MAX而不是0,因为会先用来比较才再被更新
@@ -51,7 +50,7 @@ public:
     int minCostII(const vector<vector<int>>& costs) {
         if (costs.empty() || costs[0].empty()) return 0;  // 特例
         int m = costs.size(), n = costs[0].size();
-        // 当前总共花费的最小和次小值
+        // 当前总共花费的最小(minimum)和次小值(second minimum)
         // 坑1:初始值不是INT_MAX而是0,因为会先用来计算而不是比较
         // 坑2:全局最小值只在2处使用:1)算当前最小值时 2)被当前最小值更新时
         int min1 = 0, min2 = 0, lastCol = -1;
@@ -60,7 +59,8 @@ public:
             // 坑2:初始值不是0而是INT_MAX,因为会先被用来比较再被更新
             int curMin1 = INT_MAX, curMin2 = INT_MAX, curMin1Col = -1;
             for (int j = 0; j < n; ++j) {  // 房子[i]刷成颜色j
-                int cost = costs[i][j] + (j != lastCol ? min1 : min2);
+                int cost = costs[i][j] +
+                    (j != lastCol ? min1 : min2);  // 这里可知道前房子取的颜色
                 if (cost < curMin1) {  // 新最小值,更新次小值和最小值对应的颜色
                     curMin2 = curMin1;  // 坑3:不是=minMin1而是=curMin1
                     curMin1 = cost;
@@ -72,7 +72,7 @@ public:
             // 确定当前房子刷的颜色后,更新当前总花费的最小和次小,继续刷下个房子
             min1 = curMin1;
             min2 = curMin2;
-            lastCol = curMin1Col;
+            lastCol = curMin1Col;  // 不一定时最后房子[i]刷的颜色因为可能取min2
         }
         return min1;
     }
