@@ -14,7 +14,7 @@
  * Given a m x n grid filled with non-negative numbers, find a path from top
  * left to bottom right which minimizes the sum of all numbers along its path.
  * 
- * @Category DP
+ * @Category DP(叠加比较型)
  * @Ideas
  * DP T=O(mn) S=O(mn)
  * dp[i]表示到[i][j]位置的最小路径和
