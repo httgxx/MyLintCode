@@ -45,22 +45,23 @@ public:
     int longestIncreasingSubsequence(const vector<int> &nums) {
         vector<int> ends;
         for (int i = 0; i < nums.size(); ++i) {
-            int left = 0, right = ends.size();  // ends可能已增长故每次重算right
+            int left = 0, right = ends.size();  // ends可能已长故重算right
             if (right == 0 || nums[i] > ends.back()) {
-               // case1:[i]>当前LIS最小末尾,即加在最小末尾后形成更长LIS
-               ends.push_back(nums[i]);  // 更新ends
-            } else {  // ends中至少还有1个数所以肯定有left<=right
-              // case2:[i]<当前LIS最小末尾,即不能直接形成更长LIS
-              // 即二分找到ends中第一个>=[i]的值来替换成[i]
-              while (left < right) {  // 至少还剩2个数
-                int mid = left + (right - left) / 2;
-                if (ends[mid] < nums[i]) {
-                    left = mid + 1;  // [mid]太小,去右边找更大
-                } else {  // ends[mid] >= nums[i]
-                    right = mid;  // [mid]符合条件,去左边(包含mid)找更小
+                // case1:[i]>当前LIS最小末尾,即加在最小末尾后形成更长LIS
+                ends.push_back(nums[i]);  // 更新ends
+            } else {
+                // case2:[i]<当前LIS最小末尾,即不能直接形成更长LIS
+                // 即二分找到ends中第一个>=[i]的值来替换成[i]
+                // 此时ends中至少有1个数所以肯定有left<=right
+                while (left < right) {
+                    int mid = left + (right - left) / 2;
+                    if (ends[mid] < nums[i]) {
+                        left = mid + 1;  // [mid]太小,去右边找更大
+                    } else {  // ends[mid] >= nums[i]
+                        right = mid;  // [mid]可换,但仍去左边(含mid)找更小可换
+                    }
                 }
-              }
-              ends[right] = nums[i];  // 肯定有1个>[i]所以只可能是这个
+                ends[right] = nums[i];  // 因至少有1个>[i]故定是找到的最左边这个
             }
         }
         return ends.size();
