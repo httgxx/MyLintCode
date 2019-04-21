@@ -34,7 +34,7 @@ public:
      * @return: an integer
      */
     int numDecodings(string &s) {
-         long e0 = 1, e1 = 0, e2 = 0, f0, f1, f2, M = 1e9 + 7;
+        long e0 = 1, e1 = 0, e2 = 0, f0, f1, f2, M = 1e9 + 7;
         for (char c : s) {
             if (c == '*') {
                 f0 = 9 * e0 + 9 * e1 + 6 * e2;
