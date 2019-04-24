@@ -17,14 +17,14 @@
  * 
  * How many possible unique paths are there?
  *
- * @Category DP(前构型),Combination
+ * @Category DP(叠加型),Combination
  * @Ideas
  * S1: DP T=O(mn) S=O(min(m,n))
  * 1维 只存当前行的每列 (或只存当前列的每行)
  * // 优化 以m和n中小的那个大小来存 大的那个做外循环
  * 新值=旧值/上一行当前列(左上角到上邻居的走法)+当前行前一列(左上角到到左邻居的走法)
  * dp[j]=从左上角到当前行的第j列有多少种走法
- * dp[j] += dp[j-1] //+=而不是=
+ * dp[j] += dp[j-1] //+=而不是= 
  * 初始 all dp[i]=1
  * 顺序 上到下i=1->m-1,左到右j=1->n-1 
  * 返回 dp[n-1]
@@ -34,7 +34,7 @@
  * S2: DP T=O(mn) S=O(mn)
  * 2维 dp[i][j]=从左上角到第i行第j列有多少种走法
  * =到上邻居的走法+到左邻居的走法
- * =dp[i-1][j]+dp[i][j-1]
+ * =dp[i-1][j-1]+dp[i][j-1]
  * 初始 dp[0][j]=dp[i][0]=1 //i=0~m-1,j=0~n-1
  * 顺序 上到下i=0->m-1,左到右j=0->n-1 (也可以左到右,上到下)
  * 返回 dp[m-1][n-1]
@@ -44,7 +44,7 @@
  * 即求组和数C(m+n-2,min(m,n)-1)
  * // 排列公式P(n,k)=n*(n-1)*...*(n-k+1)
  * // 组和公式C(n,k)=P(n,k)/k!(无序)
- * // 坑: 要用double计算阶乘 现在已经通不过测试了 不够大？？
+ * // 坑: 要用double计算阶乘 现在已经通不过测试了 不够大??
  * 
  * BF: T=O(?) S=O(stack?)
  * 递归 count(row,col) = count(row-1,col)+cont(row,col-1) 有重复计算
