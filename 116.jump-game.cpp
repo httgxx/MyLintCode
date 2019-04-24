@@ -18,7 +18,7 @@
  * 
  * Determine if you are able to reach the last index.
  *
- * @Category DP,Greedy
+ * @Category DP(叠加比较型),Greedy
  * @Ideas
  * S1: 贪心 T=O(n) S=O(1)
  * 左到右计算每个位置i时能到达的最远位置reach=max(旧reach, i+n[i]//当前位置+该位置的弹跳力)
@@ -57,7 +57,7 @@ public:
 
     bool canJump1(const vector<int> &A) {  // DP T=O(n) S=O(n)
         int n = A.size();
-        vector<int> dp(n, 0);  // 在位置i后还能跳的最大步数
+        vector<int> dp(n, 0);  // 从前面跳到位置i后还能到达大步数()
         for (int i = 1; i < n; ++i) {
             dp[i] = max(dp[i - 1], A[i - 1]) - 1;
             if (dp[i] < 0) return false;  // 每个位置的还可跳最大步数须>=0
@@ -70,7 +70,7 @@ public:
         vector<bool> dp(n, false);  // 能否跳到位置i
         dp[0] = true;
         for (int i = 1; i < n; ++i) {
-            for (int k = 0; k < n; ++k) {  // 能否找到之前一个位置k
+            for (int k = 0; k < i; ++k) {  // 能否找到i之前的一个位置k
                 if (dp[k] && k + A[k] >= i) {  // k可达且通过k可跳到i
                     dp[i] = true;
                     break;
