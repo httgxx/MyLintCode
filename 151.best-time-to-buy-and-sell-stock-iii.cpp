@@ -20,8 +20,16 @@
  * @Ideas
  * 最多可买卖2次的最大获利
  * DP // T=O(n) S=O(1)
- 
- 
+ * global[i][j]为在第i天时最多可进行j次交易的最大利润,是全局最优
+ * local[i][j] 为在第i天时最多可进行j次交易且最后一次交易在最后一天卖出的最大利润,是局部最优
+ * 第i天在卖第j支股票一定是下面情况中的一种
+ * 1.第i天刚买的: local[i][j]=global[i-1][j-1] //第i+1天才有价格差所以第i天买的对local无影响
+ * 2.第i-1天买的: local[i][j]=global[i-1][j-1]+prices[i]-prices[j]  //需要加上diff
+ * 3.第i-1天之前买的: local[i][j]=local[i-1][j]+prices[i]-prices[j] //将
+ * =>递推公式
+ * local[i][j] = max(global[i-1][j-1], local[i-1][j]) + diff
+ * global[i][j] = max(global[i-1][j], local[i][j], )
+
  * S2: DP(比较型 2次遍历),枚举
  * DP  // T=O(n) S=O(n)
  * 第一次左到右,求只交易1次的话第i天的最大收益 p1[i]=max(p1[i-1],[i]-第1天到前一天为止的最小价格)
@@ -36,7 +44,34 @@ public:
      * @param prices: Given an integer array
      * @return: Maximum profit
      */
-    int maxProfit(const vector<int> &prices) {
+    int maxProfit(vector<int> &prices) {
+        if (prices.empty()) return 0;
+        int n = prices.size(), g[n][3] = {0}, l[n][3] = {0};
+        for (int i = 1; i < prices.size(); ++i) {
+            int diff = prices[i] - prices[i - 1];
+            for (int j = 1; j <= 2; ++j) {
+                l[i][j] = max(g[i - 1][j - 1] + max(diff, 0), l[i - 1][j] + diff);
+                g[i][j] = max(l[i][j], g[i - 1][j]);
+            }
+        }
+        return g[n - 1][2];
+    }
+
+    int maxProfit2(vector<int> &prices) {  // 降维
+        if (prices.empty()) return 0;
+        int g[3] = {0};
+        int l[3] = {0};
+        for (int i = 0; i < prices.size() - 1; ++i) {
+            int diff = prices[i + 1] - prices[i];
+            for (int j = 2; j >= 1; --j) {
+                l[j] = max(g[j - 1] + max(diff, 0), l[j] + diff);
+                g[j] = max(l[j], g[j]);
+            }
+        }
+        return g[2];
+    }
+
+    int maxProfit1(const vector<int> &prices) {
         int n = prices.size();
         if (n < 2) { return 0; }  // 特例
         // 第一次左扫到右:计算只交易1次且第i天完成交易的话,第i天能得到的最大收益
