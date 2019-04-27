@@ -26,6 +26,15 @@
  * Also, since the answer may be very large, you should return the output mod
  * 10^9 + 7.
  * 
+ * @Category DP(按情况叠加比较型),枚举细节
+ * @Ideas
+ * 
+ * 
+ * 
+ * 坑:特例s[0]=='0's时,非法直接返回0
+ * 坑:'0'前面有数字且数字不是1和2时,非法直接返回0 
+ * 坑: vector<long> dp必须long否则溢出
+ * 坑:
  */
 class Solution {
 public:
@@ -33,7 +42,7 @@ public:
      * @param s: a message being encoded
      * @return: an integer
      */
-    int numDecodings(string s) {
+    int numDecodings0(string s) {
         if (s.empty() || s[0] == '0') return 0;  // 特例
         
         int n = s.length(), kMod = 1e9 + 7;
@@ -88,14 +97,66 @@ public:
                     dp[i] += 6 * dp[i - 2];
                 }
                 else if (pre == '*') {  // **=>11~26 15种
-                    dp[i] += 15 * dp[i - 2];
+                    dp[i] += 15 * dp[i - 2];  // 坑i-2而不是i-1
                 }
                 // 坑:pre=0或>2时并不退出,因pre可单独解码或和pre's pre组合解码
             }
 
-            dp[i] %= kMod;
+            dp[i] %= kMod;  // 坑:每算出一个中间结果就mod来避免大数字mod运算
         }
         return dp[n];
+    }
+
+    int numDecodings(string s) {
+        if (s.empty() || s[0] == '0') return 0;  // 特例
+        
+        int n = s.length(), kMod = 1e9 + 7;
+        vector<long> dp(n + 1, 0);  // 必须用long防止溢出
+
+        dp[0] = 1;
+        dp[1] = (s[0] == '*') ? 9 : 1;  // *=>1~9 9种编码,k=1~9 1种编码
+        
+        for (int i = 2; i <= n; ++i) {  // 坑:降维dp[n+1]=>dp[2]
+            long dp_i = decodeOneNum(s[i - 1]) * dp[1] +
+                decodeTwoNums(s[i - 2], s[i - 1]) * dp[0];
+            dp_i %= kMod;  // 坑:每算出一个中间结果就mod来避免大数字mod运算
+            dp[0] = dp[1];
+            dp[1] = dp_i;
+        }
+        return dp[1];
+    }
+    int decodeOneNum(char c) {
+        switch(c) {
+            case '0': return 0;  // 单独0非法
+            case '*': return 9;  // *=>1~9 9种
+            default: return 1;  // k=1~9 1种
+        }
+    }
+    int decodeTwoNums(char pre, char cur) {
+        // **
+        if (pre == '*' && cur == '*') {
+            return 15;  // **=>11~26 15种
+        }
+        // *x
+        else if (pre == '*') { // *x=>*0~9都合法
+            // *0~*6=>10~16 or 20~26 2种
+            // *7~*9=>17~19 1种
+            return (cur >= '0' && cur <= '6') ? 2 : 1;
+        }
+        // x*
+        else if (cur == '*') { // x*=>0~9*合法只有1~2*
+            switch(pre) {
+                case('1'): return 9;  // 1*=>11~19 Q:为什么不把10算进去??
+                case('2'): return 6;  // 2*=>21~26 Q:为什么不把20算进去??
+                default: return 0;  // 坑: 0*或3~9*都非法直接退出
+            }
+        }
+        // xy
+        else  //合法只有10~26
+        {
+            return (pre == '1' || (pre == '2' && cur >= '0' && cur <= '6'))
+                ? 1 : 0;
+        }
     }
 
     int numDecodings1(string &s) {
