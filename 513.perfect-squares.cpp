@@ -26,7 +26,7 @@
  * @Ideas
  * DP T=O(n*sqrt(n)) S=O(n)
  * dp[i]表示i可以分成的完全平方数的最少个数
- * dp[i]=min{f[i-j^2]+1}|1<=j^2<=i
+ * dp[i]=min{dp[i-j^2]+1}|1<=j^2<=i
  * 初始化 dp[0]=0  (所有数字>0,则和为0不可能)
  * 
  */
@@ -36,14 +36,25 @@ public:
      * @param n: a positive integer
      * @return: An integer
      */
+    int numSquares1(int n) {
+        vector<int> dp(n + 1, INT_MAX);
+        dp[0] = 0;
+        for (int i = 1; i <=n; ++i) {
+            for (int j = 1; j * j <= i; ++j) {
+                dp[i] = min(dp[i - j * j] + 1, dp[i]);    
+            }
+        }
+        return dp.back();  // dp[n]
+    }
+
     int numSquares(int n) {
         vector<int> dp(n + 1, INT_MAX);
         dp[0] = 0;
-        for (int i = 0; i <=n; ++i) {
+        for (int i = 0; i <= n; ++i) {
             for (int j = 1; i + j * j <= n; ++j) {
-                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);    
+                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);
             }
         }
-        return dp[n];
+        return dp.back();
     }
 };
