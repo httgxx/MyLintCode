@@ -22,8 +22,8 @@
  * 可以买卖k次的最大获利
  * case1: k>=n/2 => 等同于可以交易无限多次的情况 
  * case2: 
- * local[i][j] = max(global[i-1][j-1] + max(diff, 0), local[i - 1][j] + diff)
- * global[i][j] = max(local[i][j], global[i - 1][j])
+ * local[i][j] = max(global[i-1][j-1], local[i-1][j] + prices[i]-prices[i-1])
+ * global[i][j] = max(local[i][j], global[i-1][j])
  */
 class Solution {
 public:
