@@ -16,18 +16,58 @@
  * to make up that amount. If that amount of money cannot be made up by any
  * combination of the coins, return `-1`.
  *
- * @Category DP,DFS+Memo
+ * @Category DP(按情况叠加比较型),DFS+Memo
  * @Ideas
  * S1: DP //T=O(n) S=O(n)
  * dp[i]表示够成钱数i所需的最少硬币数目
- * 对钱数i,用每种面值小于i的硬币去更新所需最小硬币总数
- * dp[i]=min{dp[i], dp[i-coins[j]]+1}|coins[j]<i
+ * 对钱数i,用每种面值<=i的硬币去更新所需最小硬币总数
+ * dp[i]=min{dp[i-coins[j]]+1}|对于<i的硬币面值
  * 初始 dp[0]=0 dp[i>0]=amount+1(表示不能正好凑成)
  * 顺序 由0到amount
  * 返回 dp[amount]
  * 坑: 用amount+1代表INT_MAX因为有dp[x]+1的操作可能溢出
  * 坑: 最后要检查是否=amount+1来返回-1,因为有可能无法正好凑成amount
  * 
+ * Example: coins: [1,2,5], amount=10
+ * dp[0]=0 
+ * i=1
+ *  j=0 dp[1]=min(dp[1]=INT_MAX,dp[1-coins[0]=1-1=0]+1)=1    //1
+ * i=2
+ *   j=0 dp[2]=min(dp[2]=INT_MAX,dp[2-coins[0]=2-1=1]+1)=2    //1,1
+ *   j=1 dp[2]=min(dp[2]=2,dp[2-coins[1]=2-2=0]+1)=1          //2
+ * i=3
+ *   j=0 dp[3]=min(dp[3]=INT_MAX,dp[3-coins[0]=3-1=3]+1)=3    //1,1,1
+ *   j=1 dp[3]=min(dp[3]=3,dp[3-coins[1]=3-2=1]+1)=2          //2,1
+ * i=4
+ *   j=0 dp[4]=min(dp[4]=INT_MAX,dp[4-coins[0]=4-1=3]+1)=3    //2,1,1
+ *   j=1 dp[4]=min(dp[4]=3,dp[4-coins[1]=4-2=2]+1)=2          //2,2
+ * i=5
+ *   j=0 dp[5]=min(dp[5]=INT_MAX,dp[5-coins[0]=5-1=4]+1)=3    //2,2,1
+ *   j=1 dp[5]=min(dp[5]=3,dp[5-coins[1]=5-2=3]+1)=3          //2,1,2
+ *   j=2 dp[5]=min(dp[5]=3,dp[5-coins[2]=5-5=0]+1)=1          //5
+ * i=6
+ *   j=0 dp[6]=min(dp[6]=INT_MAX,dp[6-coins[0]=6-1=5]+1)=2    //5,1
+ *   j=1 dp[6]=min(dp[6]=2,dp[6-coins[1]=6-2=4]+1)=min(2,3)=2 //5,1
+ *   j=2 dp[5]=min(dp[6]=2,dp[6-coins[2]=6-5=1]+1)=2          //1,5
+ * i=7
+ *   j=0 dp[7]=min(dp[7]=INT_MAX,dp[7-coins[0]=7-1=6]+1)=3    //5,1,1
+ *   j=1 dp[7]=min(dp[7]=3,dp[7-coins[1]=7-2=5]+1)=min(3,2)=2 //2,5
+ *   j=2 dp[7]=min(dp[7]=3,dp[7-coins[2]=7-5=2]+1)=2          //5,2
+ * i=8
+ *   j=0 dp[8]=min(dp[8]=INT_MAX,dp[8-coins[0]=8-1=7]+1)=3    //5,2,1
+ *   j=1 dp[8]=min(dp[8]=3,dp[8-coins[1]=8-2=6]+1)=min(3,3)=3 //2,5,1
+ *   j=2 dp[8]=min(dp[8]=3,dp[8-coins[2]=8-5=3]+1)=3          //5,2,1
+ * i=9
+ *   j=0 dp[9]=min(dp[9]=INT_MAX,dp[9-coins[0]=9-1=8]+1)=4    //1,5,2,1
+ *   j=1 dp[9]=min(dp[9]=4,dp[9-coins[1]=9-2=7]+1)=min(4,3)=3 //2,5,2
+ *   j=2 dp[9]=min(dp[9]=3,dp[9-coins[2]=9-5=4]+1)=min(3,3)=3 //5,2,2
+ * i=10
+ *   j=0 dp[10]=min(dp[10]=INT_MAX,dp[10-coins[0]=10-1=9]+1)=4//1,5,2,2
+ *   j=1 dp[10]=min(dp[10]=4,dp[10-coins[1]=10-2=8]+1)=4      //2,5,2,1
+ *   j=2 dp[10]=min(dp[10]=4,dp[10-coins[2]=10-5=5]+1)=2      //5,5
+ * 注意并不是总是从最大面值来选能得到最少数目,组合[1,2,5]可以是因为叠加可以组成所有数字
+ * 反例组合[1,3,4]构成6： 6=4+1+1=>3 6=3+3=>2 最优方案并没有取最大面值4
+ *
  * S2: DFS+剪枝 (amount太大会超时) T=? S=?
  * 硬币按面值由大到小排序,每次先用尽可能多个当前最大面值的硬币去凑
  * 正好凑足则更新res,但任然会依次减少最大面值硬币的数量,再用剩下的硬币面值去试
@@ -42,15 +82,18 @@ public:
      * @return: the fewest number of coins that you need to make up
      */
     // S1: DP T=O(amount*n) S=O(amount)
-    int coinChange(const vector<int>& coins, int amount) {
+    int coinChange(vector<int>& coins, int amount) {
         vector<int> dp(amount + 1, amount + 1);  // 坑: 用INT_MAX之后+1会溢出
                                                  // 故用不可能的值amount+1同效
+        sort(coins.begin(), coins.end());  // 硬币面值按照从小到大排序
         dp[0] = 0;
-        for (int i = 1; i <= amount; ++i) {
-            for (int k = 0; k < coins.size(); ++k) {
-                if (coins[k] <= i) {  
-                    dp[i] = min(dp[i], dp[i - coins[k]] + 1);  // 用INT_MAX溢出
+        for (int i = coins[0]; i <= amount; ++i) {  // 从i=最小的面值开始
+            // 用每种可用的面值(coins[k]<=i)都计算一下是否能用更少的硬币达到i
+            for (int k = 0; k < coins.size(); ++k) {  // 硬币面值已从大到小排
+                if (coins[k] > i) {  // 若硬币面值k过大则跳出内循环增大i
+                    break;
                 }
+                dp[i] = min(dp[i], dp[i - coins[k]] + 1);  // 用INT_MAX溢出
             }
         }
         return (dp[amount] > amount) ? -1 : dp[amount];  // 坑:有可能没法凑成
