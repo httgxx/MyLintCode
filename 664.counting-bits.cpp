@@ -17,9 +17,12 @@
  *
  * @Category DP
  * @Ideas
- * S1: 每个数i的二进制表示中1的个数都是i&(i-1)对应的值加1
- * S2: 偶数的1的个数和该偶数除以2得到的数字的1的个数相同
- *     奇数的1的个数等于该奇数除以2得到的数字的1的个数再加1
+ * S1: DP T=O(n) S=O(n)
+ * dp[i]表示数值为i的二进制表示种1的个数
+ * dp[i]=dp[i>>2]+i%2
+ * 初始 dp[0]=0
+ * 
+ * S2: 每个数i的二进制表示中1的个数都是i&(i-1)对应的值加1
  */
 class Solution {
 public:
@@ -28,18 +31,16 @@ public:
      * @return: an array represent the number of 1's in their binary
      */
     vector<int> countBits(int num) {
-        vector<int> res(num + 1, 0);
+        vector<int> res { 0 };
         for (int i = 1; i <= num; ++i) {
-            res[i] = res[i & (i - 1)] + 1;
+            res.push_back(res[i >> 1] + i % 2);
         }
         return res;
     }
-
-    vector<int> countBits2(int num) {
-        vector<int> res { 0 };
+    vector<int> countBits1(int num) {
+        vector<int> res(num + 1, 0);
         for (int i = 1; i <= num; ++i) {
-            if (i % 2 == 0) res.push_back(res[i / 2]);
-            else res.push_back(res[i / 2] + 1);
+            res[i] = res[i & (i - 1)] + 1;
         }
         return res;
     }
