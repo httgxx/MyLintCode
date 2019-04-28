@@ -18,7 +18,7 @@
  *
  * @Category DP(按情况叠加比较型),DFS+Memo
  * @Ideas
- * S1: DP //T=O(n) S=O(n)
+ * S1: DP //T=O(nk) S=O(n)
  * dp[i]表示够成钱数i所需的最少硬币数目
  * 对钱数i,用每种面值<=i的硬币去更新所需最小硬币总数
  * dp[i]=min{dp[i-coins[j]]+1}|对于<i的硬币面值
@@ -89,10 +89,8 @@ public:
         dp[0] = 0;
         for (int i = coins[0]; i <= amount; ++i) {  // 从i=最小的面值开始
             // 用每种可用的面值(coins[k]<=i)都计算一下是否能用更少的硬币达到i
-            for (int k = 0; k < coins.size(); ++k) {  // 硬币面值已从大到小排
-                if (coins[k] > i) {  // 若硬币面值k过大则跳出内循环增大i
-                    break;
-                }
+            // 若硬币面值k过大则终止内循环因为面值已经从小到大排序
+            for (int k = 0; k < coins.size() && coins[k] <= i; ++k) {
                 dp[i] = min(dp[i], dp[i - coins[k]] + 1);  // 用INT_MAX溢出
             }
         }
