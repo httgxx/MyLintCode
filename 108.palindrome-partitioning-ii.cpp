@@ -48,7 +48,7 @@ public:
      * @param s: A string
      * @return: An integer
      */
-    int minCut1(string &s) {
+    int minCut(string &s) {
         if (s.empty()) return 0;  // 特例
         int n = s.size();
         vector<vector<bool>> p(n, vector<bool>(n, false));  //存各子串是否回文
@@ -66,7 +66,7 @@ public:
         return dp[n - 1];  // 坑：dp存几刀而不是存几段!
     }
 
-    int minCut(string s) {
+    int minCut1(string s) {
         if (s.empty()) return 0;
         int n = s.size();
         vector<int> dp(n + 1, INT_MAX);
