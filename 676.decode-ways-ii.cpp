@@ -61,12 +61,13 @@ public:
 
         dp[0] = 1;
         dp[1] = (s[0] == '*') ? 9 : 1;  // *=>1~9 9种编码,k=1~9 1种编码
-        for (int i = 2; i <= n; ++i) {  // 坑:降维dp[n+1]=>dp[2]
-            long dp_i = decodeOneNum(s[i - 1]) * dp[1] +
-                decodeTwoNums(s[i - 2], s[i - 1]) * dp[0];
-            dp_i %= kMod;  // 坑:每算出一个中间结果就mod来避免大数字mod运算
-            dp[0] = dp[1];
-            dp[1] = dp_i;
+        for (int i = 2; i <= n; ++i) {
+            long dp_i =
+                decodeOneNum(s[i - 1]) * dp[1] +  // 单独解[i-1]
+                decodeTwoNums(s[i - 2], s[i - 1]) * dp[0];  // 组合解[i-2][i-1]
+            dp_i %= kMod;   // 坑:每算出一个中间结果就mod来避免大数字mod运算
+            dp[0] = dp[1];  // 坑:降维dp[i-1]=>dp[1]
+            dp[1] = dp_i;   // 坑:降维dp[i-2]=>dp[0]
         }
         return dp[1];
     }
