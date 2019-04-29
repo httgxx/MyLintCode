@@ -18,12 +18,30 @@
  * transactions.
  * 
  * @Category DP(按情况叠加比较型)
- * @Ideas
+ * @Ideas DP // T=O(kn) S=O(kn)->降维O(k)
  * 可以买卖k次的最大获利
  * case1: k>=n/2 => 等同于可以交易无限多次的情况 
  * case2: 
  * local[i][j] = max(global[i-1][j-1], local[i-1][j] + prices[i]-prices[i-1])
  * global[i][j] = max(local[i][j], global[i-1][j])
+ * 坑: 千万别忘记case1 k>=n/2的情况!
+ * 
+ * 公式推导
+ * global[i][j]为第i天时最多j次交易的最大利润,是全局最优
+ * 第i天卖或不卖?
+ * 1. 第i天卖: global[i][j] = local[i][j]
+ * 2. 第i天不卖: 第i天没交易,等价于第i-1天最多j次交易:global[i][j] = global[i-1][j]
+ * =>递推公式 global[i][j] = max(global[i-1][j], local[i][j])
+ * 
+ * local[i][j] 为第i天时最多j次交易且第i天卖第j支股票的最大利润,是局部最优
+ * 第i天卖的第j支股票利润多少=>何时买的?
+ * 1.第i-1天买的:
+ *   local[i][j]=global[i-1][j-1]+(prices[i]-prices[j])
+ * 2.第i-1天之前买的:不好计算先前哪天买的以及买入价,就用差值法讲买入价抵消
+ *   第i天卖的利润 = 若第i-1天卖的利润 + (第i天卖的利润-若第i-1天卖的利润)
+ *   local[i][j]=local[i-1][j]+(prices[i]-buy)-(prices[i-1]-buy)
+ *              =local[i-1][j]+(prices[i]-prices[i-1])
+ * =>递推公式 local[i][j] = max(global[i-1][j-1], local[i-1][j]+prices[i]-prices[i-1])
  */
 class Solution {
 public:
