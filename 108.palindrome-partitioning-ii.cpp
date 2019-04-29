@@ -48,25 +48,6 @@ public:
      * @param s: A string
      * @return: An integer
      */
-    int minCut1(string &s) {
-        if (s.empty()) return 0;  // 特例
-        int n = s.size();
-        vector<vector<bool>> isPalin(n, vector<bool>(n));
-        vector<int> dp(n);  // dp[i]=s[0~i]最少被分为几个回文串
-        for (int i = 0; i < n; ++i) {  // 尾s[i]
-            dp[i] = i + 1;  // 最多每个字符自为回文串共i+1个
-            for (int j = 0; j <= i; ++j) {  // 头s[j]
-                // 坑: 判断s[j~i]是否回文串
-                if (s[i] == s[j] && (i - j < 1 || isPalin[j + 1][i - 1])){
-                    // 注: i-j>1时s[j]和s[i]之间还有字符则i-1和j+1都不会越界
-                    isPalin[i][j] == true;
-                }
-                dp[i] = (j == 0) ? 0 : min(dp[i], dp[j - 1] + 1);
-            }
-        }
-        return dp[n - 1] - 1;  // 坑：求划分次数为不是划分区间数
-    }
-
     int minCut(string &s) {
         if (s.empty()) return 0;  // 特例
         int n = s.size();
