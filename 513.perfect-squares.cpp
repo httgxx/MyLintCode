@@ -57,7 +57,7 @@
  *  j=1 dp[10]=min(dp[10]=INT_MAX,dp[10-1=9]+1)=4 //1,2,2,1
  *  j=2 dp[10]=min(dp[10]=4,dp[10-4=6]+1)=4       //1,1,2,2
  * 
- * S2: 四平方和定理:每个正整数均可表示为4个整数的平方和
+ * S2: 四平方和定理:每个正整数均可表示为4个整数的平方和??
  * 
  */
 class Solution {
@@ -66,7 +66,7 @@ public:
      * @param n: a positive integer
      * @return: An integer
      */
-    int numSquares0(int n) {
+    int numSquares(int n) {
         vector<int> dp(n + 1, INT_MAX);
         dp[0] = 0;
         for (int i = 1; i <=n; ++i) {
@@ -88,7 +88,7 @@ public:
         return dp.back();
     }
     
-    int numSquares(int n) {
+    int numSquares2(int n) {
         while (n % 4 == 0) n /= 4;
         if (n % 8 == 7) return 4;
         for (int a = 0; a * a <= n; ++a) {
@@ -99,5 +99,4 @@ public:
         }
         return 3;
     }
-
 };
