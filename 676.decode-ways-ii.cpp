@@ -61,7 +61,6 @@ public:
 
         dp[0] = 1;
         dp[1] = (s[0] == '*') ? 9 : 1;  // *=>1~9 9种编码,k=1~9 1种编码
-        
         for (int i = 2; i <= n; ++i) {  // 坑:降维dp[n+1]=>dp[2]
             long dp_i = decodeOneNum(s[i - 1]) * dp[1] +
                 decodeTwoNums(s[i - 2], s[i - 1]) * dp[0];
