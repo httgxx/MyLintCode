@@ -67,7 +67,9 @@
  *   i=5 dp[5]=max(4,dp[5-5]+5=0+5=5)=5
  * return dp[9]=9
  * 
- * S2: DP // T=O(mn) S=O(mn)
+ * 参考网友 https://segmentfault.com/a/1190000006325321
+ * 
+ * S2: DP // T=O(mn) S=O(mn) //TLE!!
  * dp[i][j]表示前i个物品能否被构成体积和j(true/false)
  * dp[i][j]=不用当前最后1个物品[i-1](前i-1个物品已经构成j) or 用[i-1](前i-1个物品构成j-a[i-1])
  * = dp[i-1][j] || dp[i-1][j-A[i-1]]|j>A[i-1]
@@ -90,15 +92,16 @@ public:
         return dp[m];
     }
 
-    int backPack1(int m, vector<int> &A) {
+    int backPack1(int m, vector<int> &A) {  // TLE!!
         int n = A.size();
         if (n == 0) return 0;
 
-        vector<vector<bool>> dp(n, vector<bool>(m + 1, false));
+        vector<vector<bool>> dp(n + 1, vector<bool>(m + 1, false));
         dp[0][0] = true;
-        for (int i = 1; i <= n; ++i) {
-            for (int j = 0; j <= m; ++j) {
-                dp[i][j] = dp[i - 1][j] || dp[i - 1][j - A[i - 1]];
+        for (int i = 1; i <= n; ++i) {  // 前i个物品
+            for (int j = 0; j <= m; ++j) {  // 构成体积和j
+                dp[i][j] = dp[i - 1][j] ||
+                    (j >= A[i - 1] && dp[i - 1][j - A[i - 1]]);  // 坑 j>=A[j-1]前提
             }
         }
 
