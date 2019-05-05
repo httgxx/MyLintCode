@@ -34,7 +34,7 @@
  * 
  * @Categories DP (划分比较型)
  * @Idea
- * DP // T=O(kn^2) S=O(kn)=>降维O(n) k个人n本书
+ * S1: DP // T=O(kn^2) S=O(kn)=>降维O(n) k个人n本书
  * dp[i][j]表示前i个人(0~i-1)抄j本书(0~j-1)的最少时间
  * 枚举p:最后一段起点即最后1个人(第i-1个人)抄书起点,即抄写第p到j-1本书
  * dp[i][j]=min(dp[i][j], max(dp[i-1][p],a[p]+a[p+1]+...+dp[j-1])|0<=p<=j) //p=j表明抄0本书
@@ -46,6 +46,8 @@
  * 坑 min(max(...))所以初始化成无穷大INT_MAX
  * 坑 倒着循环枚举t因为总是要抄最后几本书
  * 坑 先求min(max)在算sum因为要包括不抄1本书的情况
+ * 
+ * S2: 二分法??
  */
 class Solution {
 public:
