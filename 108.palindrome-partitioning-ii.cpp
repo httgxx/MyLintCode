@@ -28,7 +28,7 @@
  * @Category DP
  * @Idea
  * DP T=O(n^2) S=O(n^2)
- * dp[i]表示前i个字符s[0~i-1]最少被划分为多少个回文串/区间
+ * dp[i]表示前i个字符s[0~i-1]最少切几刀可以分回文串
  * dp[i]=min(dp[i],dp[j]+1|0<=j<=i-1且s[j~i-1]是回文串)
  * 初始 dp[0]=0
  * 坑 j=0~i-1
@@ -69,7 +69,7 @@ public:
     int minCut1(string s) {
         if (s.empty()) return 0;
         int n = s.size();
-        vector<int> dp(n + 1, INT_MAX);
+        vector<int> dp(n + 1, INT_MAX); //dp[i]=前i个字符s[0~i-1]的最少切几刀成回文区间
         dp[0] = -1;
         for (int i = 0; i < n; ++i) {
             for (int len = 0; i - len >= 0 && i + len < n && s[i - len] == s[i + len]; ++len) {
