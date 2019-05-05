@@ -17,6 +17,15 @@
  * Design an algorithm to find the maximum profit. You may complete at most `k`
  * transactions.
  * 
+ * Example 1:
+ * Input: k = 2, prices = [4, 4, 6, 1, 1, 4, 2 ,5]
+ * Output: 6
+ * Explanation: Buy at 4 and sell at 6. Then buy at 1 and sell at 5. Your profit is 2 + 4 = 6.
+ * Example 2:
+ * Input: k = 1, prices = [3, 2, 1]
+ * Output: 0
+ * Explanation: No transaction.
+ *
  * @Category DP(按情况叠加比较型)
  * @Ideas DP // T=O(kn) S=O(kn)->降维O(k)
  * 可以买卖k次的最大获利
@@ -33,7 +42,7 @@
  * 第i天卖或不卖?
  * 1. 第i天卖: global[i][j] = local[i][j]
  * 2. 第i天不卖: 第i天没交易,等价于第i-1天最多j次交易:global[i][j] = global[i-1][j]
- * =>递推公式 global[i][j] = max(global[i-1][j], local[i][j])
+ * =>递推公式 global[i][j] = max(local[i][j], global[i-1][j])
  * 
  * local[i][j]为第i天时最多j次交易且第i天卖第j支股票的最大利润,是局部最优
  * 第i天卖的第j支股票利润多少=>何时买的?
@@ -43,7 +52,7 @@
  *   第i天卖的利润 = 若第i-1天卖的利润 + (第i天卖的利润-若第i-1天卖的利润)
  *   local[i][j]=local[i-1][j]+(prices[i]-buy)-(prices[i-1]-buy)
  *              =local[i-1][j]+(prices[i]-prices[i-1])
- * =>递推公式 local[i][j] = max(global[i-1][j-1], local[i-1][j]+prices[i]-prices[i-1])
+ * =>递推公式 local[i][j] = max(global[i-1][j-1], local[i-1][j])+prices[i]-prices[i-1]
  */
 class Solution {
 public:
@@ -54,8 +63,8 @@ public:
      */
     int maxProfit(int k, vector<int> &prices) {
         if (prices.empty()) return 0;
-        if (k >= prices.size()/2) return solveMaxProfit(prices);
-        int g[k + 1] = {0};  // 坑 降维后
+        if (k >= prices.size()/2) return solveMaxProfit(prices);  // 坑:特例!!
+        int g[k + 1] = {0};  // 坑:降维
         int l[k + 1] = {0};
         for (int i = 0; i < prices.size() - 1; ++i) {
             int diff = prices[i + 1] - prices[i];
