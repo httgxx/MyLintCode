@@ -93,7 +93,7 @@ public:
      * @param values: a vector of integers
      * @return: a boolean which equals to true if the first player will win
      */
-    bool firstWillWin1(vector<int> &values) {
+    bool firstWillWin(vector<int> &values) {
         int n = values.size();
         if (n == 0) { return false; }
         if (n <= 2) { return true; }
@@ -118,7 +118,7 @@ public:
         return dp[0][n - 1] > 0;
     }
 
-    bool firstWillWin(vector<int> &values) {
+    bool firstWillWin1(vector<int> &values) {
         int n = values.size();
         if (n == 0) { return false; }  // 题目要求返回啥？
         if (n <= 2) { return true; }
