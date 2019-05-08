@@ -93,7 +93,7 @@ public:
      * @param values: a vector of integers
      * @return: a boolean which equals to true if the first player will win
      */
-    bool firstWillWin(vector<int> &values) {
+    bool firstWillWin1(vector<int> &values) {
         int n = values.size();
         if (n == 0) { return false; }
         if (n <= 2) { return true; }
@@ -118,7 +118,7 @@ public:
         return dp[0][n - 1] > 0;
     }
 
-    bool firstWillWin1(vector<int> &values) {
+    bool firstWillWin(vector<int> &values) {
         int n = values.size();
         if (n == 0) { return false; }
         if (n <= 2) { return true; }
@@ -132,7 +132,7 @@ public:
         for (int i = 0; i < n - 1; i++) {  // 初始化长度为2的区间对应的值
             dp[i][i + 1] = max(values[i], values[i + 1]);
         }
-        for (int len = 2; len <= n; len++) {  // 计算长度>2的区间的值
+        for (int len = 3; len <= n; len++) {  // 计算长度>2的区间的值
             for (int i = 0; i <= n - len; i++) {
                 int j = i + len - 1;
                 int get_i = values[i] + min(dp[i + 1][j - 1], dp[i + 2][j]);
