@@ -109,9 +109,7 @@ public:
         for (int len = 2; len <= n; len++) {  // 计算长度>1的区间对应的值
             for (int i = 0; i <= n - len; i++) {  // j=i+len-1 <= n-1 => i <=n-len
                 int j = i + len - 1;
-                int get_i = values[i] - dp[i + 1][j];
-                int get_j = values[j] - dp[i][j - 1];
-                dp[i][j] = max(get_i, get_j);
+                dp[i][j] = max(values[i] - dp[i + 1][j], values[j] - dp[i][j - 1]);
             }
         }
 
