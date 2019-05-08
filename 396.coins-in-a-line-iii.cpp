@@ -102,11 +102,11 @@ public:
         for (int i = 0; i < n; i++) {  // 初始化长度为1的区间对应的值
             dp[i][i] = values[i];
         }
-        for (int i = 0; i < n - 1; i++) {  // 初始化长度为1的区间对应的值
+        /*for (int i = 0; i < n - 1; i++) {  // 初始化长度为1的区间对应的值
             dp[i][i + 1] = max(values[i], values[i + 1]) - min(values[i], values[i + 1]);
-        }
+        }*/ // 已经包含在下面的循环计算种
 
-        for (int len = 3; len <= n; len++) {  // 计算长度>1的区间对应的值
+        for (int len = 2; len <= n; len++) {  // 计算长度>1的区间对应的值
             for (int i = 0; i <= n - len; i++) {  // j=i+len-1 <= n-1 => i <=n-len
                 int j = i + len - 1;
                 int get_i = values[i] - dp[i + 1][j];
