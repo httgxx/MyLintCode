@@ -120,7 +120,7 @@ public:
 
     bool firstWillWin(vector<int> &values) {
         int n = values.size();
-        if (n == 0) { return false; }
+        if (n == 0) { return false; }  // 题目要求返回啥？
         if (n <= 2) { return true; }
 
         int sum = 0;
