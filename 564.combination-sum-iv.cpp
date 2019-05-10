@@ -67,7 +67,8 @@ public:
         vector<int> dp(target + 1, 0);  // dp[i]表示和为i的总方案数
         dp[0] = 1;
         for (int i = 1; i <= target; ++i) {  // 坑: 目标和i正循环才能用小index的新值更新大index的值
-                                                 // 坑: 必须从1开始而不是从nums[k]开始
+                                             // 坑: 必须从1开始而不是从nums[k]开始 why???
+                                             // 坑: 必须在外循环 why???
             for (int k = 0; k < nums.size(); ++k) {  // 当前方案最后1个数在nums中index
                 if (i >= nums[k]) {
                     dp[i] += dp[i - nums[k]];  // 枚举所有可以做最后1个数的数字,累加剩余target的方案数
