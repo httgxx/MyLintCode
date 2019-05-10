@@ -51,7 +51,7 @@ public:
      * @return: An integer
      */
     int backPackV(vector<int> &nums, int target) {
-        vector<int> dp(target + 1, 0);  // size=target+1
+        vector<int> dp(target + 1, 0);  // dp[i]表示和为i的总方案数
         dp[0] = 1;
         for (int k = 0; k < nums.size(); ++k) {  // 当前方案最后1个数在nums中index
             for (int i = target; i >= nums[k]; --i) {  // 坑: 目标和i倒循环才能用小index的旧值更新大index的值
