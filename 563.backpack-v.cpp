@@ -24,7 +24,7 @@
  * [1, 3, 3]
  * return 2
  * 
- * @Category DP(01背包 计数型:每物可选1次,求填满背包的总方案数)
+ * @Category DP(01背包 计数型:每物可选1次,重复数字不同顺序算不同方案,求填满背包的总方案数)
  * @Idea
  * DP T=O(n*target) S=O(target)
  * dp[i]表示和为i的总方案数
