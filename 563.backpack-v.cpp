@@ -26,6 +26,7 @@
  * 
  * @Category DP(01背包 计数型:每物可选1次,求填满背包的总方案数)
  * @Idea
+ * DP T=O(n*target) S=O(target)
  * dp[i]表示和为i的总方案数
  * dp[i] = sum(dp[i-v[k]]|k=0~n-1且v[k]<=i)
  * 
@@ -50,7 +51,7 @@ public:
      * @return: An integer
      */
     int backPackV(vector<int> &nums, int target) {
-        vector<int> dp(target + 1, 0);
+        vector<int> dp(target + 1, 0);  // size=target+1
         dp[0] = 1;
         for (int k = 0; k < nums.size(); ++k) {  // 当前方案最后1个数在nums中index
             for (int i = target; i >= nums[k]; --i) {  // 坑: 目标和i倒循环才能用index小的旧值更新index大的值
