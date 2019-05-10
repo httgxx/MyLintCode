@@ -31,7 +31,7 @@
  * dp[i] = sum(dp[i-v[k]]|k=0~n-1且v[k]<=i) 须i倒序！！
  * 
  * 初始 dp[0]=1 
- * for k = 1 ~ n-1  // 从1开始
+ * for k = 0 ~ n-1  // k为nums中的坐标
  *     for i = target ~ nums[k]  // 到nums[k]结束
  *         dp[i] += dp[i-nums[k]]
  * 返回 dp[target]
@@ -54,7 +54,7 @@ public:
         vector<int> dp(target + 1, 0);  // size=target+1
         dp[0] = 1;
         for (int k = 0; k < nums.size(); ++k) {  // 当前方案最后1个数在nums中index
-            for (int i = target; i >= nums[k]; --i) {  // 坑: 目标和i倒循环才能用index小的旧值更新index大的值
+            for (int i = target; i >= nums[k]; --i) {  // 坑: 目标和i倒循环才能用小index的旧值更新大index的值
                                                        // 坑: 目标和i放在内循环,可直接在i<nums[k]时结束循环
                 dp[i] += dp[i - nums[k]];  // 枚举所有可以做最后1个数的数字,累加剩余target的方案数
             }
