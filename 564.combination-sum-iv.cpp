@@ -43,16 +43,18 @@
  * dp[i] = sum(dp[i-v[k]]|k=0~n-1且v[k]<=i) 须i正序！！
  * 
  * 初始 dp[0]=1 
- * for k = 0 ~ n-1  // k为nums中的坐标
- *     for i = nums[k] ~ target  // 从nums[k]开始
- *         dp[i] += dp[i-nums[k]]
+ * for i = 1 ~ target  // 从1开始
+ *     for k = 0 ~ n-1  // k为nums中的坐标
+ *         if (i>=nums[i]) dp[i] += dp[i-nums[k]]
  * 返回 dp[target]
  * 
- * 坑 dp[0]=1而不是1
- * 坑 k=1~n-1 从1开始
- * 坑 k=1~n-1在外循环, i=nums[k]~target在内循环, 这样可以直接开始于nums[k]因为其中k已在外循环已知
+ * 坑 dp[0]=1而不是0
+ * 坑 k=0~n-1是nums数组的坐标
+ * 坑 i=1~target从1开始而不是nums[k],why???
+ * 坑 i=1~targetz在外循环,k=0~n-1在内循环,why???
  * 坑 i=nums[k]~target必须正着循环！！！// 因为要用小index的新值计算大index的新值
  * 
+ * 背包问题参考网上资料: https://www.kancloud.cn/kancloud/pack/70125
  */
 class Solution {
 public:
@@ -65,6 +67,7 @@ public:
         vector<int> dp(target + 1, 0);  // dp[i]表示和为i的总方案数
         dp[0] = 1;
         for (int i = 1; i <= target; ++i) {  // 坑: 目标和i正循环才能用小index的新值更新大index的值
+                                                 // 坑: 必须从1开始而不是从nums[k]开始
             for (int k = 0; k < nums.size(); ++k) {  // 当前方案最后1个数在nums中index
                 if (i >= nums[k]) {
                     dp[i] += dp[i - nums[k]];  // 枚举所有可以做最后1个数的数字,累加剩余target的方案数
