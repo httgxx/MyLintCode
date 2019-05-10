@@ -28,7 +28,7 @@
  * @Idea
  * DP T=O(n*target) S=O(target)
  * dp[i]表示和为i的总方案数
- * dp[i] = sum(dp[i-v[k]]|k=0~n-1且v[k]<=i)
+ * dp[i] = sum(dp[i-v[k]]|k=0~n-1且v[k]<=i) 须i倒序！！
  * 
  * 初始 dp[0]=1 
  * for k = 1 ~ n-1  // 从1开始
@@ -39,7 +39,7 @@
  * 坑 dp[0]=1而不是1
  * 坑 k=1~n-1 从1开始
  * 坑 k=1~n-1在外循环, i=target~nums[k]在内循环, 这样可以直接结束于nums[k]因为其中k已在外循环已知
- * 坑 i=target~nums[k]必须倒着循环, 因为要用小index的旧值计算大index的新值
+ * 坑 i=target~nums[k]必须倒着循环！！！// 因为要用小index的旧值计算大index的新值
  * 
  * 参考网友: https://www.kancloud.cn/kancloud/pack/70125
  */
