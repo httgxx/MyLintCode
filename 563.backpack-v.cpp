@@ -67,7 +67,7 @@ public:
      * @param target: An integer
      * @return: An integer
      */
-    int backPackV(vector<int> &nums, int target) {
+    int backPackV0(vector<int> &nums, int target) {
         // dp[i][j]表示前i个数中任意取能够成和j的总方案数
         int n = nums.size();
         vector<vector<int>> dp(n + 1, vector<int>(target + 1, 0));  // 初始化为0
@@ -98,8 +98,7 @@ public:
     // => for i = 0 ~ n - 1  // 改为用坐标i
     //        for j = target ~ nums[i] // 倒着循环j计算到nums[i]截至
     //           f[j] += f[j-nums[i-1]] 
-    int backPackV1(vector<int> &nums, int target) {
-        // dp[i][j]表示前i个数中任意取能够成和j的总方案数
+    int backPackV(vector<int> &nums, int target) {
         int n = nums.size();
         vector<int> f(target + 1, 0);  // 初始化为0
         f[0] = 1;  // 任何取正整数构成和0只有1种方案
