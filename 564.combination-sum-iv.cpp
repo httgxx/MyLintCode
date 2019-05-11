@@ -48,6 +48,9 @@
  *         if (i>=nums[i]) dp[i] += dp[i-nums[k]]
  * 返回 dp[target]
  * 
+ * 例子
+ * 
+ * 
  * 坑 dp[0]=1而不是0
  * 坑 k=0~n-1是nums数组的坐标
  * 坑 i=1~target从1开始而不是nums[k],why???
@@ -71,7 +74,7 @@ public:
                                              // 坑: 必须在外循环 why???
             for (int k = 0; k < nums.size(); ++k) {  // 当前方案最后1个数在nums中index
                 if (i >= nums[k]) {
-                    dp[i] += dp[i - nums[k]];  // 枚举所有可以做最后1个数的数字,累加剩余target的方案数
+                    dp[i] += dp[i - nums[k]];  // 枚举所有可做最后1个数的数,每个数都可以做最后1个
                 }
             }
         }
