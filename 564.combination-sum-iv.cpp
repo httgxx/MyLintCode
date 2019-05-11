@@ -37,10 +37,11 @@
  *   [2, 2]
  * 
  * @Category DP(01背包 计数型:每物可选无限次,重复数字不同顺序算不同方案(排列而非组合),求填满背包的总方案数)
+ * 注!! 每物可用无限次时,先循环和i=1~target,再循环物坐标j=0~n-1因为每次每物都可以用
  * @Idea
- * DP T=O(n*target) S=O(target)
+ * DP // T=O(n*target) S=O(target)
  * dp[i]表示和为i的总方案数
- * dp[i] = sum(dp[i-v[k]]|k=0~n-1且v[k]<=i) 须i正序！！
+ * dp[i] = sum(dp[i-nums[k]]|k=0~n-1且nums[k]<=i) 须i正序循环,因为用小index的新值算大index的新值
  * 
  * 初始 dp[0]=1 
  * for i = 1 ~ target  // 从1开始
