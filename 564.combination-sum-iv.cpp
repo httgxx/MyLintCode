@@ -36,7 +36,7 @@
  *   [2, 1, 1]
  *   [2, 2]
  * 
- * @Category DP(01背包 计数型:每物可选无限次,重复数字不同顺序算不同方案,求填满背包的总方案数)
+ * @Category DP(01背包 计数型:每物可选无限次,重复数字不同顺序算不同方案(排列而非组合),求填满背包的总方案数)
  * @Idea
  * DP T=O(n*target) S=O(target)
  * dp[i]表示和为i的总方案数
@@ -44,18 +44,22 @@
  * 
  * 初始 dp[0]=1 
  * for i = 1 ~ target  // 从1开始
- *     for k = 0 ~ n-1  // k为nums中的坐标
- *         if (i>=nums[i]) dp[i] += dp[i-nums[k]]
+ *     for k = 0 ~ n-1  // 每次都可用任何数做最后1个,用了可以再用
+ *         if (i>=nums[i]) dp[i] += dp[i-nums[k]]  // 叠加构成当前剩余和的方案数*1
  * 返回 dp[target]
  * 
- * 例子
- * 
+ * 例子 [1,2,4], target=4  //先算列再算行
+ *   target  1      2      3      4      5 ...
+ *     last
+ *        1  1 f[1]=1 f[2]=2 f[3]=3 f[4]=6       
+ *        2  0 f[0]=1 f[1]=1 f[2]=2 f[3]=3
+ *        4  0      0      0 f[0]=1 f[2]=2
+ *f[target]  1      2      3      6     11
  * 
  * 坑 dp[0]=1而不是0
  * 坑 k=0~n-1是nums数组的坐标
- * 坑 i=1~target从1开始而不是nums[k],why???
- * 坑 i=1~targetz在外循环,k=0~n-1在内循环,why???
- * 坑 i=nums[k]~target必须正着循环！！！// 因为要用小index的新值计算大index的新值
+ * 坑 i=1~target从1开始而不是nums[k],因为每个数都可用无限次,故每个数都可做最后1个
+ * 坑 i=1~targetz在外循环k=0~n-1在内循环好理解, 表示要构成从小到大的和,每个数字都试作为最后1个(BFS)
  * 
  * 背包问题参考网上资料: https://www.kancloud.cn/kancloud/pack/70125
  */
@@ -69,10 +73,8 @@ public:
     int backPackVI(vector<int> &nums, int target) {
         vector<int> dp(target + 1, 0);  // dp[i]表示和为i的总方案数
         dp[0] = 1;
-        for (int i = 1; i <= target; ++i) {  // 坑: 目标和i正循环才能用小index的新值更新大index的值
-                                             // 坑: 必须从1开始而不是从nums[k]开始 why???
-                                             // 坑: 必须在外循环 why???
-            for (int k = 0; k < nums.size(); ++k) {  // 当前方案最后1个数在nums中index
+        for (int i = 1; i <= target; ++i) {  // 坑: 在外循环且从1开始
+            for (int k = 0; k < nums.size(); ++k) {  // 任何数都可做最后1个
                 if (i >= nums[k]) {
                     dp[i] += dp[i - nums[k]];  // 枚举所有可做最后1个数的数,每个数都可以做最后1个
                 }
