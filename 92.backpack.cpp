@@ -68,12 +68,6 @@
  * return dp[9]=9
  * 
  * 参考网友 https://segmentfault.com/a/1190000006325321
- * 
- * S2: DP // T=O(mn) S=O(mn)=>O(m) //TLE!!
- * dp[i][j]表示前i个物品能否被构成体积和j(true/false)
- * dp[i][j]=不用当前最后1个物品[i-1](前i-1个物品已经构成j) or 用[i-1](前i-1个物品构成j-a[i-1])
- * = dp[i-1][j] || dp[i-1][j-A[i-1]]|j>A[i-1]
- * 返回 使dp[n][j]=true的最大j
  */
 class Solution {
 public:
@@ -82,17 +76,7 @@ public:
      * @param A: Given n items with size A[i]
      * @return: The maximum size
      */
-    int backPack1(int m, vector<int> &A) {
-        vector<int> dp(m + 1, 0);  // 坑: 初始化成0而不是INT_MIN
-        for (int j = 0; j < A.size(); ++j) {  // 每个物品
-            for (int i = m; i >= A[j]; --i) {  // 坑: 必须倒循环因为用的旧dp[i - A[j]
-                dp[i] = max(dp[i], dp[i - A[j]] + A[j]);
-            }
-        }
-        return dp[m];
-    }
-
-    int backPack(int m, vector<int> &A) {
+    int backPack0(int m, vector<int> &A) {
         int n = A.size();
         vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));  // 初始化为0
         /*for (int i = 0; i <= n; ++i) { // 前i个物品任选放入容量0的背包能达到最大体积为0
@@ -113,23 +97,23 @@ public:
         return dp[n][m];
     }
 
-    int backPack2(int m, vector<int> &A) {  // TLE!!
-        int n = A.size();
-        if (n == 0) return 0;
-
-        vector<vector<bool>> dp(n + 1, vector<bool>(m + 1, false));
-        dp[0][0] = true;
-        for (int i = 1; i <= n; ++i) {  // 前i个物品
-            for (int j = 0; j <= m; ++j) {  // 构成体积和j
-                dp[i][j] = dp[i - 1][j] ||
-                    (j >= A[i - 1] && dp[i - 1][j - A[i - 1]]);  // 坑 j>=A[j-1]前提
+    // 降维 
+    // dp[i][j] = max(dp[i-1][j], dp[i-1][j-A[i-1]]+A[i-1])
+    // [i][j]只跟[i-1][j]和[i-1][j-A[i-1]]相关,可降低1维
+    // 大index的新值 += 大index的旧值 + 小index的旧值 => 必须先算大index的新值再算小index的新值
+    // => for i = 1 ~ n  // 前i个数
+    //        for j = target ~ 0 // 倒着循环j计算
+    //           if(j>=A[i-1]) f[j] = max(f[j], f[j-A[i-1]]+A[i-1]) 
+    // => for i = 0 ~ n - 1  // 改为用坐标i
+    //        for j = target ~ A[i] // 倒着循环j计算到A[i]截至
+    //           f[j] = max(f[j], f[j-A[i]]+A[i])
+    int backPack(int m, vector<int> &A) {
+        vector<int> dp(m + 1, 0);  // 坑: 初始化成0
+        for (int i = 0; i < A.size(); ++i) {  // 物品[i]
+            for (int j = m; j >= A[i]; --j) {  // 背包容量j 坑: 必须倒循环因为用的旧dp[i - A[j]
+                dp[j] = max(dp[j], dp[j - A[i]] + A[i]);
             }
         }
-
-        for (int j = m; j >=0; --j) {  // 找到使得dp[n][j]为true的最大j
-            if (dp[n][j]) return j;
-        }
-
-        return 0;
+        return dp[m];
     }
 };
