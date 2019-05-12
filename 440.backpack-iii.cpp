@@ -37,8 +37,7 @@ public:
         vector<int> f(m + 1);
         for (int i = 0; i < n; ++i)
             for (int j = A[i]; j <= m; ++j)
-                if (f[j - A[i]] + V[i] > f[j])
-                    f[j] = f[j - A[i]] + V[i];
+                f[j] = max(f[j], f[j - A[i]] + V[i]);
         return f[m];
     }
 };
