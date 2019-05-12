@@ -57,6 +57,17 @@
  *        dp[i][j] = dp[i-1][j] // 不是 +=
  *        if (j>=nums[i-1]) dp[i][j] += dp[i-1][j-nums[i-1]]   // 不是=,不是nums[i]
  * 
+ * S1: 降维后 DP // T=O(n*target) S=O(target)
+ * dp[i][j] += dp[i-1][j] + j>=nums[i-1] ? dp[i-1][j-nums[i-1]] : 0
+ * [i][j]只跟[i-1][j]和[i-1][j-nums[i-1]]相关,可降低1维
+ * 大index的新值 += 大index的旧值 + 小index的旧值 => 必须先算大index的新值再算小index的新值
+ * => for i = 1 ~ n  // 前i个数
+ *      for j = target ~ 0 // 倒着循环j计算
+ *        f[j] += j>=nums[i-1] ? f[j-nums[i-1]] : 0 
+ * => for i = 0 ~ n - 1  // 改为用坐标i
+ *      for j = target ~ nums[i] // 倒着循环j计算到nums[i]截至
+ *        f[j] += f[j-nums[i-1]]
+ * 
  * 背包问题参考网上资料: https://www.kancloud.cn/kancloud/pack/70125
  */
 class Solution {
