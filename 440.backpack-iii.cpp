@@ -33,9 +33,8 @@ public:
                 f[j] = max(f[j], f[i - A[i]] + V[i]);  // 只max用[j]时的价值,因不用[j]时价值在考虑[j]前后不变 
             }
         }*/
-        int n = A.size();
         vector<int> f(m + 1);
-        for (int i = 0; i < n; ++i)
+        for (int i = 0; i < A.size(); ++i)
             for (int j = A[i]; j <= m; ++j)
                 f[j] = max(f[j], f[j - A[i]] + V[i]);
         return f[m];
