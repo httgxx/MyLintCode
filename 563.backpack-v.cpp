@@ -29,7 +29,7 @@
  * @Idea
  * S0: DP // T=O(n*target) S=O(n*target)
  * dp[i][j]表示从前i个数任意取得到和为j的总方案数
- * dp[i][j] += dp[i-1][j]//不取[i] + dp[i-1][j-nums[i]]//取[i]
+ * dp[i][j] = dp[i-1][j]//不取[i] + dp[i-1][j-nums[i]]//取[i]
  *
  * 初始
  * dp[i][j] = 0
@@ -58,9 +58,10 @@
  *        if (j>=nums[i-1]) dp[i][j] += dp[i-1][j-nums[i-1]]   // 不是=,不是nums[i]
  * 
  * S1: 降维后 DP // T=O(n*target) S=O(target)
- * dp[i][j] += dp[i-1][j] + j>=nums[i-1] ? dp[i-1][j-nums[i-1]] : 0
- * [i][j]只跟[i-1][j]和[i-1][j-nums[i-1]]相关,可降低1维
- * 大index的新值 += 大index的旧值 + 小index的旧值 => 必须先算大index的新值再算小index的新值
+ * dp[i][j] = dp[i-1][j] + dp[i-1][j-nums[i-1]]
+ * 新值(i)只跟旧值(i-1)相关,可降维
+ * 大index(j)的新值(i) = 大index(j)的旧值(i-1) + 小index(j-nums[i-1])的旧值(i-1) 
+ * => 小index的值必须在大index的值之后被更新 => 先算大index再算小index => j从大到小循环算
  * => for i = 1 ~ n  // 前i个数
  *      for j = target ~ 0 // 倒着循环j计算
  *        f[j] += j>=nums[i-1] ? f[j-nums[i-1]] : 0 
@@ -99,9 +100,9 @@ public:
     }
 
     // 降维 
-    // dp[i][j] += dp[i-1][j] + j>=nums[i-1] ? dp[i-1][j-nums[i-1]] : 0
-    // [i][j]只跟[i-1][j]和[i-1][j-nums[i-1]]相关,可降低1维
-    // 大index的新值 += 大index的旧值 + 小index的旧值 => 必须先算大index的新值再算小index的新值
+    // dp[i][j] = dp[i-1][j] + dp[i-1][j-nums[i-1]] : 0
+    // 新值(i)只跟旧值(i-1)相关,可降维
+    // 大index(j)的新值(i) = 大index(j)的旧值(i-1) + 小index(j-nums[i-1])的旧值(i-1)
     // => for i = 1 ~ n  // 前i个数
     //        for j = target ~ 0 // 倒着循环j计算
     //           f[j] += j>=nums[i-1] ? f[j-nums[i-1]] : 0 
@@ -115,8 +116,9 @@ public:
         f[0] = 1;  // 任何取正整数构成和0只有1种方案
 
         for (int i = 0; i < n; ++i) {  // 数[i]
-            for (int j = target; j >= nums[i]; --j) {  // 须倒算!! 因为大index的新值要用小index的旧值来算
-                f[j] += f[j - nums[i]];  // 只+=用数[i]时的方案数,因为不用数[i]时方案数在考虑数[i]前后不变 
+            for (int j = target; j >= nums[i]; --j) {  // 须倒算!! 因为j的新值要用j-nums[i]的旧值来算
+                f[j] += f[j - nums[i]];  // 不选数[i]时=f[j],因为数[i]可选前后方案数不变
+                                         // 选数[i]时=f[j-nums[i]],即数[i]可选前方案数*1(选nums[i]为1种方案) 
             }
         }
         return f[target];
