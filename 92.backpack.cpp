@@ -69,7 +69,7 @@
  * 
  * 参考网友 https://segmentfault.com/a/1190000006325321
  * 
- * S2: DP // T=O(mn) S=O(mn) //TLE!!
+ * S2: DP // T=O(mn) S=O(mn)=>O(m) //TLE!!
  * dp[i][j]表示前i个物品能否被构成体积和j(true/false)
  * dp[i][j]=不用当前最后1个物品[i-1](前i-1个物品已经构成j) or 用[i-1](前i-1个物品构成j-a[i-1])
  * = dp[i-1][j] || dp[i-1][j-A[i-1]]|j>A[i-1]
@@ -82,7 +82,7 @@ public:
      * @param A: Given n items with size A[i]
      * @return: The maximum size
      */
-    int backPack(int m, vector<int> &A) {
+    int backPack1(int m, vector<int> &A) {
         vector<int> dp(m + 1, 0);  // 坑: 初始化成0而不是INT_MIN
         for (int j = 0; j < A.size(); ++j) {  // 每个物品
             for (int i = m; i >= A[j]; --i) {  // 坑: 必须倒循环因为用的旧dp[i - A[j]
@@ -92,7 +92,28 @@ public:
         return dp[m];
     }
 
-    int backPack1(int m, vector<int> &A) {  // TLE!!
+    int backPack(int m, vector<int> &A) {
+        int n = A.size();
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));  // 初始化为0
+        /*for (int i = 0; i <= n; ++i) { // 前i个物品任选放入容量0的背包能达到最大体积为0
+            dp[i][0] = 0;  // =初始化值0,故可不写
+        }
+        for (int j = 1; j <= m; ++j) {  // 前0个物品任选放入容量j的背包能达到最大体积为0
+            dp[0][j] = 0;  // =初始化值0,故可不写 
+        }*/
+
+        for (int i = 1; i <= n; ++i) {  // 前i个数 注:前0个数已初始化
+            for (int j = 1; j <= m; ++j) {  // 目标和j 注:j=0已初始化
+                dp[i][j] = dp[i - 1][j];  // 不取物品A[i-1]
+                if (j >= A[i - 1]) {
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j - A[i - 1]] + A[i - 1]);  // 取物品A[i-1]
+                }
+            }
+        }
+        return dp[n][m];
+    }
+
+    int backPack2(int m, vector<int> &A) {  // TLE!!
         int n = A.size();
         if (n == 0) return 0;
 
