@@ -22,24 +22,35 @@
  * Input:  [2,3,5,7], backpack size=12
  * Output:  12
  * 
- * N物品放入容量V的背包,每物品只能放1次,可选放或不放,求能放入背包的物品体积和的最大值
- * 单次选择+最大体积
- * 
- * @Category DP(01背包型)
+ * @Category DP (01背包 单属性) 求n物品放入m背包能放物品的最大体积和
  * @Idea
- * S1: DP // T=O(mn) S=O(m)
- * dp[i]表示背包容量为i时能放入的物品体积最大值
- * dp[i]= 每多1个物品可选放或不放时,背包容量由小到大时能放入的物品体积和最大值
- * for j=0~n  // 每个物品
- *   for i=m~a[j]  // 每种能装下当前物品的背包容量
- *      dp[i]=max(dp[i], dp[i-a[j]]+a[j])  // max(不放a[i],放a[i])
- * 初始 dp[0~m]=0
- * 顺序 外循环第0~n-1个物品,内循环背包容量m~A[i](必须倒叙)因为需根据旧值而不是新值修改当前值
- * 返回 dp[m]
- * 坑 初始化成0而不是INT_MIN
- * 坑 dp[i]的i是背包容量大小i,不是第i个物品的i
- * 坑 必须倒循环i=m~A[j]因为要用旧dp[i-A[j]]计算
+ * S0: DP // T=O(nm) S=O(nm)
+ * dp[i][j]表示前i个数放入容量m的背包可放最大体积和
+ * dp[i][j]=max(dp[i-1][j]//不取a[i], a[i]+dp[i-1][j-a[i]]|j>=a[i]//取a[i])
+ * 初始
+ * dp[0][j]=0
+ * dp[i][0]=0
+ * 顺序
+ * for i = 1~n
+ *   for j = 1~m
+ *     dp[i][j] = dp[i-1][j]
+ *     if (j > a[i-1])  dp[i][j] = max(dp[i][j], a[i]+dp[i-1][j-a[i-1]])
+ * 返回 dp[n][m]
+ 
+ * S1: 降维 // T=O(nm) S=O(m)
+ * dp[i][j] = max(dp[i-1][j], dp[i-1][j-a[i-1]]+a[i-1])
+ * [i][j]只跟[i-1][j]和[i-1][j-A[i-1]]相关,可降低1维
+ * 大index的新值 += 大index的旧值 + 小index的旧值 => 必须先算大index的新值再算小index的新值
+ * => for i = 1 ~ n  // 前i个数
+ *      for j = m ~ 0 // 倒着循环j计算
+ *        if(j>=A[i-1]) f[j] = max(f[j], f[j-A[i-1]]+A[i-1]) 
+ * => for i = 0 ~ n - 1  // 改为用坐标i
+ *      for j = m ~ A[i] // 倒着!!!循环j计算到A[i]截至
+ *         f[j] = max(f[j], f[j-A[i]]+A[i])
  * 
+ * 坑 i=0~n-1 => max(f[j], f[j-A[i]]+A[i]) 或 i=1~n => max(f[j], f[j-A[i-1]]+A[i-1])
+ * 坑 j=m~A[i] 倒着循环 放内循环
+ *  
  * 实例 [3,4,8,5] m=9
  * j=0 a[j]=3
  *   i=9 dp[9]=max(0,dp[9-3]+3=3)=3
@@ -78,6 +89,7 @@ public:
      */
     int backPack0(int m, vector<int> &A) {
         int n = A.size();
+        // dp[i][j]表示前i个数放入容量m的背包可放最大体积和
         vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));  // 初始化为0
         /*for (int i = 0; i <= n; ++i) { // 前i个物品任选放入容量0的背包能达到最大体积为0
             dp[i][0] = 0;  // =初始化值0,故可不写
