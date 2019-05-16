@@ -33,7 +33,7 @@ public:
      * @param target: An integer
      * @return: An integera
      */
-    int kSum(vector<int> &A, int k, int target) {
+    int kSum0(vector<int> &A, int k, int target) {
         int n = A.size();
         vector<vector<vector<int>>> f(n + 1, vector<vector<int>>(k + 1, vector<int>(target + 1, 0)));
         for (int i = 0; i < n + 1; i++) {
@@ -55,19 +55,28 @@ public:
     }
 
     // 降维
-    int kSum0(vector<int> &A, int k, int target) {
+    int kSum(vector<int> &A, int k, int target) {
         int n = A.size();
-        vector<vector<int>> f(k + 1, vector<int>(target + 1, 0));
-        f[0][0] = 1;  // j=0时选0个数=>只有在t=0时f=1,其余f=0
+        vector<vector<vector<int>>> f(2, vector<vector<int>>(k + 1, vector<int>(target + 1, 0)));
+        for (int i = 0; i < 2; i++) {
+            f[i][0][0] = 1;  // i=0时无数可选=>只有在j=t=0时f=1,其余f=0
+                             // j=0时选0个数=>只有在t=0时f=1,其余f=0
+                             // t=0时和为0=>只有在j=0时f=1,其余f=0
+        }
+        
+        int cur = 1, old = 0;
         for (int i = 1; i <= n; i++) {  // 前i个数里选
             for (int j = 1; j <= k && j <= i; j++) {  // 第j个选出的数字
                 for (int t = 1; t <= target; t++) {  // 组成和t
-                    if (t >= A[i - 1]) {  // 选a[i-1]时才增加方案数
-                        f[j][t] += f[j - 1][t - A[i - 1]];
+                    f[cur][j][t] = f[old][j][t];  // 不选a[i-1]
+                    if (t >= A[i - 1]) {
+                        f[cur][j][t] += f[old][j - 1][t - A[i - 1]];  // 选a[i-1]
                     }
                 } // for t
             } // for j
+            old = cur;
+            cur = 1 - cur; 
         } // for i
-        return f[k][target];
+        return f[old][k][target];  // 坑: 不是f[n][k][target]而是f[old][k][target]
     }
 };
