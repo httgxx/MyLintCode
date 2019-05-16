@@ -16,6 +16,22 @@
  * 
  * Also given a backpack with size `m`. What is the maximum value you can put
  * into the backpack?
+ * 
+ * @Category DP (01背包 双属性 最值型) 求n物品放入m背包能放物品的最大价值和
+ * @Idea
+ * S0: DP // T=O(nm) S=O(nm)
+ * dp[i][j]表示前i个数选j个放入容量m的背包可放最大价值和
+ * dp[i][j]=max(dp[i]//不取a[i], v[i]+dp[i-a[j]]|j>=a[i]//取a[i])
+ 
+ * 初始 dp[0][j]=dp[i][0]=0
+ * for i = 1 ~ m  // i = 最后一个选的物品价值+剩下容量的最大价值(应该之前已经算过)
+ *     for j = 1 ~ n-1  // 最后一个物品选的a[j] // 正序倒序无所谓???
+ *         if (i>=a[j]) dp[i] = max(dp[i], v[i]+dp[i-a[j]])
+ * 返回 dp[target]
+ *
+ * 坑 计数型初始化一定注意,如此题中dp[0]=1而不是0
+ * 坑 完全背包:外循环正着循环目标和=1~m,内循环正着数组坐标1~n
+ * 
  */
 class Solution {
 public:
@@ -26,11 +42,17 @@ public:
      * @return: an array
      */
     int backPackIII(vector<int> &A, vector<int> &V, int m) {
-        vector<int> f(m + 1, 0);  // 初始化为0 坑:f(m+1,0) 不是f(n+1,0)!!
-        for (int i = 0; i < A.size(); ++i) {  // [i] 坑: 体积存在A[i]而不是V[i]!!!
-            for (int j = A[i]; j <= m; ++j) {  // 须倒算!! 因为大index的新值要用小index的新值来算
-                f[j] = max(f[j], f[j - A[i]] + V[i]);  // 只max用[j]时的价值,因不用[j]时价值在考虑[j]前后不变
-                                                       // 坑: f[j-A[i]] 不是 f[i-A[i]]!!! 
+        // f[i]表示背包容量为i时任意取物品能得到的最大价值
+        vector<int> f(m + 1, 0);  // 坑:f(m+1,0)针对从小到大的背包容量 而不是f(n+1,0)前i个物品
+        // dp[0][i]=0, dp[0][j]=0
+        for (int j = 1; j <= m; ++j) {  // 坑: 正序倒序都可以?
+            for (int i = 0; i < A.size(); ++i) {  // 坑: 体积存在A[i]而不是V[i] 看清条件
+                if (j >= A[i]) {
+                    f[j] = max(f[j], f[j - A[i]] + V[i]);  // 不选A[i]时=f[j]不占容积不算价值
+                                                       // 选A[i]时=A[i]对应的价值+选A[i]之前的最大价值
+                                                       //         =V[i]+背包容量为i-A[i]时的最大价值
+                                                       // 坑: f[j-A[i]]不是f[i-A[i]],要用背包容量j
+                }
             }
         }
         return f[m];
