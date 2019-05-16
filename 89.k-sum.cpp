@@ -98,8 +98,10 @@ public:
                              // t=0时和为0=>只有在j=0时f=1,其余f=0
         }
         
-        int cur = 1, old = 0;
+        int cur = 0, old = 0;
         for (int i = 1; i <= n; i++) {  // 前i个数里选
+            old = cur;
+            cur = 1 - cur; 
             for (int j = 1; j <= k && j <= i; j++) {  // 第j个选出的数字
                 for (int t = 1; t <= target; t++) {  // 组成和t
                     f[cur][j][t] = f[old][j][t];  // 不选a[i-1]
@@ -108,9 +110,7 @@ public:
                     }
                 } // for t
             } // for j
-            old = cur;
-            cur = 1 - cur; 
         } // for i
-        return f[old][k][target];  // 坑: 不是f[n][k][target]而是f[old][k][target]
+        return f[cur][k][target];  // 坑: 不是f[n][k][target]而是f[old][k][target]
     }
 };
