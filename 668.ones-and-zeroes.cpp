@@ -28,18 +28,40 @@
  * which are "10", "0001", "1", "0"
  * 
  * @Category DP (2维01背包+物品个数有限)
- * DP // T=O(mn) S=O(mn)
- * dp[i][j]表示由i个0和j个1构成的给定字符串的最大个数
- * dp[i][j]=max(dp[i][j], 1 + dp[i-当前串中0的个数][j-当前串中1的个数])
- * 初始 dp[0][0]=0
+ * S0: DP // T=O(kmn) S=O(kmn) k=strs.size() => TLE!!!
+ * dp[t][i][j]表示前k个串任意选使得0的总个数<=i且1的总个数<=j的最大字符串个数
+ * dp[t][i][j]=max(dp[t-1][i][j], 1 + dp[t-1][i-当前串中0的个数][j-当前串中1的个数])
+ * 初始 dp[0][i][j]=0
  * 顺序
- * for (str:strs) // 当前串
+ * int k = strs.size();
+ * for (t=1~k) // 前t个串
+ *    for(c:strs[t-1])c=='0' ? ++cnt0 : ++cnt1; // 计算当前串str中0的个数cnt0和1的个数cnt1
+ *    for(i= cnt0~m)  // 正序0总数(当前串0总数 ~ m)
+ *      for(j= cnt1~n)  // 正序0总数(当前串1总数 ~ n)
+ * 	    dp[t][i][j]=max(dp[t-1][i][j], 1 + dp[t-1][i-cnt0][j-cnt1])  //max(不选str, 1+选str) 
+ * 返回 dp[k][m][n]
+ * 
+ * 坑: strs[t-1]不是strs[t]!!!
+ * 
+ * S1: 滚动数组降维1 T=O(kmn) S=O(2mn) => 任然TLE!!!
+ * int cur=0,old=0;
+ * for (t=1~k) // 前t个串
+ *    for(c:strs[t-1])c=='0' ? ++cnt0 : ++cnt1; // 计算当前串str中0的个数cnt0和1的个数cnt1
+ *    old=cur;cur=1-cur;
+ *    for(i= cnt0~m)  // 正序0总数(当前串0总数 ~ m)
+ *      for(j= cnt1~n)  // 正序0总数(当前串1总数 ~ n)
+ * 	        dp[cur][i][j]=max(dp[old][i][j], 1 + dp[old][i-cnt0][j-cnt1])  //max(不选str, 1+选str) 
+ * 返回 dp[cur][m][n]
+ * 
+ * S2: 倒序降维2 T=O(kmn) S=O(mn)
+ * for (str : strs) // 前t个串
  *    for(c:str)c=='0' ? ++cnt0 : ++cnt1; // 计算当前串str中0的个数cnt0和1的个数cnt1
- *    for(i= m ~ cnt0)  // 倒序0总数(m ~ 当前串0总数)    // 正序降维得到的.否则如何解释?
- *      for(j= n ~ cnt1)  // 倒序0总数(n ~ 当前串1总数)  // 正序降维得到的.否则如何解释?
- * 	    dp[i][j]=max(dp[i][j], 1 + dp[i-cnt0][j-cnt1])  //max(不选str, 1+选str) 
+ *    for(i= m~cnt0)  // 倒序0总数(m~当前串0总数)
+ *      for(j= n~cnt1)  // 倒序0总数(n~当前串1总数)
+ * 	        dp[i][j]=max(dp[i][j], 1 + dp[i-cnt0][j-cnt1])  //max(不选str, 1+选str) 
  * 返回 dp[m][n]
  * 
+ * 坑 计算每个串的0总数和1总数不用strs数组坐标 用for(str:strs){for(ch : str){...}}以免弄错坐标
  * 坑 for(i= m ~ cnt0)  // 倒序0总数(m ~ 当前串0总数)    正序降维得到的.否则如何解释?
  *      for(j= n ~ cnt1)  // 倒序0总数(n ~ 当前串1总数)  正序降维得到的.否则如何解释?
  * 坑 dp[i][j]=max(dp[i][j], 1 + dp[i-cnt0][j-cnt1]) 选当前串别忘+1
@@ -52,22 +74,23 @@ public:
      * @param n: An integer
      * @return: find the maximum number of strings
      */
-    int findMaxForm2(vector<string> &strs, int m, int n) {
-        // dp[t][i][j]表示任意选字符串使0的个数<=i和1的个数<=j的最大字符串个数
-        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));  // i个0j个1可以构成的最大字符串个数
-        for (string str : strs) {
+    // 降维 2 T=O(kmn) S=O(mn)
+    int findMaxForm(vector<string> &strs, int m, int n) {
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+        for (int t = 1; t <= strs.size(); ++t) {
             int cnt0 = 0, cnt1 = 0;
-            for (char ch : str) { (ch == '0') ? ++cnt0 : ++cnt1; }
-            for (int i = m; i >= cnt0; --i) {  // 坑: 0的总数倒序(m~当前0总数) 不是m~1也不是cnt0~1
-                for (int j = n; j >= cnt1; --j) {  // 坑: 1的总数倒序(n~当前1总数) 不是n~1也不是cnt1~1
-                    dp[i][j] = max(dp[i][j], 1 + dp[i - cnt0][j - cnt1]);  // 坑:别忘记+1
+            for (char ch : strs[t - 1]) { (ch == '0') ? ++cnt0 : ++cnt1; }  // 坑: str[t-1]不是str[t]
+            for (int i = m; i >= cnt0; --i) {  // 降维后须倒序
+                for (int j = n; j >= cnt1; --j) {  // 降维后须倒序
+                    dp[i][j] = max(dp[i][j], 1 + dp[i - cnt0][j - cnt1]);  // 坑: 别忘+1
                 }
             }
         }
         return dp[m][n];
     }
 
-    int findMaxForm0(vector<string> &strs, int m, int n) {  //TLE !!!必须降维
+    // T=O(kmn) S=O(kmn) => TLE
+    int findMaxForm0(vector<string> &strs, int m, int n) {
         int k = strs.size();
         // dp[t][i][j]表示前t个串任意选字符串使0的个数<=i和1的个数<=j的最大字符串个数
         vector<vector<vector<int>>> dp(k + 1, vector<vector<int>>(m + 1, vector<int>(n + 1, 0)));
@@ -84,7 +107,7 @@ public:
         return dp[k][m][n];
     }
     
-    // 降维 1
+    // 降维 1  T=O(kmn) S=O(2mn) => TLE
     int findMaxForm1(vector<string> &strs, int m, int n) {  // 任然TLE!!!
         int k = strs.size();
         // dp[t][i][j]表示任意选字符串使0的个数<=i和1的个数<=j的最大字符串个数
@@ -103,20 +126,5 @@ public:
             }
         }
         return dp[cur][m][n];  // 坑 dp[cur][m][n]不是dp[k][m][n]
-    }
-
-    // 降维 2
-    int findMaxForm(vector<string> &strs, int m, int n) {
-        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
-        for (int t = 1; t <= strs.size(); ++t) {
-            int cnt0 = 0, cnt1 = 0;
-            for (char ch : strs[t - 1]) { (ch == '0') ? ++cnt0 : ++cnt1; }  // 坑: str[t-1]不是str[t]
-            for (int i = m; i >= cnt0; --i) {  // 降维后须倒序
-                for (int j = n; j >= cnt1; --j) {  // 降维后须倒序
-                    dp[i][j] = max(dp[i][j], 1 + dp[i - cnt0][j - cnt1]);  // 坑: 别忘+1
-                }
-            }
-        }
-        return dp[m][n];
     }
 };
