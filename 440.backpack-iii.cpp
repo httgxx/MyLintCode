@@ -41,12 +41,27 @@ public:
      * @param m: An integer
      * @return: an array
      */
-    int backPackIII(vector<int> &A, vector<int> &V, int m) {
+    int backPackIII0(vector<int> &A, vector<int> &V, int m) {
         vector<int> f(m + 1, 0);  // 坑:f(m+1,0)针对从小到大的背包容量i,而不是f(n+1,0)前i个物品
         // dp[0][i]=0, dp[0][j]=0
         for (int i = 0; i < A.size(); ++i) {  // 坑: 体积存在A[i]而不是V[i] 看清条件
             for (int j = A[i]; j <= m; ++j) {  // 坑: 必须正序!!!因为要用小index的新值来算大index的新值
                 f[j] = max(f[j], f[j - A[i]] + V[i]);  // 不选A[i]时=f[j]不占容积不算价值
+                                                       // 选A[i]时=A[i]对应的价值+选A[i]之前的最大价值
+                                                       //         =V[i]+背包容量为i-A[i]时的最大价值
+                                                       // 坑: f[j-A[i]]不是f[i-A[i]],要用背包容量j
+            }
+        }
+        return f[m];
+    }
+
+    int backPackIII(vector<int> &A, vector<int> &V, int m) {
+        vector<int> f(m + 1, 0);  // 坑:f(m+1,0)针对从小到大的背包容量i,而不是f(n+1,0)前i个物品
+        // dp[0][i]=0, dp[0][j]=0
+        for (int j = 1; j <= m; ++j) {  // 坑: 必须正序!!!因为要用小index的新值来算大index的新值
+            for (int i = 0; i < A.size(); ++i) {  // 坑: 体积存在A[i]而不是V[i] 看清条件
+                if (j >= A[i])
+                    f[j] = max(f[j], f[j - A[i]] + V[i]);  // 不选A[i]时=f[j]不占容积不算价值
                                                        // 选A[i]时=A[i]对应的价值+选A[i]之前的最大价值
                                                        //         =V[i]+背包容量为i-A[i]时的最大价值
                                                        // 坑: f[j-A[i]]不是f[i-A[i]],要用背包容量j
