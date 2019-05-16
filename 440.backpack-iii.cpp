@@ -46,7 +46,7 @@ public:
         vector<int> f(m + 1, 0);  // 坑:f(m+1,0)针对从小到大的背包容量 而不是f(n+1,0)前i个物品
         // dp[0][i]=0, dp[0][j]=0
         for (int i = 0; i < A.size(); ++i) {  // 坑: 体积存在A[i]而不是V[i] 看清条件
-            for (int j = A[i]; j <= m; ++j) {  // 坑: 正序倒序都可以?
+            for (int j = A[i]; j <= m; ++j) {  // 坑: 必须正序!!!因为要用小index的新值来算大index的新值
                 f[j] = max(f[j], f[j - A[i]] + V[i]);  // 不选A[i]时=f[j]不占容积不算价值
                                                        // 选A[i]时=A[i]对应的价值+选A[i]之前的最大价值
                                                        //         =V[i]+背包容量为i-A[i]时的最大价值
