@@ -22,7 +22,7 @@
  * Input:  [2,3,5,7], backpack size=12
  * Output:  12
  * 
- * @Category DP (01背包 单属性) 求n物品放入m背包能放物品的最大体积和
+ * @Category DP (01背包 单属性 最值型) 求n物品放入m背包能放物品的最大体积和
  * @Idea
  * S0: DP // T=O(nm) S=O(nm)
  * dp[i][j]表示前i个数放入容量m的背包可放最大体积和
@@ -37,19 +37,20 @@
  *     if (j > a[i-1])  dp[i][j] = max(dp[i][j], a[i]+dp[i-1][j-a[i-1]])
  * 返回 dp[n][m]
  
- * S1: 降维 // T=O(nm) S=O(m)
+ * S1: 降维 // T=O(nm) S=O(m)a
  * dp[i][j] = max(dp[i-1][j], dp[i-1][j-a[i-1]]+a[i-1])
- * [i][j]只跟[i-1][j]和[i-1][j-A[i-1]]相关,可降低1维
+ * [i][j]只跟[i-1][j]和[i-1][j-a[i-1]]相关,可降低1维
  * 大index的新值 += 大index的旧值 + 小index的旧值 => 必须先算大index的新值再算小index的新值
  * => for i = 1 ~ n  // 前i个数
  *      for j = m ~ 0 // 倒着循环j计算
- *        if(j>=A[i-1]) f[j] = max(f[j], f[j-A[i-1]]+A[i-1]) 
+ *        if(j>=a[i-1]) f[j] = max(f[j], f[j-a[i-1]]+a[i-1]) 
  * => for i = 0 ~ n - 1  // 改为用坐标i
- *      for j = m ~ A[i] // 倒着!!!循环j计算到A[i]截至
- *         f[j] = max(f[j], f[j-A[i]]+A[i])
+ *      for j = m ~ a[i] // 倒着!!!循环j计算到A[i]截至
+ *         f[j] = max(f[j], f[j-a[i]]+a[i])
  * 
- * 坑 i=0~n-1 => max(f[j], f[j-A[i]]+A[i]) 或 i=1~n => max(f[j], f[j-A[i-1]]+A[i-1])
- * 坑 j=m~A[i] 倒着循环 放内循环
+ * 坑 最值型初始化一定注意,如此题中dp[0]=1而不是0
+ * 坑 01背包:正着循环数组坐标1~n,倒着循环目标和m~a[i]
+ *    因为每个A[i]只能用一次,所以数组坐标必须在外循环,目标和在内循环且只用到A[i](即m~A[i])否则要加if(j>=a[i])
  *  
  * 实例 [3,4,8,5] m=9
  * j=0 a[j]=3
