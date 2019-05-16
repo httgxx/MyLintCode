@@ -30,6 +30,9 @@
  *   + if(t >= f[i-1][j-1][t-A[i-1]] //选a[i-1]则前i-1个里面选j-1个和为k-a[i-1]
  * 初始
  * dp[i][0][0]=1 其余全=0
+ * // i=0时无数可选=>只有在j=t=0时f=1,其余f=0
+ * // j=0时选0个数=>只有在t=0时f=1,其余f=0
+ * // t=0时和为0=>只有在j=0时f=1,其余f=0
  * 顺序
  * for i=1~n  //前i个数
  *    for j=1~min(i,k) //选j个
@@ -39,9 +42,22 @@
  * 返回
  * dp[n][k][target]
  * 
- * S1: DP 降维 //T=O(n*k*target) S=O(k*target)
+ * 坑 初始化 dp[i][0][0]=1 其余全=0
  * 
+ * S1: DP 降维 //T=O(n*k*target) S=O(k*target) 
+ * 初始
+ * dp[i][0][0]=1 其余全=0
+ * int cur = 1, old = 0;
+ * for i=1~n  //前i个数
+ *    for j=1~min(i,k) //选j个
+ *       for t=1~taregt //目标和t
+ *          f[i][j][t] = f[i - 1][j][t];  // 不选a[i-1]
+ *          if (t>=A[i-1]) f[i][j][t] += f[i-1][j-1][t-A[i-1]];  // 选a[i-1]
+ *    old = cur;
+ *    cur = 1 - cur;
+ * return f[old][k][target]
  * 
+ * 坑: 返回f[old][k][target]而不是f[n][k][target]!!!!
  */
 class Solution {
 public:
