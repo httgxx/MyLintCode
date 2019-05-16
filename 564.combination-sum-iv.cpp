@@ -36,7 +36,7 @@
  *   [2, 1, 1]
  *   [2, 2]
  * 
- * @Category DP(01背包 计数型) 求n数和为target的总方案数
+ * @Category DP(01背包 单属性 计数型) 求n数和为target的总方案数
  * @Idea
  * DP // T=O(n*target) S=O(target)
  * dp[i]表示和为i的总方案数
@@ -49,7 +49,8 @@
  *
  * 坑 计数型初始化一定注意,如此题中dp[0]=1而不是0
  * 坑 计数型是+=而不是=
- * 坑 完全背包:目标和正外循环(1~m),数组坐标必须正循环(0~n-1)
+ * 坑 完全背包:目标和正循环(1~m),数组坐标必须正循环(0~n-1)
+ *    每个数在计算每个目标和时都可用无限次,故必须外循环数组坐标,内循环目标和且可从A[i]开始(否则要加if(j>=A[i]))
  * 
  * 例子 [1,2,4], target=4  //先算行再算列  //i>=nums[j]时格子[i]+=某左(第i-a[j]个)格子
  *     last  nums[0]=1        [1]=2           [2]=4       f[target]
@@ -72,11 +73,9 @@ public:
     int backPackVI(vector<int> &nums, int target) {
         vector<int> dp(target + 1, 0);  // dp[i]表示和为i的总方案数
         dp[0] = 1;
-        for (int i = 1; i <= target; ++i) {  // 坑: 在外循环且从1开始
-            for (int k = 0; k < nums.size(); ++k) {  // 任何数都可做最后1个
-                if (i >= nums[k]) {
-                    dp[i] += dp[i - nums[k]];  // 枚举所有可做最后1个数的数,每个数都可以做最后1个
-                }
+        for (int j = 1; j <= target; ++j) {  // 目标和i
+            for (int i = 0; i < nums.size(); ++i) {  // 数[j]
+                if (j >= nums[i]) dp[j] += dp[j - nums[i]];  // 枚举每个数做最后1个的情况,叠加方案数
             }
         }
         return dp[target];
