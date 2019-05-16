@@ -47,17 +47,17 @@
  * S1: DP 降维 //T=O(n*k*target) S=O(k*target) 
  * 初始
  * dp[i][0][0]=1 其余全=0
- * int cur = 1, old = 0;
+ * int old = 0, cur = 0;
  * for i=1~n  //前i个数
+ *    old = cur;
+ *    cur = 1 - cur;
  *    for j=1~min(i,k) //选j个
  *       for t=1~taregt //目标和t
  *          f[i][j][t] = f[i - 1][j][t];  // 不选a[i-1]
  *          if (t>=A[i-1]) f[i][j][t] += f[i-1][j-1][t-A[i-1]];  // 选a[i-1]
- *    old = cur;
- *    cur = 1 - cur;
- * return f[old][k][target]
+ * return f[cur][k][target]
  * 
- * 坑: 返回f[old][k][target]而不是f[n][k][target]!!!!
+ * 坑: 返回f[cur][k][target]而不是f[n][k][target]!!!!
  */
 class Solution {
 public:
@@ -111,6 +111,6 @@ public:
                 } // for t
             } // for j
         } // for i
-        return f[cur][k][target];  // 坑: 不是f[n][k][target]而是f[old][k][target]
+        return f[cur][k][target];  // 坑: 不是f[n][k][target]而是f[cur][k][target]
     }
 };
