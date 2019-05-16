@@ -21,9 +21,27 @@
  * Output: 2
  * Explanation: 1 + 4 = 2 + 3 = 5
  * 
+ * @Category DP (01背包 单属性) 求n数和为target的总方案数 + 取数个数有限制 => 增加1维
+ * @Idea
+ * S0: DP //T=O(n*k*target) S=O(n*k*target)
+ * dp[i][j][t]表示前i个数里选j个和为t的方案数
+ * dp[i][j][t] =
+ *   dp[i-1][j][t] //不选a[i-1]则前i-1个里面选j个和为k
+ *   + if(t >= f[i-1][j-1][t-A[i-1]] //选a[i-1]则前i-1个里面选j-1个和为k-a[i-1]
+ * 初始
+ * dp[i][0][0]=1 其余全=0
+ * 顺序
+ * for i=1~n  //前i个数
+ *    for j=1~min(i,k) //选j个
+ *       for t=1~taregt //目标和t
+ *          f[i][j][t] = f[i - 1][j][t];  // 不选a[i-1]
+ *          if (t>=A[i-1]) f[i][j][t] += f[i-1][j-1][t-A[i-1]];  // 选a[i-1]
+ * 返回
+ * dp[n][k][target]
  * 
- * dp[i][j][k]表示前i个数里选j个和为k的方案数
- * = 不选a[i-1]=前i-1个里面选j个和为k + 选a[i-1]=前i-1个里面选j-1个和为k-a[i-1]
+ * S1: DP 降维 //T=O(n*k*target) S=O(k*target)
+ * 
+ * 
  */
 class Solution {
 public:
