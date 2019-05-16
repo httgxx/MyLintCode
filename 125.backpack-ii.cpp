@@ -21,12 +21,11 @@
  * Input:  a[3,4,8,5], backpack size=10
  * Output:  9
  * 
- * @Category DP (01背包 单属性) 求n物品放入m背包能放物品最大体积和
+ * @Category DP (01背包 单属性 最值型) 求n物品放入m背包能放物品最大体积和
  * @Idea
  * S0: DP // T=O(nm) S=O(nm)
  * dp[i][j]表示前i个数放入容量m的背包可放最大体积和
- * dp[i][j]=max(dp[i-1][j]//不取a[i], a[i]+dp[i-1][j-a[i]]|j>=a[i]//取a[i])
- * 
+ * dp[i][j]=max(dp[i-1][j]//不取a[i], v[i]+dp[i-1][j-a[i]]|j>=a[i]//取a[i]) 
  * 初始
  * dp[0][j]=0
  * dp[i][0]=0
@@ -34,19 +33,22 @@
  * for i = 1~n
  *   for j = 1~m
  *     dp[i][j] = dp[i-1][j]
- *     if (j > a[i-1])  dp[i][j] = max(dp[i][j], a[i]+dp[i-1][j-a[i-1]])
+ *     if (j > a[i-1])  dp[i][j] = max(dp[i][j], v[i]+dp[i-1][j-a[i-1]])
  * 返回 dp[n][m]
  
  * S1: 降维 // T=O(nm) S=O(m)
  * dp[i][j] = max(dp[i-1][j], dp[i-1][j-a[i-1]]+a[i-1])
- * [i][j]只跟[i-1][j]和[i-1][j-A[i-1]]相关,可降低1维
+ * [i][j]只跟[i-1][j]和[i-1][j-a[i-1]]相关,可降低1维
  * 大index的新值 += 大index的旧值 + 小index的旧值 => 必须先算大index的新值再算小index的新值
  * => for i = 1 ~ n  // 前i个数
  *      for j = m ~ 0 // 倒着循环j计算
- *        if(j>=A[i-1]) f[j] = max(f[j], f[j-A[i-1]]+A[i-1]) 
+ *        if(j>=a[i-1]) f[j] = max(f[j], f[j-a[i-1]]+v[i-1]) 
  * => for i = 0 ~ n - 1  // 改为用坐标i
- *      for j = m ~ A[i] // 倒着!!!循环j计算到A[i]截至
+ *      for j = m ~ a[i] // 倒着!!!循环j计算到a[i]截至
+ *         f[j] = max(f[j], f[j-a[i]]+v[i])  // 必须取最大价值v[i]而不是最大体积
  *  
+ * 坑 01背包:必须正着循环数组坐标1~n,必须倒着循环目标和m~a[i]
+ * 坑 +v[i]而不是+a[i]
  */
 class Solution {
 public:
