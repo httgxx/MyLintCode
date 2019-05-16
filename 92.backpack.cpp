@@ -37,7 +37,7 @@
  *     if (j > a[i-1])  dp[i][j] = max(dp[i][j], a[i]+dp[i-1][j-a[i-1]])
  * 返回 dp[n][m]
  
- * S1: 降维 // T=O(nm) S=O(m)a
+ * S1: 降维 // T=O(nm) S=O(m)
  * dp[i][j] = max(dp[i-1][j], dp[i-1][j-a[i-1]]+a[i-1])
  * [i][j]只跟[i-1][j]和[i-1][j-a[i-1]]相关,可降低1维
  * 大index的新值 += 大index的旧值 + 小index的旧值 => 必须先算大index的新值再算小index的新值
