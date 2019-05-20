@@ -38,8 +38,8 @@ public:
     int maxSubArray(vector<int> &nums) {
         int res = INT_MIN, curSum = 0;
         for (int num : nums) {
-            curSum = num + max(curSum, 0);  
-            res = max(res, curSum);
+            curSum = num + max(curSum, 0);  // 包含num的局部最大和
+            res = max(res, curSum);  // 不包含num或包含num的全局最大和
         }
        return res;
     }
