@@ -28,9 +28,15 @@
  * isMatch("ab", ".*") → true
  * isMatch("aab", "c*a*b") → true
  * 
- * @Category DP 双序列型
+ * @Category 递归或DP 双序列型
  * @Idea
- * S: DP // O(mn) S=O(mn)
+ * S1: 递归 // O(mn) S=O(mn)
+ * 1. p为空: s为空才匹配
+ * 2. p尾为*: x*配y => 跳过x*不配 R(s, p.substr(2)) 或 y=x R(s.substr(1), p)
+ * 3. p尾非*: x配y => y=x
+ * 坑: 2和3中y=x时都必须s非空
+ * 
+ * S2: DP // O(mn) S=O(mn)
  * dp[i][j]表示s[0,i)和p[0,j)是否match
  * 1.若p尾非*: s尾配p尾, 条件:s[i-1]==p[j-1]||p[j-1]=='.': dp[i][j]=dp[i-1][j-1]
  * 2.若p尾为*: s尾配p尾
@@ -44,6 +50,7 @@
  * 坑: x*配x和x配x的条件都要加i>0
  * 坑: x*配x的条件要s[i-1]==p[j-2]而不是p[j-1]
  * 坑: 跳过x*不配的值是dp[i][j-2]而不是dp[i][j-1]
+ * 
  */
 class Solution {
 public:
@@ -52,7 +59,17 @@ public:
      * @param p: A string includes "." and "*"
      * @return: A boolean
      */
-    bool isMatch(string &s, string &p) {
+    bool isMatch(const string &s, const string &p) {
+        if (p.empty()) return s.empty();
+        if (p.size() > 1 && p[1] == '*') {  // x*配y
+            return isMatch(s, p.substr(2)) ||  // 跳过x*不匹配
+                   (!s.empty() && (s[0] == p[0] || p[0] == '.') && isMatch(s.substr(1), p));  // x*配x
+        }
+        else {  // x配y
+            return !s.empty() && (s[0] == p[0] || p[0] == '.') && isMatch(s.substr(1), p.substr(1));
+        }
+    }
+    bool isMatch1(const string &s, const string &p) {
         int m = s.size(), n = p.size();
         vector<vector<bool>> dp(m + 1, vector<bool>(n + 1, false));
         dp[0][0] = true;  // 空串匹配空pattern
