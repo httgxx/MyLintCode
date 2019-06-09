@@ -33,6 +33,8 @@
  * 如A={1}, subset={[],[1]} => A+2={1,2}, subset={[],[1]}+{[]+2,[1]+2}={[],[1],[2],[1,2]}
  * 
  * 坑 须先排序才能保证最后结果中每个subset里元素有序
+ * 坑 curSize=res.size()必须每次重算,因为res不断增大
+ * 坑 <size而不是<=size
  */
 class Solution {
 public:
