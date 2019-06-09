@@ -27,10 +27,13 @@
  * 
  * @Category DFS
  * @Idea 和Subset I区别: 需要去重
- * 如A={1}, subset={[],[1]} => lastSize=0, curSize=2
+ * S1: 一次性处理重复元素
+ * 
+ * S2: 重复元素时跳过基础子集 
+ * A={1}, subset={[],[1]} => lastSize=0, curSize=2
  * A+2={1,2}, subset={[],[1]} + {[]+2,[1]+2} => lastSize=2, curSize=4
  * A+2={1,2,2}, subset={[],[1],[2],[1,2]} + {[2]+2,[1,2]+2} 
- * 前lastSize个子集不能加新因为会重([]+2,[1]+2),须从坐标为lastSize开始到最后的子集开始加新([2]+2,[1,2]+2)
+ * 前lastSize个基础子集不能加新否则会重([]+2,[1]+2),只能为坐标从lastSize开始的子集加新([2]+2,[1,2]+2)
  * 
  * 坑 先处理特例空input
  * 坑 用last和lastSize来标记无重的最后一个元素及其基础子集个数
@@ -43,6 +46,25 @@ public:
      * @return: A list of lists. All valid subsets.
      */
     vector<vector<int>> subsetsWithDup(vector<int> &nums) {
+        vector<vector<int>> res(1);
+        int n = nums.size();
+        if (n == 0) { return res; }  // 特例
+
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < n;) {  // 坑:不在此处++i
+            int curSize = res.size();
+            do{
+                for (int j = 0; j < curSize; j++){
+                    res.push_back(res[j]);
+                    res[j].push_back(nums[i]);
+                }  
+                i++;  // 坑: 在此处++i因为可以一次性处理重复元素
+            } while (i < n && nums[i - 1] == nums[i]);  // 坑:一次性处理重复元素
+        }
+        return res;
+    }
+
+    vector<vector<int>> subsetsWithDup2(vector<int> &nums) {
         vector<vector<int>> res(1);  // init to {[]}
         if (nums.empty()) { return res; }  // 坑: 特例
         
