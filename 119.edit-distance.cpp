@@ -38,7 +38,7 @@
  * exention -> exection (replace 'n' with 'c')
  * exection -> execution (insert 'u')
  * 
- * * @Category DP
+ * * @Category DP 双序列型
  * @Idea
  * DP T=O(mn) S=O(mn)
  * dp[i][j]表示S[0,i)到T[0,j)的edit distance
