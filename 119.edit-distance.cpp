@@ -43,8 +43,8 @@
  * DP T=O(mn) S=O(mn)
  * dp[i][j]表示S[0,i)到T[0,j)的edit distance
  * dp[i][j]=
- * 1) if s[i]==t[j]: dp[i][j]=dp[i-1][j-1]
- * 2) if s[i]!=t[j]: min(dp[i-1][j], min(dp[i-1][j-1], dp[i][j-1])) + 1
+ * 1) if s[i-1]==t[j-1]: dp[i][j]=dp[i-1][j-1]
+ * 2) if s[i-1]!=t[j-1]: min(dp[i-1][j], min(dp[i-1][j-1], dp[i][j-1])) + 1
  * Explanation:
  * Let's say we have 2 words "abcde" and "fghij", and we already know the min distance from "abcd" to "fgh".
  * a b c d
