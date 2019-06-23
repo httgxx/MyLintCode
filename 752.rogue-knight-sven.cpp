@@ -57,7 +57,7 @@ public:
      * @return: return the number of ways he can reach the planet n through the portal.
      */
     long long getNumberOfWays(int n, int m, int limit, vector<int> &cost) {
-        long long dp[n + 1][m + 1];  
+        long long dp[n + 1][m + 1];  // dp[i][j]表示从星球0出发到达星球i后拥有j个金币的方案数
         for (int i = 0; i < m; i++) {
             dp[0][i] = 0;   // 要正好有j枚金币,在i=0时只有j=m一种可能
         }
