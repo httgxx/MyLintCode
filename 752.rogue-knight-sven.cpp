@@ -39,8 +39,13 @@
  * @Idea
  * dp[i][j]表示从星球0出发到达星球i后拥有j个金币的方案数
  * dp[i][j] = sum{dp[t][j + cost[i]]|t=max(0, i-limit)~(i-1)}
- * 初始 dp[0][m]=1
- * 返回 sum{dp[n][j]ans|j=0~m}
+ * 初始 dp[0][m]=1,dp[0][j<m]=0  // 要正好有j枚金币,在i=0时只有j=m一种可能
+ * 返回 sum{dp[n][j]|j=0~m}
+ * 
+ * 坑 t=i-limit ~ i-1 且 t必须>0
+ * 坑 j=0~m 且 j+cost[i]必须<m
+ * 坑 最后返回的不是dp[n][m]而是sum(dp[n][j]|j=0~m)
+ * 
  */
 class Solution {
 public:
@@ -52,16 +57,16 @@ public:
      * @return: return the number of ways he can reach the planet n through the portal.
      */
     long long getNumberOfWays(int n, int m, int limit, vector<int> &cost) {
-        long long dp[n + 1][m + 1];
+        long long dp[n + 1][m + 1];  
         for (int i = 0; i < m; i++) {
-            dp[0][i] = 0;
+            dp[0][i] = 0;   // 要正好有j枚金币,在i=0时只有j=m一种可能
         }
-        dp[0][m] = 1;
-        for (int i = 1; i <= n; i++) {
-            for (int j = 0; j <= m; j++) {
-                dp[i][j] = 0;
-                for (int t = max(0, i - limit); t <= i - 1; t++) {
-                    if (j + cost[i] <= m) {
+        dp[0][m] = 1;  // 要正好有j枚金币,在i=0时只有j=m一种可能
+        for (int i = 1; i <= n; i++) {  // 从i=1开始
+            for (int j = 0; j <= m; j++) {  // 从j=0开始
+                dp[i][j] = 0;  // 需要赋值因为用的long[][]而不是赋了初值的vector
+                for (int t = max(0, i - limit); t <= i - 1; t++) {  // 坑 t必须>0
+                    if (j + cost[i] <= m) {  // 坑 j必须<=m-cost[i]
                         dp[i][j] += dp[t][j + cost[i]];
                     }
                 }
