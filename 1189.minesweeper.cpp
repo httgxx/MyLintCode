@@ -62,8 +62,7 @@ public:
      vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
         // corner case: empty board
         if (board.empty() || board[0].empty()) { return {}; }
-        int rowCnt = board.size(), colCnt = board[0].size();
-        int row = click[0], col = click[1], mineCnt = 0;
+        int rowCnt = board.size(), colCnt = board[0].size(), row = click[0], col = click[1], mineCnt = 0;
         
         // case 1: click mine
         if (board[row][col] == 'M') {
@@ -93,10 +92,8 @@ public:
                 // skip revealed/visited neighbors('X','B' or 1~8)
             }
         }
-        
         // step 2: update current empty
         board[row][col] = mineCnt == 0 ? 'B' : (mineCnt + '0');
-        
         // step 3: if no mine neighbors(i.e. all empty), DFS to each unvisited empty neighbor
         if (mineCnt == 0) {
             for (auto neighbor : unvisitedEmptyNeighbors) {
@@ -104,7 +101,6 @@ public:
                 updateBoard(board, neighbor);
             }
         }
-        
         return board;
     }
 };
