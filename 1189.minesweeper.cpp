@@ -60,8 +60,8 @@ public:
         // corner case: empty board
         if (board.empty() || board[0].empty()) { return {}; }
         int rowCnt = board.size(), colCnt = board[0].size();
-        
         queue<pair<int, int>> q({{click[0], click[1]}});
+        
         while(!q.empty()) {
             int row = q.front().first, col = q.front().second, mineCount = 0;
             q.pop();
