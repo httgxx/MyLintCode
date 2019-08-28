@@ -55,11 +55,56 @@ public:
      * @param click: the position
      * @return: the new board
      */
-    // Sol 2: DFS
+    // Sol 2: BFS
+    vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
+        // corner case: empty board
+        if (board.empty() || board[0].empty()) { return {}; }
+        int rowCnt = board.size(), colCnt = board[0].size();
+        
+        queue<pair<int, int>> q({{click[0], click[1]}});
+        while(!q.empty()) {
+            int row = q.front().first, col = q.front().second, mineCount = 0;
+            q.pop();
+            // case 1: click mine
+            if (board[row][col] == 'M') {
+                board[row][col] = 'X';
+                return board;
+            }
+            // case 2: click empty
+            // step 1: visit unvisited neighbors
+            vector<pair<int, int>> unvisitedEmptyNeighbors;
+            for (int i = -1; i <= 1; ++i) {
+                for (int j = -1; j <= 1; ++j) {
+                    int newRow = row + i, newCol = col + j;
+                    // skip if self or out of board
+                    if ((i == 0 && j == 0) ||
+                        newRow < 0 || newRow >= rowCnt || newCol < 0 || newCol >= colCnt) {
+                        continue;
+                    }
+                    // count mine neighbors
+                    if (board[newRow][newCol] == 'M') { ++mineCount; }
+                    // track unvisited empty neighbors //optim: no need to track if found mine neighbor
+                    else if (mineCount == 0 && board[newRow][newCol] == 'E') {
+                        unvisitedEmptyNeighbors.push_back({newRow, newCol});
+                    }
+                }
+            }
+            // step 2: update current empty
+            board[row][col] = mineCount == 0 ? 'B' : (mineCount + '0');
+            // step 3: if no mine neighbors, enqueue unvisited empty neighbors
+            if (mineCount == 0) {
+                for (auto neighbor : unvisitedEmptyNeighbors) {
+                    board[neighbor.first][neighbor.second] = 'B'; //mark 'E' as 'B' to avoid re-visit
+                    q.push(neighbor);
+                }
+            }
+        }
+        
+        return board;
+    }
 
-
     // Sol 2: DFS
-     vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
+    vector<vector<char>> updateBoard2(vector<vector<char>>& board, vector<int>& click) {
         // corner case: empty board
         if (board.empty() || board[0].empty()) { return {}; }
         int rowCnt = board.size(), colCnt = board[0].size(), row = click[0], col = click[1], mineCnt = 0;
