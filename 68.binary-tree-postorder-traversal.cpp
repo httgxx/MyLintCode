@@ -40,7 +40,7 @@ public:
     // S1: stack + pre
     // 入栈顺序=根->右1->左1, 出栈顺序=左支路->右支路->根, 出栈时加入结果集
     // T=O(n) S=O(n)
-    vector<int> postorderTraversal1(TreeNode * root) {
+    vector<int> postorderTraversal(TreeNode * root) {
         if (!root) return {};  // corner case: null tree
         vector<int> res;
         stack<TreeNode*> s{{root}};             // 入1:根
@@ -80,7 +80,7 @@ public:
     // S3: stack + 反序(入栈时:根-右-左 => 输出时:左-右-根) 
     // 入栈顺序=根->右支路->左1, 入栈时倒序加入结果集(输出时自动反序)
     // T=O(n) S=O(n)
-    vector<int> postorderTraversal(TreeNode* root) {
+    vector<int> postorderTraversal3(TreeNode* root) {
         vector<int> res;
         stack<TreeNode*> s;
         TreeNode *p = root; // 入1:根
