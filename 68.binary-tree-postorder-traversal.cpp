@@ -38,42 +38,41 @@ public:
      * @param root: A Tree
      * @return: Postorder in ArrayList which contains node values.
      */
-
     // S1: 
     vector<int> postorderTraversal1(TreeNode * root) {
         // write your code here
     }
 
-    // S2: root-right-left => reverse => left-right-root 
-    //先根,有左进(栈)左,再有右进(栈)右 // T=O(n) S=O(n)
+    // S2: 根-右-左 => 反序 => 左-右-根 
+    // 入栈顺序=根->左1->右1, 出栈顺序=根->右支路->左1, 出栈时倒序加入结果集(输出时自动反序)
+    // T=O(n) S=O(n)
     vector<int> postorderTraversal2(TreeNode* root) {
         if (!root) return {};  // corner case: null tree
         vector<int> res;
-        stack<TreeNode*> s{{root}};  // root in stack
+        stack<TreeNode*> s{{root}}; // 入1:根
         while (!s.empty()) {
-            TreeNode *t = s.top(); s.pop();   // 1:root
-            res.insert(res.begin(), t->val);  // (1,2,3):(root-right-left)=>reverse=>(left, right, root)
-            if (t->left) s.push(t->left);     // (2,3):in stack(left,right)=>out stack(right, left)
-            if (t->right) s.push(t->right);   
+            TreeNode *t = s.top(); s.pop();   // 出:根-右支路-左1
+            res.insert(res.begin(), t->val);  // 出栈时倒序加入结果集
+            if (t->left) s.push(t->left);     // 入2:左1
+            if (t->right) s.push(t->right);   // 入3:右1
         }
         return res;
     }
 
-    // S3: root-right-left => reverse => left-right-root
-    //先根,右到底后左拐1次 // T=O(n) S=O(n)
+    // S3: 根-右-左 => 反序 => 左-右-根
+    // 入栈顺序=根->右支路->左1, 入栈时倒序加入结果集(输出时自动反序)
+    // T=O(n) S=O(n)
     vector<int> postorderTraversal(TreeNode* root) {
         vector<int> res;
         stack<TreeNode*> s;
         TreeNode *p = root;
         while (!s.empty() || p) {
-            if (p) {
-                s.push(p);                        // 1:root
-                res.insert(res.begin(), p->val);  // (1,2,3):(root-right-left)=>reverse=>(left, right, root)
-                p = p->right;                     // 2:right
-            } else {
-                TreeNode *t = s.top(); s.pop();   // 3:left
-                p = t->left;
+            while (p) {
+                s.push(p);                        // 入1:根
+                res.insert(res.begin(), p->val);  // 入栈时倒序加入结果集
+                p = p->right;                     // 入2:右支路
             }
+            p = s.top()->left; s.pop();           // 入3.左1
         }
         return res;
     }
