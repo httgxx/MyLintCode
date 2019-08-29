@@ -44,7 +44,7 @@ public:
         // write your code here
     }
 
-    // S2: root-right-left => reverse => left-right-root
+    // S2: root-right-left => reverse => left-right-root //先根,有左进(栈)左,再有右进(栈)右
     // T=O(n) S=O(n)
     vector<int> postorderTraversal2(TreeNode* root) {
         if (!root) return {};  // corner case: null tree
@@ -59,7 +59,7 @@ public:
         return res;
     }
 
-    // S3: root-right-left => reverse => left-right-root
+    // S3: root-right-left => reverse => left-right-root //先根,右到底后左拐1次
     // T=O(n) S=O(n)
     vector<int> postorderTraversal(TreeNode* root) {
         vector<int> res;
