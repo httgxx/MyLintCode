@@ -15,9 +15,8 @@
  * 
  * Followup: 若无需返回结果只需打印遍历结果,能否除stack外不花费额外空间?
  * 
- * S1: 
- * S2: 根->右->左 + 反序(从头插入result)
- * 
+ * S1: stack + pre 左-右-根  T=O(n) S=O(n)
+ * S2: stack 根-右-左 + 反序(从头插入result) => 左-右-根  T=O(n) S=O(n)
  */
 /**
  * Definition of TreeNode:
