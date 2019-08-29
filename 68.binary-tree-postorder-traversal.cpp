@@ -38,8 +38,9 @@ public:
      * @param root: A Tree
      * @return: Postorder in ArrayList which contains node values.
      */
-    // S1: 
+    // S1: stack + pre
     // 入栈顺序=根->右1->左1, 出栈顺序=左支路->右支路->根, 出栈时加入结果集
+    // T=O(n) S=O(n)
     vector<int> postorderTraversal1(TreeNode * root) {
         if (!root) return {};  // corner case: null tree
         vector<int> res;
@@ -61,7 +62,7 @@ public:
         return res;
     }
 
-    // S2: 根-右-左 => 反序 => 左-右-根 
+    // S2: stack + 反序(出栈时:根-右-左 => 输出时:左-右-根) 
     // 入栈顺序=根->左1->右1, 出栈顺序=根->右支路->左1, 出栈时倒序加入结果集(输出时自动反序)
     // T=O(n) S=O(n)
     vector<int> postorderTraversal2(TreeNode* root) {
@@ -77,7 +78,7 @@ public:
         return res;
     }
 
-    // S3: 根-右-左 => 反序 => 左-右-根
+    // S3: stack + 反序(入栈时:根-右-左 => 输出时:左-右-根) 
     // 入栈顺序=根->右支路->左1, 入栈时倒序加入结果集(输出时自动反序)
     // T=O(n) S=O(n)
     vector<int> postorderTraversal(TreeNode* root) {
