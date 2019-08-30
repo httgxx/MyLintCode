@@ -79,7 +79,7 @@ public:
     int longestConsecutive1(TreeNode * root) {
         if (!root) { return 0; } // corner case
         int res = 0;
-        dfs(root, root->val, 0, res); // !!!pre初始为root->val可因!=root->val+1而初始len=1,len从0开始 
+        dfs(root, root->val, 0, res); // len从0开始 
         return res;
     }
     void dfs(TreeNode *root, int parent, int len, int &res) { // res会被更新,传引用
@@ -90,13 +90,15 @@ public:
         dfs(root->left, root->val, len, res);   // 2.左支 
         dfs(root->right, root->val, len, res);  // 3.右支
     }
-    // S2: 更简洁DFS T=O(n) S=O(n)堆栈空间花费
+    // 595: 简洁DFS T=O(n) S=O(n)堆栈空间花费
     int longestConsecutive(TreeNode* root) {
-        return dfs(root, NULL, 0);
+        return dfs(root, NULL, 0); // len从0开始
     }
     int dfs(TreeNode *root, TreeNode *parent, int res) {
+        // 根为空,或递归到空子节点,递归返回
         if (!root) return res;
+        // 子==父+1(连续)则++len;否则(不再连续)len=1
         res = (parent && root->val == parent->val + 1) ? res + 1 : 1;
-        return max(res, max(dfs(root->left, root, res), dfs(root->right, root, res)));
+        return max(res, max(dfs(root->left, root, res), dfs(root->right, root, res))); //左右递归
     }
 };
