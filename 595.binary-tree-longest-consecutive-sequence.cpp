@@ -79,15 +79,15 @@ public:
     int longestConsecutive(TreeNode * root) {
         if (!root) { return 0; } // corner case
         int res = 0;
-        dfs(root, root->val, 0, res); // Trick!!!pre初始为root->val可因!=root->val+1而初始len=1 
+        dfs(root, root->val, 0, res); // !!!pre初始为root->val可因!=root->val+1而初始len=1,len从0开始 
         return res;
     }
-    void dfs(TreeNode *root, int pre, int len, int &res) { // res会被更新,传引用
-        if (!root) return;                    // 递归到空子节点,递归返回
-        if (root->val == pre + 1) { ++len; }  // 1.根: 子==父+1 => 连续 => ++len
-        else { len = 1; }                     //          子!=父+1 => 不再连续 => len=1
-        res = max(res, len);                  // 更新最长路径值
-        dfs(root->left, root->val, len, res); // 2.左支 
-        dfs(root->right, root->val, len, res);// 3.右支
+    void dfs(TreeNode *root, int parent, int len, int &res) { // res会被更新,传引用
+        if (!root) return;                      // 递归到空子节点,递归返回
+        if (root->val == parent + 1) { ++len; } // 1.根: 子==父+1 => 连续 => ++len
+        else { len = 1; }                       //       子!=父+1 => 不再连续 => len=1
+        res = max(res, len);                    // 更新最长路径值
+        dfs(root->left, root->val, len, res);   // 2.左支 
+        dfs(root->right, root->val, len, res);  // 3.右支
     }
 };
