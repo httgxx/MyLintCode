@@ -43,15 +43,61 @@
  * 
  * @Category BST遍历
  * @Idea
- * S1: 分治法 递归
- * valid(root) = !root || (min<root<right && valid(root->left) && vald(root->right))
- * valid(root->left) = !(root->left) ||
- *  (min<root->left && root<root->right) && valid(root->left->left) && valid(root->left->right)
- * valid(root->right) = !(root->right) ||
- *  (root<root->right && root->right<max) && valid(root->right->left) && valid(root->right->right)
- * => 总结归纳出递归函数
- *  helper(root, min, max) = !root ||
- *  (min<root<max && helper(root->left, root->val, max) && helper(root, root->val, max)
+ * 大坑:!!!
+ * 不能只比较left/right和root,而必须保证left/right subtree整个都在(min,root)/(root,max)的范围内
+ * 反例: left child 5 < root 10,但是left subtree 含有子孙100>root所以不是valid BST
+ *     10
+ *     /
+ *    5
+ *   / \
+ *  1  100
+ * [错误!!!]
+ * bool isValidBST(TreeNode * root) {
+ *     if (!root) return true;
+ *     if (root->left)
+ *          if (root->left->val >= root->val || !isValidBST(root->left)) return false;
+ *     if (root->right) {
+ *          if (root->right->val <= root->val || !isValidBST(root->right)) return false;
+ *     return true;
+ * }
+ * [纠错] 必须传递[mn, mx]
+ * bool isValidBST(TreeNode * root) {
+ *     return helper(root, LONG_MIN, LONG_MAX);
+ * }
+ * bool helper(TreeNode * root, long mn, long mx) { 
+ *     if (!root) return true;
+ *     if (root->left)
+ *          if (root->left->val >= root->val || root->left->val <= mn) ||
+ *              !helper(root->left, mn, root->val)) return false;
+ *     if (root->right) {
+ *          if (root->right->val <= root->val || root->right->val <= mn) ||
+ *              !helper(root->right, root->val, mx)) return false;
+ *     return true;
+ * }
+ * [优化1] 把[mn, mx]的validation放入下一层call来做
+ * bool helper(TreeNode * root, long mn, long mx) { 
+ *     if (!root) return true;
+ *     if (root->val <= mn || root->val >= mx) return false; //被提炼出来
+ *     if (root->left)
+ *          if (!helper(root->left, mn, root->val)) return false;
+ *     if (root->right) {
+ *          if (!helper(root->right, root->val, mx)) return false;
+ *     return true;
+ * }
+ * [优化2] 因为if(!root)return true,所以不用再判断if(root->left)和if(root->right) 
+ * bool helper(TreeNode * root, long mn, long mx) { 
+ *     if (!root) return true;
+ *     if (root->val <= mn || root->val >= mx) return false;
+ *     if (!helper(root->left, mn, root->val)) return false;
+ *     if (!helper(root->right, root->val, mx)) return false;
+ *     return true;
+ * }
+ * [优化3] 精简代码
+ * bool helper(TreeNode * root, long mn, long mx) { 
+ *     if (!root) return true;
+ *     return root->val > mn && root->val < mx &&
+ *            helper(root->left, mn, root->val)) && helper(root->right, root->val, mx);
+ * }
  * 
  * 坑: if (root->val <= mn || root->val >= mx) return false; // 不是&&而是||,不是<,>而是<=,>=
  * 
