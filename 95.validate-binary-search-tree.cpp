@@ -104,7 +104,7 @@ public:
 
     // S3: 递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
     bool isValidBST(TreeNode * root) {
-        TreeNode * pre = NULL;  // 别忘=NULL!!! 否则segment false
+        TreeNode * pre = NULL;  // 别忘=NULL!!! 否则random pointer will cause segment false
         return inorder(root, pre);
     }
     bool inorder(TreeNode * node, TreeNode *& pre) {  // 别忘加& 修改指针的值/所指地址
