@@ -52,6 +52,9 @@
  * => 总结归纳出递归函数
  *  helper(root, min, max) = !root ||
  *  (min<root<max && helper(root->left, root->val, max) && helper(root, root->val, max)
+ * 
+ * S2: 中序遍历过程中必须一直保持升序 T=O(n) 若过程中检查升序则S=O(1), 若结束后保存结果检查升序则S=O(n)
+ * 递归/非递归中序遍历,过程中或最后结果是升序
  */
 /**
  * Definition of TreeNode:
@@ -73,14 +76,45 @@ public:
      * @return: True if the binary tree is BST, or false
      */
     // S1: 分治 递归 T=O(n) S=O(n)堆栈空间消耗
-    bool isValidBST(TreeNode * root) {
+    bool isValidBST1(TreeNode * root) {
         return helper(root, LONG_MIN, LONG_MAX);
     }
     bool helper(TreeNode * root, long mn, long mx) {
         if (!root) return true;
-        return root->val > mn && root->val < mx &&
-            helper(root->left, mn, root->val) && helper(root->right, root->val, mx);
+        if (root->val > mn && root->val < mx) return false;
+        return helper(root->left, mn, root->val) && helper(root->right, root->val, mx);
     }
 
-    // S2:
+    // S2: 递归中序遍历 遍历结束后对保持的结果检查升序
+    bool isValidBST(TreeNode * root) {
+        if (!root) return true;
+        vector<int> vals;
+        inorder(root, vals);
+        for (int i = 0; i < vals.size() - 1; ++i) {
+            if (vals[i] >= vals[i + 1]) return false;
+        }
+        return true;
+    }
+    void inorder(TreeNode* root, vector<int>& vals) {
+        if (!root) return;
+        inorder(root->left, vals);
+        vals.push_back(root->val);  // 中序遍历
+        inorder(root->right, vals);
+    }
+
+    // S3: 递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
+    bool isValidBST3(TreeNode * root) {
+        TreeNode * pre;
+        return inorder(root, pre);
+    }
+    bool inorder(TreeNode * node, TreeNode *& pre) {  // 别忘加& 修改指针的值/所指地址
+        if (!node) return true;
+        bool res = inorder(node->left, pre);
+        if (!res) return false;
+        if (pre) {  // 别忘pre可能为空, 如访问root时
+            if (node->val <= pre->val) return false;
+        }
+        pre = node;  // 拷贝指针值/所指地址, 不能直接传node否者原node被改
+        return inorder(node->right, pre);
+    }
 };
