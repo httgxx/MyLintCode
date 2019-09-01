@@ -86,7 +86,7 @@ public:
     }
 
     // S2: 递归中序遍历 遍历结束后对保持的结果检查升序
-    bool isValidBST(TreeNode * root) {
+    bool isValidBST2(TreeNode * root) {
         if (!root) return true;
         vector<int> vals;
         inorder(root, vals);
@@ -103,8 +103,8 @@ public:
     }
 
     // S3: 递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
-    bool isValidBST3(TreeNode * root) {
-        TreeNode * pre;
+    bool isValidBST(TreeNode * root) {
+        TreeNode * pre = NULL;  // 别忘=NULL!!! 否则segment false
         return inorder(root, pre);
     }
     bool inorder(TreeNode * node, TreeNode *& pre) {  // 别忘加& 修改指针的值/所指地址
