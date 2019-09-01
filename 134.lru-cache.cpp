@@ -50,25 +50,46 @@
  * cache cap is 1，set(2,1)，get(2) and return 1，set(3,2) and delete (2,1)，get(2) and return -1，
  * get(3) and return 2.
  * 
- * Capacity limit:
- * if add && size==cap: remove least recently used b4 add
- * => track visiting order of each data: newest=front, oldest=back
- * get: search data O(1) => hashtable
- *      move data to front O(1) => double linked list 
- * set: search data O(1) => hashtable
- *      if not found
- *         if full
- *            remove from back => list + tail
- *         else
- *            add to front => list
+ * 1. get() put() O(1)
+ * 2. capacity limit
+ *    set()
+ *      if need to add && size == capacity:
+ *          remove LRU b4 add
+ *    get()/set()
+ *      set target data to be most recently used
+ * =>
+ * 1. track visiting order of each data  => double linked list
+ *    most recently used data // changed by get/set => move/add to front
+ *    least recently used data// removed when full  => remove from back
+ * 2. search O(1) => hashtable
+ *    get(key) => move node for the key to front
  * 
- * Data structure: hashtable + double linked list      
- * hashtable: <key, node_pointer>
- * list: <key, value>  
- * C++ STL: unorderd_map, list,
- * move data to front: list::splice(to_pos, list, from_pos)
- * add new to front: list::emplace_front(args)
- * move from back: list::pop_back()
+ * hashtable: key, list_node_pointer
+ * list: key, value
+ * 
+ * get(key)
+ *    seach(key)
+ *    if not found: return -1
+ *    else:
+ *        find node_pointer by key  
+ *        move node to front
+ *        return value
+ * set(key, value)
+ *    search(key)
+ *    if found:
+ *       find node_pointer by key
+ *       update value
+ *       move node to front
+ *       return
+ *    else not found
+ *       if full:
+ *          find tail
+ *          find key for the tail
+ *          remove tail's entry from hashtable
+ *          remove tail from back
+ *       //else:
+ *       add to front
+ *       add to hashtable
  */
 #include <list>
 class LRUCache {
@@ -88,9 +109,9 @@ public:
     int get(int key) {
         // write your code here
         auto mapItor = cache.find(key);
-        if (mapItor == cache.end()) { return -1; }
+        if (mapItor == cache.end()) { return -1; }   // not find return -1
         auto listItor = mapItor->second;
-        recent.splice(recent.begin(), recent, listItor);
+        recent.splice(recent.begin(), recent, listItor);  // found: move to front and return
         return listItor->second;
     }
 
@@ -102,20 +123,20 @@ public:
     void set(int key, int value) {
         // write your code here
         auto mapItor = cache.find(key);
-        if (mapItor != cache.end()) {  // if exist, update and move to front
+        if (mapItor != cache.end()) {  // if found:  update and move to front
             auto listItor = mapItor->second;
-            listItor->second = value;  // update
-            recent.splice(recent.begin(), recent, listItor);  // move to front
+            listItor->second = value;   // update
+            recent.splice(recent.begin(), recent, listItor);  // found: move to front and return    
             return;
         }
-
-        if (cache.size() == cap) {  // if full, remove from map, remove from back
-           cache.erase(recent.rbegin()->first);  // remove from map
+        
+        if (cache.size() == cap) {  // if full: remove from back and from hashmap
+           cache.erase(recent.rbegin()->first);  // remove from hashmap
            recent.pop_back();  // remove from back
         }
 
-        recent.emplace_front(key, value); // not full, add to front, add to map
-        cache[key] = recent.begin();
+        recent.emplace_front(key, value);  // add to front
+        cache[key] = recent.begin();  // add to hashmap
     }
 private:
     int cap;
