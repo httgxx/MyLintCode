@@ -50,46 +50,40 @@
  * cache cap is 1，set(2,1)，get(2) and return 1，set(3,2) and delete (2,1)，get(2) and return -1，
  * get(3) and return 2.
  * 
- * 1. get() put() O(1)
- * 2. capacity limit
- *    set()
- *      if need to add && size == capacity:
- *          remove LRU b4 add
- *    get()/set()
- *      set target data to be most recently used
- * =>
- * 1. track visiting order of each data  => double linked list
- *    most recently used data // changed by get/set => move/add to front
- *    least recently used data// removed when full  => remove from back
- * 2. search O(1) => hashtable
- *    get(key) => move node for the key to front
+ * LRUCache 
+ * 1. O(1) get(key) set(key, value)
+ * 2. Capacity limit
+ *    if need to add && size == cap_limit:
+ *       remove LRU/oldest data b4 add 
+ * whenever get()/set(): set target data to be most recently used/newest
+ * => track visiting order of each data: time order
+ * - remove LRU: remove from end
+ * - set newest: add/move to front
+ * => double linked list
+ * 
+ * search O(1) => hashtable
  * 
  * hashtable: key, list_node_pointer
- * list: key, value
+ * double linked list: key, value
  * 
- * get(key)
- *    seach(key)
- *    if not found: return -1
- *    else:
- *        find node_pointer by key  
- *        move node to front
- *        return value
- * set(key, value)
- *    search(key)
+ * get()
+ *    hashtable search(key) => node_pointer
+ *    if !found: return -1
+ *    list move_to_front(node_pointer)
+ *    return node_pointer->value
+ * set()
+ *    hashtable search(key) => node_pointer
  *    if found:
- *       find node_pointer by key
- *       update value
- *       move node to front
+ *       node_pointer->value = value
+ *       list move_to_front(node_pointer) 
  *       return
- *    else not found
- *       if full:
- *          find tail
- *          find key for the tail
- *          remove tail's entry from hashtable
- *          remove tail from back
- *       //else:
- *       add to front
- *       add to hashtable
+ *    if full:
+ *       list find tail
+ *       hashtable remove by tail.key
+ *       list remove tail
+ *    
+ *    list add to front(new node(key, value))
+ *    hashtable add(key, new_node_pointer)
  */
 #include <list>
 class LRUCache {
@@ -108,11 +102,11 @@ public:
      */
     int get(int key) {
         // write your code here
-        auto mapItor = cache.find(key);
-        if (mapItor == cache.end()) { return -1; }   // not find return -1
-        auto listItor = mapItor->second;
-        recent.splice(recent.begin(), recent, listItor);  // found: move to front and return
-        return listItor->second;
+        auto cacheItor = cache.find(key);
+        if (cacheItor == cache.end()) { return -1; }
+        auto recentItor = cacheItor->second;
+        recent.splice(recent.begin(), recent, recentItor);
+        return recentItor->second;
     }
 
     /*
@@ -122,24 +116,25 @@ public:
      */
     void set(int key, int value) {
         // write your code here
-        auto mapItor = cache.find(key);
-        if (mapItor != cache.end()) {  // if found:  update and move to front
-            auto listItor = mapItor->second;
-            listItor->second = value;   // update
-            recent.splice(recent.begin(), recent, listItor);  // found: move to front and return    
+        auto cacheItor = cache.find(key);
+        if (cacheItor != cache.end()) {
+            auto recentItor = cacheItor->second;
+            recentItor->second = value;
+            recent.splice(recent.begin(), recent, recentItor);
             return;
         }
         
-        if (cache.size() == cap) {  // if full: remove from back and from hashmap
-           cache.erase(recent.rbegin()->first);  // remove from hashmap
-           recent.pop_back();  // remove from back
+        if (cache.size() == cap) {
+            cache.erase(recent.rbegin()->first);
+            recent.pop_back();
         }
 
-        recent.emplace_front(key, value);  // add to front
-        cache[key] = recent.begin();  // add to hashmap
+        recent.emplace_front(key, value);
+        cache[key] = recent.begin();
     }
 private:
     int cap;
     list<pair<int, int>> recent;
     unordered_map<int, list<pair<int, int>>::iterator> cache;
 };
+
