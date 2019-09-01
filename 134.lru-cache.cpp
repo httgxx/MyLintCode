@@ -57,22 +57,16 @@
  * 2. 每次读/写都要设值为最近被访问的
  * 3. capacity => 满了再写需要删掉最久没有被访问的值
  * => HashTable + Double-Linked-List(按访问时间长久排序)
- * get(key) O(1)
- *     1.有
- *     2.没有
- * put(key, value) O(1)
- *     1.有
- *     2.没有
- *       2.1 满
- *       2.2 没满
  */
-#include <list>  
+
+#include <list>
 class LRUCache {
 public:
     /*
     * @param capacity: An integer
     */
     LRUCache(int capacity) {
+        // do intialization if necessary
         cap = capacity;
     }
 
@@ -81,10 +75,11 @@ public:
      * @return: An integer
      */
     int get(int key) {
+        // write your code here
         auto mapItor = cache.find(key);
-        if (mapItor == cache.end()) { return -1; }  // 没找到返回-1
+        if (mapItor == cache.end()) { return -1; }   // not found, return -1
         auto listItor = mapItor->second;
-        recent.splice(recent.begin(), recent, listItor);  // 找到则移到表头后返回value
+        recent.splice(recent.begin(), recent, listItor); // found, move to front
         return listItor->second;
     }
 
@@ -94,28 +89,25 @@ public:
      * @return: nothing
      */
     void set(int key, int value) {
+        // write your code here
         auto mapItor = cache.find(key);
-        if (mapItor != cache.end()) {  // 若已存在
+        if (mapItor != cache.end()) {  // key exist, update value and return
             auto listItor = mapItor->second;
-            // 方法一: 更新值后前移到表头, 并立即返回
             listItor->second = value;
-            recent.splice(recent.begin(), recent, listItor);  // 移到表头
-            return;  // 勿忘!!!
-
-            // 方法二: 删除后继续(之后要当作新值加到表头)
-            //recent.erase(listItor);  // will update map later when adding new node
-        }
-        
-        if (cache.size() == cap) {  // 若满容则需删去最旧/表尾
-            cache.erase(recent.rbegin()->first);  // 先删map中表尾对应的entry
-            recent.pop_back();                    // 再删表尾(先删引用再删实体)
+            recent.splice(recent.begin(), recent, listItor);
+            return;
         }
 
-        recent.emplace_front(key, value);  // 优于recent.push_back(make_pair(key, value))
-        cache[key] = recent.begin();       // 先加表头再加入map(先加实体再加引用)
+        if (cache.size() == cap) {  // full, remove oldest value
+            cache.erase(recent.rbegin()->first);
+            recent.pop_back();
+        }
+
+        recent.emplace_front(key, value);  // not full, add to front
+        cache[key] = recent.begin();
     }
 private:
-    int cap;  // capacity
-    list<pair<int, int>> recent;  // key, value
-    unordered_map<int, list<pair<int, int>>::iterator> cache;  // key, node_pointer
+    int cap;
+    list<pair<int, int>> recent; // head=last recently used
+    unordered_map<int, list<pair<int, int>>::iterator> cache;
 };
