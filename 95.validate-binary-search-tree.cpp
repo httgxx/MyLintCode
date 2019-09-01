@@ -80,17 +80,17 @@ public:
      * @return: True if the binary tree is BST, or false
      */
     // S1: 分治 DFS T=O(n) S=O(n)堆栈空间消耗
-    bool isValidBST1(TreeNode * root) {
+    bool isValidBST(TreeNode * root) {
         return helper(root, LONG_MIN, LONG_MAX);
     }
     bool helper(TreeNode * root, long mn, long mx) {
         if (!root) return true;
-        if (root->val > mn && root->val < mx) return false;
+        if (root->val <= mn || root->val >= mx) return false;
         return helper(root->left, mn, root->val) && helper(root->right, root->val, mx);
     }
 
     // S2: 分治 BFS T=O(n) S=O(n) 若invalid可比DFS更快fail
-    bool isValidBST(TreeNode * root) {
+    bool isValidBST2(TreeNode * root) {
         if (!root) return true;
         long mn = LONG_MIN, mx = LONG_MAX;
         queue<tuple<TreeNode *, long, long>> q{{make_tuple(root, mn, mx)}};
@@ -107,8 +107,28 @@ public:
         return true;  //勿忘!! 
     }
 
-    // S3: 递归中序遍历 遍历结束后对保持的结果检查升序
+    // S3: 非递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
+    // T=O(n) S=O(1)
     bool isValidBST3(TreeNode * root) {
+        if (!root) return true;
+        stack<TreeNode *> s;
+        TreeNode *p = root, *pre = NULL;  // 千万别忘初始化pre为NULL
+        while (p || !s.empty()) {
+            while (p) {
+                s.push(p);
+                p = p->left;
+            }
+            p = s.top(); s.pop();  // top才是当前访问的结点,top与pre比较
+            // validate
+            if (pre && pre->val >= p->val) return false;
+            pre = p;
+            p = p->right;
+        }
+        return true;  // 千万别忘最后返回true!!!
+    }
+
+    // S4: 递归中序遍历 遍历结束后对保持的结果检查升序
+    bool isValidBST4(TreeNode * root) {
         if (!root) return true;
         vector<int> vals;
         inorder(root, vals);
@@ -124,8 +144,8 @@ public:
         inorder(root->right, vals);
     }
 
-    // S4: 递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
-    bool isValidBST4(TreeNode * root) {
+    // S5: 递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
+    bool isValidBST5(TreeNode * root) {
         TreeNode * pre = NULL;  // 别忘=NULL!!! 否则random pointer will cause segment false
         return inorder(root, pre);
     }
@@ -140,23 +160,5 @@ public:
         return inorder(node->right, pre);
     }
 
-    // S5: 非递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
-    // T=O(n) S=O(1)
-    bool isValidBST5(TreeNode * root) {
-        if (!root) return true;
-        stack<TreeNode *> s;
-        TreeNode *p = root, *pre = NULL;  // 千万别忘初始化pre为NULL
-        while (p || !s.empty()) {
-            while (p) {
-                s.push(p);
-                p = p->left;
-            }
-            p = s.top(); s.pop();
-            // validate
-            if (pre && pre->val >= p->val) return false;
-            pre = p;
-            p = p->right;
-        }
-        return true;  // 千万别忘最后返回true!!!
-    }
+
 };
