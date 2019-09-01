@@ -79,7 +79,7 @@ public:
      * @param root: The root of binary tree.
      * @return: True if the binary tree is BST, or false
      */
-    // S1: 分治 递归 T=O(n) S=O(n)堆栈空间消耗
+    // S1: 分治 DFS T=O(n) S=O(n)堆栈空间消耗
     bool isValidBST1(TreeNode * root) {
         return helper(root, LONG_MIN, LONG_MAX);
     }
@@ -89,8 +89,26 @@ public:
         return helper(root->left, mn, root->val) && helper(root->right, root->val, mx);
     }
 
-    // S2: 递归中序遍历 遍历结束后对保持的结果检查升序
-    bool isValidBST2(TreeNode * root) {
+    // S2: 分治 BFS T=O(n) S=O(n) 若invalid可比DFS更快fail
+    bool isValidBST(TreeNode * root) {
+        if (!root) return true;
+        long mn = LONG_MIN, mx = LONG_MAX;
+        queue<tuple<TreeNode *, long, long>> q{{make_tuple(root, mn, mx)}};
+        while (!q.empty()) {
+            tie(root, mn, mx) = q.front(); q.pop();
+            if (root->val <= mn || root-> val >= mx) return false;
+            if (root->left) {
+                q.push(make_tuple(root->left, mn, root->val));
+            }
+            if (root->right) {
+                q.push(make_tuple(root->right, root->val, mx));
+            }
+        }
+        return true;  //勿忘!! 
+    }
+
+    // S3: 递归中序遍历 遍历结束后对保持的结果检查升序
+    bool isValidBST3(TreeNode * root) {
         if (!root) return true;
         vector<int> vals;
         inorder(root, vals);
@@ -106,8 +124,8 @@ public:
         inorder(root->right, vals);
     }
 
-    // S3: 递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
-    bool isValidBST3(TreeNode * root) {
+    // S4: 递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
+    bool isValidBST4(TreeNode * root) {
         TreeNode * pre = NULL;  // 别忘=NULL!!! 否则random pointer will cause segment false
         return inorder(root, pre);
     }
@@ -122,9 +140,9 @@ public:
         return inorder(node->right, pre);
     }
 
-    // S4: 非递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
+    // S5: 非递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
     // T=O(n) S=O(1)
-    bool isValidBST(TreeNode * root) {
+    bool isValidBST5(TreeNode * root) {
         if (!root) return true;
         stack<TreeNode *> s;
         TreeNode *p = root, *pre = NULL;  // 千万别忘初始化pre为NULL
