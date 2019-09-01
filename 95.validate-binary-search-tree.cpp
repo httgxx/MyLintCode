@@ -53,6 +53,8 @@
  *  helper(root, min, max) = !root ||
  *  (min<root<max && helper(root->left, root->val, max) && helper(root, root->val, max)
  * 
+ * 坑: if (root->val <= mn || root->val >= mx) return false; // 不是&&而是||,不是<,>而是<=,>=
+ * 
  * S2: 中序遍历过程中必须一直保持升序 T=O(n) 若过程中检查升序则S=O(1), 若结束后保存结果检查升序则S=O(n)
  * 递归/非递归中序遍历,过程中或最后结果是升序
  * 用pre指针保存前一个结点的值,应该总是<当前访问结点的值
@@ -159,6 +161,4 @@ public:
         pre = node;  // 拷贝指针值/所指地址, 不能直接传node否者原node被改
         return inorder(node->right, pre);
     }
-
-
 };
