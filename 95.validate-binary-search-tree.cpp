@@ -55,6 +55,10 @@
  * 
  * S2: 中序遍历过程中必须一直保持升序 T=O(n) 若过程中检查升序则S=O(1), 若结束后保存结果检查升序则S=O(n)
  * 递归/非递归中序遍历,过程中或最后结果是升序
+ * 用pre指针保存前一个结点的值,应该总是<当前访问结点的值
+ * 
+ * 坑: 千万别忘初始化pre为NULL
+ * 坑: 非递归中序遍历 最后千万别忘返回true
  */
 /**
  * Definition of TreeNode:
@@ -103,7 +107,7 @@ public:
     }
 
     // S3: 递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
-    bool isValidBST(TreeNode * root) {
+    bool isValidBST3(TreeNode * root) {
         TreeNode * pre = NULL;  // 别忘=NULL!!! 否则random pointer will cause segment false
         return inorder(root, pre);
     }
@@ -116,5 +120,25 @@ public:
         }
         pre = node;  // 拷贝指针值/所指地址, 不能直接传node否者原node被改
         return inorder(node->right, pre);
+    }
+
+    // S4: 非递归中序遍历 遍历过程中应该保持升序(用pre保存前一个结点来和当前结点比大小)
+    // T=O(n) S=O(1)
+    bool isValidBST(TreeNode * root) {
+        if (!root) return true;
+        stack<TreeNode *> s;
+        TreeNode *p = root, *pre = NULL;  // 千万别忘初始化pre为NULL
+        while (p || !s.empty()) {
+            while (p) {
+                s.push(p);
+                p = p->left;
+            }
+            p = s.top(); s.pop();
+            // validate
+            if (pre && pre->val >= p->val) return false;
+            pre = p;
+            p = p->right;
+        }
+        return true;  // 千万别忘最后返回true!!!
     }
 };
