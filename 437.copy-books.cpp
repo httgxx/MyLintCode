@@ -55,15 +55,19 @@
  * 坑 min(max(...))所以初始化成无穷大INT_MAX
  * 坑 倒着循环枚举t因为总是要抄最后几本书
  * 坑 先求min(max)在算sum因为要包括不抄1本书的情况
- * 坑 一定要加if (dp[i-1][p]!=INT_MAX)在dp[i][j]=min(dp[i][j],max(dp[i-1][p],s))之前否则破坏max(x,s)
+ * 大坑: 只有1个人时每本书都得抄,所以直接付成当前sumPages,否则用INT_MAX缺省值计算会出错
  * 
- * S2: 二分法
+ * S2: 二分法 T=O(n*log(sumPages))
  * 在max(pages)~sum(pages)之间二分,每次mid用贪心法从左到右扫描所有书看需要多少人才能抄完
  * 若需要<=k个人,说明大家花的时间可能可以再少一些,去左半边区间
  * 若需要>k个人,则说明人数不够需要提高工作量,去右半边区间
  * 每次检查若按给定最大个人工作量,能否由<=k个人抄完所有书 => T=O(n)
  * 二分次数 log(sumPages-maxPages)
- * 总时间复杂度 T= n*log(sumPages) 
+ * 总时间复杂度 T= O(n*log(sumPages))
+ * 
+ * S3: T=O(nk)
+ * https://massivealgorithms.blogspot.com/2015/11/copy-books-walking-dad.html
+ *  
  */
 class Solution {
 public:
@@ -74,36 +78,40 @@ public:
      */
     // S1: DP: T=O(k*n*n) S=O(k*n)
     // n本书划分成<=k段使得各段书总页数的最大值最小 => 枚举最后一段起点p
-    // dp[i][j]表示前i个人抄写前j本书的最少时间 => 枚举最后一个人从第p本书开始抄
-    // = min{ max(dp[i-1][p]), A[p]+...+A[j-1]) | 0<=p<=j } 
-    int copyBooks1(vector<int> &pages, int k) {
+    // dp[i][j]表示前i本书由j个人来抄所需的最少时间 => 枚举最后一个人从第p本书开始抄
+    // = min(dp[i][j], max(dp[p][j-1]), A[p]+...+A[i-1]) | 0<=p<=i } 
+    int copyBooks(vector<int> &pages, int k) {
         int n = pages.size();
         if (n == 0) { return 0; }
         if (k > n) { k = n; }  // 人比书多,最多只用1人抄1本,即只需计算n个人
 
-        vector<vector<int>> dp(k + 1, vector<int>(n + 1, INT_MAX));
-        dp[0][0] = 0;  // 0本书0个人花0时间
-                       // 除此之外对所有i=0: dp[0][j>0]=INT_MAX 因为0个人无法抄完任何>1本书
-        // DP计算k个人抄n本书的最少时间
-        for (int i = 1; i <= k; ++i) {    // 前i个人 1<=i<=k
-            dp[i][0] = 0;  // 0本书花时间0
-            for (int j = 1; j <= n; ++j){ // 前j本书 1<=j<=n
-                int s = 0; 
-                for (int p = j; p >= 0; --p) {  // 最后1个人从第p本书开始抄到第j本书
-                    if (dp[i - 1][p] != INT_MAX) {  //坑:i-1=0个人抄p>0本书花无限时间不实用与max(x,s)
-                        dp[i][j] = min(dp[i][j], max(dp[i - 1][p], s));
+        vector<vector<int>> dp(n + 1, vector<int>(k + 1, INT_MAX));  // n本书 k个人
+        for (int j = 0; j <= k; ++j) { dp[0][j] = 0; } // 0本书不花时间
+
+        // DP计算n本书k个人抄需要的最少时间
+        // 对i=0已经初始化dp[0][j]=0
+        for (int i = 1; i <= n; ++i) { // i本书
+            // 对j=0已初始化dp[0][0]=0, dp[i>0][0]=INT_MAX因为0个人抄不完>0本书
+            for (int j = 1; j <= k; ++j){ // j个人
+                int sum = 0;
+                for (int p = i; p >= 0; --p) {  // 最后1个人从第p本书开始抄到第i本书
+                    if (j == 1) { // 坑: 只1个人时所有书都抄故直接=sum,否则用INT_MAX缺省值计算会出错
+                        dp[i][j] = sum;
+                    }
+                    else {
+                        dp[i][j] = min(dp[i][j], max(dp[p][j - 1], sum));
                     }
                     if (p > 0) {  // 坑: p可为0, 即最后1个人可不抄书,此时s将不变
-                        s += pages[p - 1]; // 为下一轮做准备,即最后1个人从第p-1本开始抄要抄的总页数
+                        sum += pages[p - 1]; // 为下一轮做准备,即最后1个人从第p-1本开始抄要抄的总页数
                     }
                 }
             }
         }
-        return dp[k][n];
+        return dp[n][k];
     }
 
     // S2: 二分法来找能由<=k个人抄完所有书的最大个人工作量的最小值
-    int copyBooks(vector<int> &pages, int k) {
+    int copyBooks2(vector<int> &pages, int k) {
         int n = pages.size();
         if (n == 0) { return 0; }
         
