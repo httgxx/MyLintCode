@@ -61,6 +61,9 @@
  * 在max(pages)~sum(pages)之间二分,每次mid用贪心法从左到右扫描所有书看需要多少人才能抄完
  * 若需要<=k个人,说明大家花的时间可能可以再少一些,去左半边区间
  * 若需要>k个人,则说明人数不够需要提高工作量,去右半边区间
+ * 每次检查若按给定最大个人工作量,能否由<=k个人抄完所有书 => T=O(n)
+ * 二分次数 log(sumPages-maxPages)
+ * 总时间复杂度 T= n*log(sumPages) 
  */
 class Solution {
 public:
@@ -99,46 +102,45 @@ public:
         return dp[k][n];
     }
 
-    // S2: 二分法来找能由<=k个人抄完所有书的时间上限的最小值
+    // S2: 二分法来找能由<=k个人抄完所有书的最大个人工作量的最小值
     int copyBooks(vector<int> &pages, int k) {
         int n = pages.size();
         if (n == 0) { return 0; }
         
-        // 计算最耗时的书的总页数, 以及所有书的总页数
+        // 计算抄一本书的最大工作量, 以及抄所有书的总工作量 T=O(n)
         int maxPage = 0, sum = 0;
         for (int i = 0; i < n; ++i) {
             maxPage = max(maxPage, pages[i]);
             sum += pages[i];
         }
         
-        // 在[maxPages,sum]区域二分
+        // 在[maxPages,sum]二分查找能完成任务的个人最大工作量的最小值 T=O(n*log(sum-maxPages))
         int left = maxPage, right = sum;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
-            if (checkValid(pages, mid, k)) {  // 检查是否可由<=k个人在mid时间内抄完所有n本书
+            if (canComplete(pages, mid, k)) {
                 right = mid;
             } else {
                 left = mid;
             }
         }
-        if (checkValid(pages, left, k)) return left;
+        if (canComplete(pages, left, k)) return left;
         return right;
     }
 
-    // 检查是否可由<=k个人在mid时间内抄完所有n本书
-    bool checkValid(vector<int> &pages, int limit, int k) {
-        int count = 1;
-        int sum = 0;
-        int len = pages.size();
-        for (int i = 0; i < len; ++i) {
-            if (pages[i] > limit) return false;
-            if (pages[i] + sum > limit) {
-                count++;
+    // 检查若按给定最大个人工作量,能否由<=k个人抄完所有书 T=O(n) 
+    bool canComplete(vector<int> &pages, int perCopierPageLimit, int maxCopierCnt) {
+        int copierCnt = 1, sum = 0, bookCnt = pages.size();
+        for (int i = 0; i < bookCnt; ++i) {  // 贪心法: 每人在个人最大工作量内抄尽可能多的书
+            if (pages[i] > perCopierPageLimit) return false;
+            if (pages[i] + sum > perCopierPageLimit) {  // 超过个人最大工作量, 需要加人
+                copierCnt++;
                 sum = pages[i];
             } else {
                 sum += pages[i];
             }
+            if (copierCnt > maxCopierCnt) { return false; }
         }
-        return count <= k;
+        return true;
     }
 };
