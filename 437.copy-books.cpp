@@ -32,8 +32,9 @@
  * First person spends 5 minutes to copy book 1 and book 2.
  * Second person spends 4 minutes to copy book 3.
  * 
- * @Categories DP (划分比较型)
+ * @Categories DP (划分比较型) or 二分
  * @Idea 
+ * S1: DP T=O(k*n*n) S=O(n*k) => 滚动数组降维 => O(n)
  * 题意:求某种划分方式,将n本书分成<=K段(抄写员),使得所有段(各个抄写员抄的书)的数字和(页数和)的最大值(最大耗时)最小
  * 思路:若最后一段的起点是第j本书(0<=j<=n-1),则k个人抄n本书的时间t(k,n)=max(t(k-1,j),sum(A[j]~A[i-1]) 
  * j越小则sum(A[j]~A[i-1])越大,但可能t(k-1,j)更小使得两者的max更小,不确定,所以需要枚举j来求max的min
@@ -54,6 +55,12 @@
  * 坑 min(max(...))所以初始化成无穷大INT_MAX
  * 坑 倒着循环枚举t因为总是要抄最后几本书
  * 坑 先求min(max)在算sum因为要包括不抄1本书的情况
+ * 坑 一定要加if (dp[i-1][p]!=INT_MAX)在dp[i][j]=min(dp[i][j],max(dp[i-1][p],s))之前否则破坏max(x,s)
+ * 
+ * S2: 二分法
+ * 在max(pages)~sum(pages)之间二分,每次mid用贪心法从左到右扫描所有书看需要多少人才能抄完
+ * 若需要<=k个人,说明大家花的时间可能可以再少一些,去左半边区间
+ * 若需要>k个人,则说明人数不够需要提高工作量,去右半边区间
  */
 class Solution {
 public:
@@ -62,11 +69,11 @@ public:
      * @param k: An integer
      * @return: an integer
      */
-    // DP: T=O(k*n*n) S=O(k*n)
+    // S1: DP: T=O(k*n*n) S=O(k*n)
     // n本书划分成<=k段使得各段书总页数的最大值最小 => 枚举最后一段起点p
     // dp[i][j]表示前i个人抄写前j本书的最少时间 => 枚举最后一个人从第p本书开始抄
     // = min{ max(dp[i-1][p]), A[p]+...+A[j-1]) | 0<=p<=j } 
-    int copyBooks(vector<int> &pages, int k) {
+    int copyBooks1(vector<int> &pages, int k) {
         int n = pages.size();
         if (n == 0) { return 0; }
         if (k > n) { k = n; }  // 人比书多,最多只用1人抄1本,即只需计算n个人
@@ -90,5 +97,48 @@ public:
             }
         }
         return dp[k][n];
+    }
+
+    // S2: 二分法来找能由<=k个人抄完所有书的时间上限的最小值
+    int copyBooks(vector<int> &pages, int k) {
+        int n = pages.size();
+        if (n == 0) { return 0; }
+        
+        // 计算最耗时的书的总页数, 以及所有书的总页数
+        int maxPage = 0, sum = 0;
+        for (int i = 0; i < n; ++i) {
+            maxPage = max(maxPage, pages[i]);
+            sum += pages[i];
+        }
+        
+        // 在[maxPages,sum]区域二分
+        int left = maxPage, right = sum;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (checkValid(pages, mid, k)) {  // 检查是否可由<=k个人在mid时间内抄完所有n本书
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        if (checkValid(pages, left, k)) return left;
+        return right;
+    }
+
+    // 检查是否可由<=k个人在mid时间内抄完所有n本书
+    bool checkValid(vector<int> &pages, int limit, int k) {
+        int count = 1;
+        int sum = 0;
+        int len = pages.size();
+        for (int i = 0; i < len; ++i) {
+            if (pages[i] > limit) return false;
+            if (pages[i] + sum > limit) {
+                count++;
+                sum = pages[i];
+            } else {
+                sum += pages[i];
+            }
+        }
+        return count <= k;
     }
 };
