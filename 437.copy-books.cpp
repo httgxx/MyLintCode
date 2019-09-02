@@ -62,31 +62,33 @@ public:
      * @param k: An integer
      * @return: an integer
      */
-    // DP
-    int copyBooks(vector<int> &pages, int K) {  // K个人
+    // DP: T=O(k*n*n) S=O(k*n)
+    // n本书划分成<=k段使得各段书总页数的最大值最小 => 枚举最后一段起点p
+    // dp[i][j]表示前i个人抄写前j本书的最少时间 => 枚举最后一个人从第p本书开始抄
+    // = min{ max(dp[i-1][p]), A[p]+...+A[j-1]) | 0<=p<=j } 
+    int copyBooks(vector<int> &pages, int k) {
         int n = pages.size();
         if (n == 0) { return 0; }
+        if (k > n) { k = n; }  // 人比书多,最多只用1人抄1本,即只需计算n个人
 
-        if (K > n) { K = n; }  // 坑: 人多于书,每个人条件一样,所以忽略多余的不抄书的人
-
-        vector<vector<int>> dp(K + 1, vector<int>(n + 1, INT_MAX));  // 坑: 求min(...)故初始为INT_MAX
-        dp[0][0] = 0;  // 0个人抄0本书不花时间
-                       // 首行dp[0][j]除了[0][0]=0之外都为INT_MAX: 0个人抄>0本书都做不到
-        // 前i个人抄前j本书
-        for (int i = 1; i <= K; ++i) {       // 前i个人[1~K] //i=0在之前dp[0][0]=0和缺省值INT_MAX已设
-            dp[i][0] = 0; // 抄0本书只花0时间
-            for (int j = 1; j <= n; ++j ) {  // 前j本书[1~n] //j=0在之前dp[i][0]=0中已设
-                int s = 0; // 最后一个人抄写的总页数A[k]+...+A[j-1]
-                for (int k = j; k >= 0; --k) {  // 坑: 倒着循环
-                    if (dp[i - 1][k] != INT_MAX) {  // 坑: i-1=0时dp[0][k]=初始值INT_MAX不能用于计算min
-                        dp[i][j] = min(dp[i][j], max(dp[i - 1][k], s));
+        vector<vector<int>> dp(k + 1, vector<int>(n + 1, INT_MAX));
+        dp[0][0] = 0;  // 0本书0个人花0时间
+                       // 除此之外对所有i=0: dp[0][j>0]=INT_MAX 因为0个人无法抄完任何>1本书
+        // DP计算k个人抄n本书的最少时间
+        for (int i = 1; i <= k; ++i) {    // 前i个人 1<=i<=k
+            dp[i][0] = 0;  // 0本书花时间0
+            for (int j = 1; j <= n; ++j){ // 前j本书 1<=j<=n
+                int s = 0; 
+                for (int p = j; p >= 0; --p) {  // 最后1个人从第p本书开始抄到第j本书
+                    if (dp[i - 1][p] != INT_MAX) {  //坑:i-1=0个人抄p>0本书花无限时间不实用与max(x,s)
+                        dp[i][j] = min(dp[i][j], max(dp[i - 1][p], s));
                     }
-                    // 为下一次计算准备s
-                    if (k > 0) { s += pages[k - 1]; }  // 坑: 先求dp再计算s 因为不抄书k=0时还是要计算dp
+                    if (p > 0) {  // 坑: p可为0, 即最后1个人可不抄书,此时s将不变
+                        s += pages[p - 1]; // 为下一论做准备,即最后1个人从第p-1本开始抄要抄的总页数
+                    }
                 }
             }
         }
-
-        return dp[K][n];
+        return dp[k][n];
     }
 };
