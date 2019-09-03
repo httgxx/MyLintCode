@@ -28,14 +28,14 @@ public:
      * @param k: An integer
      * @return: an array of string
      */
-    // S1: map + maxHeap // T=O(nlogk) S=O(n)
+    // S1: map + minHeap // T=O(nlogk) S=O(n)
     vector<string> topKFrequentWords(vector<string> &words, int k) {
         vector<string> res(k);  // !!!先初始化大小之后才能反向写入
         unordered_map<string, int> freq;
         auto cmp = [](pair<string, int>& a, pair<string, int>& b) {  // 自定义比较器:freq降序,word升序
             return a.second > b.second || (a.second == b.second && a.first < b.first);
         }; // 勿忘";"!!!
-        priority_queue<pair<string, int>, vector<pair<string, int>>, decltype(cmp) > q(cmp);
+        priority_queue<pair<string, int>, vector<pair<string, int>>, decltype(cmp) > q(cmp); // 最小堆
         for (auto word : words) ++freq[word];  // 统计频率
         for (auto f : freq) {
             q.push(f);
