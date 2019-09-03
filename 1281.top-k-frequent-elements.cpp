@@ -24,7 +24,7 @@
  * 
  * Require T=O(nlogn)
  * 
- * S1: map + 最大堆 // T=O(nlogn)
+ * S1: map + 最大堆 // T=O(nlogn)  //空间比bucket小 时间中等
  * 思路: 用map统计每个val的freq,所有<freq,val>入最大堆,最后输出堆顶k次 
  * 实现:
  * 统计频率 unordered_map[val]=freq
@@ -35,7 +35,7 @@
  * 坑: 入大堆时要将map的键和值(freq)反过来存入才能按freq排序
  * 坑: 出大堆时要将pq的第二项(value)加入结果集(第一项是freq)
  * 
- * S2: map + 最小堆 // T=O(nlogK) //logK而非logN
+ * S2: map + 最小堆 // T=O(nlogK) //logK而非logN //空间占最小 时间中等
  * 思路:
  * 1.用map统计每个val的freq
  * 2.建立维护大小为K的最小堆来保存当前的topK:
@@ -57,9 +57,16 @@
  * 坑: 入大堆时要将map的键和值(freq)反过来存入才能按freq排序
  * 坑: 出大堆时要将pq的第二项(value)加入结果集(第一项是freq)
  * 
- * // S3: 桶排序 Bucket
- * 
- * 
+ * // S3: map + bucket list T=O(n) S=O(n)  //空间占最大 时间最快
+ * 定义一组桶[nums.size+1][]=> 桶[i]=[所有频率为i的值]
+ * 倒着访问这组桶,每次遇到非空桶则输出同中的值,如果输出了K个值则终止
+ * 统计频率 unordered_map[val]=freq 
+ * 建立桶   vector<vector<int>> bucket(nums.size() + 1);
+ * 更新桶   bucket[freq].push_back(val);
+ * 输出     for i=nums.size~0  //倒着访问桶 
+ *             for j=0~bucket[i].size()-1 //正着访问桶中的值
+ *                 res.push_back(bucket[i][j]); // 输出访问的值
+ *                 if (res.size() == k) return res; //输出k个值则退出    
  */
 class Solution {
 public:
@@ -68,8 +75,24 @@ public:
      * @param k: the given k
      * @return: the k most frequent elements
      */
-    // S1: map + minheap 按频率堆排序,大小为K的最小堆保存topK // T=O(nlogK)
-    vector<int> topKFrequent(vector<int> nums, int k) {
+    // S1: map + Bucket list T=O(n) S=O(n) 
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> m; 
+        vector<vector<int>> bucket(nums.size() + 1);  //最后一个通bucket[size]则size+1个buckets
+        vector<int> res;
+        for (auto a : nums) ++m[a];  // 统计频率
+        for (auto it : m) { bucket[it.second].push_back(it.first); }  // 入桶
+        for (int i = nums.size(); i >= 0; --i) {  // 倒着访问桶
+            for (int j = 0; j < bucket[i].size(); ++j) {  // 正着访问桶内值
+                res.push_back(bucket[i][j]);  // 出桶
+                if (res.size() == k) return res;
+            }
+        }
+        return res;
+    }
+
+    // S2: map + minheap 按频率堆排序,大小为K的最小堆保存topK // T=O(nlogK)
+    vector<int> topKFrequent2(vector<int> nums, int k) {
         unordered_map<int, int> m;
         priority_queue<pair<int, int>, vector<pair<int, int>>,
                        greater<pair<int, int>>> pq;  //minHeap
@@ -90,8 +113,8 @@ public:
         return res;
     }
 
-    // S2: map + minheap 按频率堆排序,全部入最大堆,取top // T=O(nlogK)
-    vector<int> topKFrequent2(vector<int> &nums, int k) {
+    // S3: map + minheap 按频率堆排序,全部入最大堆,取top // T=O(nlogK)
+    vector<int> topKFrequent3(vector<int> &nums, int k) {
         unordered_map<int, int> m;
         priority_queue<pair<int, int>> pq;  //maxHeap
         vector<int> res;
@@ -103,5 +126,4 @@ public:
         }
         return res;
     }
-
 };
