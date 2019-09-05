@@ -53,6 +53,8 @@
  * 找根=>图最中心的点=>到每个最边缘的点(叶子结点,度为的点)的距离的最大值要最小(这个最大值就是树的高度)
  * =>每个叶子同步往中间走,多个相遇则合并为一,最后只剩1个或2个时就是中心/根(因为>=3个结点时无环则必有一个不是叶子,它到其他点的最长距离一定最小)
  * =>从每个度为1的点入队列,开始分层剥洋葱,出队列所有这些点后将度数变为1的点入队列,依次下去直到队列只剩1或2个结点
+ * 坑:看清参数类型是vector<pair<int,int>>还是vector<vector<int>> !!!
+ * 坑:剥洋葱时把叶子从所有邻居的邻居集中删除 nbrs[nbr].erase(cur); 不是nbrs[cur].erase(nbr)!!!
  */
 class Solution {
 public:
@@ -81,8 +83,8 @@ public:
             n -= cnt;
             for (int i = 0; i < cnt; ++i) {
                 int cur = q.front(); q.pop();
-                for (auto nbr : nbrs[cur]) {
-                    nbrs[nbr].erase(cur);               // 把叶子从其邻居的邻居集中删除 
+                for (auto nbr : nbrs[cur]) {            // 把叶子从所有邻居的邻居集中删除 
+                    nbrs[nbr].erase(cur);               // 坑: 不是nbrs[cur].erase(nbr)!!!
                     if (nbrs[nbr].size() == 1) { q.push(nbr); }  // 新叶子入队列
                 }
             }
