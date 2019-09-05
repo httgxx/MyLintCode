@@ -64,7 +64,7 @@
  *       每次访问完一个顶点就更新all_node_status 从node0出发访问node1后<0,001>=><1,101>
  * 
  * 坑: 处理特例graph=[[]] 
- * 坑:
+ * 坑: 最后q空了但是还没返回的话,说明还有孤岛点没有被访问到,所以返回-1而不是0
  */
 class Solution {
 public:
@@ -100,6 +100,6 @@ public:
             }
             ++steps;
         }
-        return 0;
+        return -1;  // 坑:不是返回0,因为此时state!=final则说明还有不连通的点没有北方问到!!!
     }
 };
