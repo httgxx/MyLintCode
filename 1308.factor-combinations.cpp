@@ -22,6 +22,7 @@
  */
 class Solution {
 public:
+    // T= O(nlogn)
     vector<vector<int>> getFactors(int n) {
         vector<vector<int>> res;
         helper(n, 2, {}, res);
