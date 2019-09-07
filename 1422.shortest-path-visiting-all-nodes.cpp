@@ -64,6 +64,8 @@
  *       每次访问完一个顶点就更新all_node_status 从node0出发访问node1后<0,001>=><1,101>
  * 
  * 坑: 处理特例graph=[[]] 
+ * 坑: (1 << n)-1中<<一定要加()因为'-'优先级比<<高
+ * 坑: while(cnt--)比for(i=0~cnt)节省代码 
  * 坑: 最后q空了但是还没返回的话,说明还有孤岛点没有被访问到,所以返回-1而不是0
  */
 class Solution {
@@ -78,7 +80,7 @@ public:
         if (graph[0].empty()) { return 0; } // 坑!!!: 特例 [[]]
 
         int steps = 0;
-        int final = (1 << n) - 1;      // 目标状态=n位1:所有n个顶点都被访问过
+        int final = (1 << n) - 1;      // 目标状态=n位1:所有n个顶点都被访问过 // 坑:一定要加(),<<优先级没有'-'高
         unordered_set<int> visited;    // 已访问的状态(编码)
         queue<pair<int, int>> q;       // <当前顶点,当前所有顶点访问状态>
         for (int i = 0; i < n; ++i) {  // 初始化:所有顶点入队,即从每个顶点出发
@@ -87,7 +89,7 @@ public:
         
         while (!q.empty()) {    // BFS
             int cnt = q.size(); // 当前层大小
-            while (cnt--) {
+            while (cnt--) {     // 坑: 比for(i=0~cnt)节省代码 
                 auto p = q.front(); q.pop();
                 int node = p.first, state = p.second;
                 if (state == final) { return steps; }       // 分层遍历,先结束的最短
@@ -100,6 +102,6 @@ public:
             }
             ++steps;
         }
-        return -1;  // 坑:不是返回0,因为此时state!=final则说明还有不连通的点没有北方问到!!!
+        return -1;  // 坑:不是返回steps,因为此时state!=final则说明还有不连通的点没有被访问到!!!
     }
 };
