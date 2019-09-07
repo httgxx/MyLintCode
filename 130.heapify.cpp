@@ -19,6 +19,7 @@
  */
 class Solution {
 public:
+    // T=O(n) S=O(1) inplace 
     void heapify(vector<int>& nums) {
         for (int i = (nums.size() - 1) / 2; i >= 0; --i) {  // 叶子最低不用再下沉,从倒数第二层开始
             shiftDown(nums, i);
