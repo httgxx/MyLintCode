@@ -51,10 +51,13 @@
  * @Category Tree Graph BFS
  * @Idea
  * 找根=>图最中心的点=>到每个最边缘的点(叶子结点,度为的点)的距离的最大值要最小(这个最大值就是树的高度)
- * =>每个叶子同步往中间走,多个相遇则合并为一,最后只剩1个或2个时就是中心/根(因为>=3个结点时无环则必有一个不是叶子,它到其他点的最长距离一定最小)
+ * =>每个叶子同步往中间走,多个相遇则合并为一,最后只剩1个或2个时就是中心/根(>=3个结点时无环必有一非叶子,它到其他点的最长距离最小)
  * =>从每个度为1的点入队列,开始分层剥洋葱,出队列所有这些点后将度数变为1的点入队列,依次下去直到队列只剩1或2个结点
+ *
+ * 坑: n是结点数不是边数,n为1时返回{0}而不是edge[0]!!!
  * 坑:看清参数类型是vector<pair<int,int>>还是vector<vector<int>> !!!
  * 坑:剥洋葱时把叶子从所有邻居的邻居集中删除 nbrs[nbr].erase(cur); 不是nbrs[cur].erase(nbr)!!!
+ * 坑:while循环queue的条件不再是!q.empty()因为空之前就跳出即while(n>2)
  */
 class Solution {
 public:
@@ -70,7 +73,7 @@ public:
         
         vector<unordered_set<int>> nbrs(n);        // 边集合=>邻接矩阵 用set可高效去重
         for (auto edge : edges) {
-            nbrs[edge[0]].insert(edge[1]);         // 坑:不是vector<pair<int,int>>不能用e.first
+            nbrs[edge[0]].insert(edge[1]);         // 坑:不是vector<pair<int,int>>不能用e.first. edge[i]而不是edges[i]
             nbrs[edge[1]].insert(edge[0]);
         }
         
@@ -78,7 +81,7 @@ public:
         for (int i = 0; i < n; ++i) {                   // 初始:度为1的点/叶子入队列
             if (nbrs[i].size() == 1) { q.push(i); }
         }
-        while (n > 2) {                                 // 分层剥洋葱/叶子结点
+        while (n > 2) {                                 // 分层剥洋葱/叶子结点 // 坑:不再是!q.empty()因为空之前就跳出while
             int cnt = q.size();                         
             n -= cnt;
             for (int i = 0; i < cnt; ++i) {
