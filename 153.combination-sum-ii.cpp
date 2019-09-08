@@ -13,6 +13,26 @@
  *
  * Given an array `num` and a number `target`. Find all unique combinations in
  * `num` where the numbers sum to `target`.
+ * 
+ * The same repeated number may be chosen from candidates unlimited number of times.
+ * 
+ * - All numbers (including target) will be positive integers.
+ * - Numbers in a combination a1, a2, … , ak must be in non-descending order. (ie, a1 ≤ a2 ≤ … ≤ ak)
+ * - Different combinations can be in any order.
+ * - The solution set must not contain duplicate combinations.
+ * 
+ * 条件: 候选集可有重复数字, 每个候选项可选多次
+ * 要求: 结果集必须无重复
+ * 
+ * @Category 递归+回溯+去重
+ * @Idea
+ * 候选中可以有重复数字, 可能会产生重复组合, 必须去重答案
+ * 去重方法: 预处理先将候选数排序, 之后递归时跳过相邻重复候选数
+ * 
+ * 坑: 答案组合去重: 预处理排序候选数,每次递归前跳过相邻重复候选
+ * 坑: 排序预处理方便后面剪枝: 一旦候选数>target则不用再递归下去
+ * 坑: 每个候选项可选多次: 下一层递归的候选项起始位置和当前层一样 (若每个候选项只能选一次,i+1)
+ 
  */
 class Solution {
 public:
