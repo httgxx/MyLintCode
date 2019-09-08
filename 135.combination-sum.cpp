@@ -47,7 +47,28 @@ public:
      * @param target: An integer
      * @return: A list of lists of integers
      */
-    // S1: 递归+回溯 去重方法: 预处理排序重复候选
+    // S1: 递归+回溯 去重方法: 排序重之后跳过相邻的重复候选
+    vector<vector<int>> combinationSum(vector<int> &nums, int target) {
+        vector<int> out;
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());                   // !!!预处理: 排序(此处不用去除重复候选)
+        helper(nums, target, 0, out, res);
+        return res;
+    }
+    void helper(vector<int> &nums, int target, int start, vector<int>& out, vector<vector<int>>& res)
+    {
+        if (target == 0) { res.push_back(out); return; }  // 达到目标状态,记录结果,终止递归
+        for (int i = start; i < nums.size(); ++i) {       // [start,n-1]内每个候选依次来试
+            if (nums[i] > target) { return; }             // !!!剪枝1: 从小到大故遇到比target大的则不必再递归
+            if (i > start && nums[i] == nums[i - 1]) { continue; }  // !!!去重:跳过相邻重复数
+                                                                    // 注意:若无重复候选则不需要这一步
+                                                                    // 若每个候选只能选一次则一定不要这一步
+            out.push_back(nums[i]);                       // 选(原结果上加,不是拷贝后加)
+            helper(nums, target - nums[i], i, out, res);  // 递归(目标状态改变,可重复选故start不变
+            out.pop_back();                               // 回溯(恢复选前状态)
+        }
+    }
+    // S2: 递归+回溯 去重方法: 预处理排序重复候选
     vector<vector<int>> combinationSum1(vector<int> &nums, int target) {
         vector<int> out;
         vector<vector<int>> res;
@@ -69,28 +90,6 @@ public:
             if (nums[i] > target) { return; }             // 剪枝: 从小到大故遇到比target大的不用往下递归了
             out.push_back(nums[i]);                       // 选
             dfs(nums, target - nums[i], i, out, res);     // 递归(目标状态改变,可重复选故start不变
-            out.pop_back();                               // 回溯(恢复选前状态)
-        }
-    }
-    
-    // S2: 递归+回溯 去重方法: 排序重之后跳过相邻的重复候选
-    vector<vector<int>> combinationSum(vector<int> &nums, int target) {
-        vector<int> out;
-        vector<vector<int>> res;
-        sort(nums.begin(), nums.end());                   // !!!预处理: 排序(此处不用去除重复候选)
-        helper(nums, target, 0, out, res);
-        return res;
-    }
-    void helper(vector<int> &nums, int target, int start, vector<int>& out, vector<vector<int>>& res)
-    {
-        if (target == 0) { res.push_back(out); return; }  // 达到目标状态,记录结果,终止递归
-        for (int i = start; i < nums.size(); ++i) {       // [start,n-1]内每个候选依次来试
-            if (nums[i] > target) { return; }             // !!!剪枝1: 从小到大故遇到比target大的则不必再递归
-            if (i > start && nums[i] == nums[i - 1]) { continue; }  // !!!去重:跳过相邻重复数
-                                                                    // 注意:若无重复候选则不需要这一步
-                                                                    // 若每个候选只能选一次则一定不要这一步
-            out.push_back(nums[i]);                       // 选(原结果上加,不是拷贝后加)
-            helper(nums, target - nums[i], i, out, res);  // 递归(目标状态改变,可重复选故start不变
             out.pop_back();                               // 回溯(恢复选前状态)
         }
     }
