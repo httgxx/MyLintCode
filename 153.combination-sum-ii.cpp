@@ -21,9 +21,18 @@
  * - Different combinations can be in any order.
  * - The solution set must not contain duplicate combinations.
  * 
- * 条件: 候选集可有重复数字, 每个候选项可选多次
- * 要求: 结果集必须无重复
+ * Example 1:
+ * Input: num = [7,1,2,5,1,6,10], target = 8
+ * Output: [[1,1,6],[1,2,5],[1,7],[2,6]]
  * 
+ * Example 2:
+ * Input: num = [1,1,1], target = 2
+ * Output: [[1,1]]
+ * Explanation: The solution set must not contain duplicate combinations.
+ * 
+ * 条件: 候选集可有重复数字, 每个候选项可选1次
+ * 要求: 结果集必须无重复
+ *  
  * @Category 递归+回溯+去重
  * @Idea
  * 候选中可以有重复数字, 可能会产生重复组合, 必须去重答案
