@@ -76,10 +76,10 @@ public:
         if (target == 0) { res.push_back(out); return; }  // 达到目标状态,记录结果,终止递归
         for (int i = start; i < nums.size(); ++i) {       // [start,n-1]内每个候选依次来试
             if (nums[i] > target) { return; }             // !!!剪枝1: 从小到大故遇到比target大的则不必再递归
-            if (i > start && nums[i] == nums[i - 1]) { continue; }  // 去重:跳过相邻重复数
+            if (i > start && nums[i] == nums[i - 1]) { continue; }  // !!!去重:跳过相邻重复数
                                                                     // 注意:若无重复候选则不需要这一步
                                                                     // 若每个候选只能选一次则一定不要这一步
-            out.push_back(nums[i]);                       // 选
+            out.push_back(nums[i]);                       // 选(原结果上加,不是拷贝后加)
             helper(nums, target - nums[i], i, out, res);  // 递归(目标状态改变,可重复选故start不变
             out.pop_back();                               // 回溯(恢复选前状态)
         }
