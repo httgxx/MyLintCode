@@ -18,6 +18,14 @@
  * The **same** repeated number may be chosen from `candidates` unlimited
  * number of times.
  * 
+ * Example 1:
+ * Input: candidates = [2, 3, 6, 7], target = 7
+ * Output: [[7], [2, 2, 3]]
+ * 
+ * Example 2:
+ * Input: candidates = [1], target = 3
+ * Output: [[1, 1, 1]]
+ * 
  * 条件: 候选集可有重复数字, 每个候选项可选多次
  * 要求: 结果集必须无重复
  * e.g. 候选[2,2,3],2和3都可以选多次,[2,2,3]和[2,3,2]只能有一个
