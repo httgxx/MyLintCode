@@ -36,8 +36,8 @@ public:
         for (int i = start; i < nums.size(); ++i) {       // [start,n-1]内每个候选依次来试
             if (nums[i] > target) { return; }             // !!!剪枝:从小到大故若比target大则不必递归
             if (i > start && nums[i] == nums[i - 1]) { continue; }  // !!!去重: 跳过相邻重复候选
-            out.push_back(nums[i]);                       // 选(原结果上加,不是拷贝后加)
-            helper(nums, target - nums[i], i + 1, out, res);  // 递归(目标状态变+递归起始位置变)
+            out.push_back(nums[i]);                       // 选(原结果上加,不是拷贝后加,节省空间)
+            helper(nums, target - nums[i], i + 1, out, res);  // 递归(目标状态变,递归起始位置+1因为不能重复选)
             out.pop_back();                               // 回溯(恢复选前状态)
         }
     }
