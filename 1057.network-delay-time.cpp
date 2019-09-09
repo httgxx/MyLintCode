@@ -97,16 +97,16 @@ public:
         vector<int> dist(N + 1, INT_MAX);
         dist[K] = 0;
         for (int i = 0; i < N; ++i) {
-            for (auto e : times) {
+            for (auto e : times) {          // 访问每条边,若某边使得某邻居的dist更短则更新
                 int u = e[0], v = e[1], w = e[2];
                 if (dist[u] != INT_MAX && dist[v] > dist[u] + w) {
-                    dist[v] = dist[u] + w;
+                    dist[v] = dist[u] + w;  // DP
                 }
             }
         }
         for (int i = 1; i <= N; ++i) {
             res = max(res, dist[i]);
         }
-        return res == INT_MAX ? -1 : res;
+        return res == INT_MAX ? -1 : res;  // 如果不可达(K孤岛)则返回-1
     }
 };
