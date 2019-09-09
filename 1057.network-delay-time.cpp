@@ -96,7 +96,7 @@ public:
         int res = 0;
         vector<int> dist(N + 1, INT_MAX);
         dist[K] = 0;
-        for (int i = 0; i < N; ++i) {
+        for (int i = 1; i < N; ++i) {       // 每次循环至少relax一条边,总共N-1条边,所以循环N-1次
             for (auto e : times) {          // 访问每条边,若某边使得某邻居的dist更短则更新
                 int u = e[0], v = e[1], w = e[2];
                 if (dist[u] != INT_MAX && dist[v] > dist[u] + w) {
