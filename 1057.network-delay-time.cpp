@@ -62,7 +62,7 @@ public:
      * @return: how long will it take for all nodes to receive the signal
      */
     // S1: Dijkstra Algorithm  BFS, T=O(V^2) 单点到任意点最短路径的最大值
-    int networkDelayTime(vector<vector<int>> &times, int N, int K) {
+    int networkDelayTime1(vector<vector<int>> &times, int N, int K) {
         int res = 0;
         vector<vector<int>> edges(101, vector<int>(101, -1));
         for (auto e : times) edges[e[0]][e[1]] = e[2];      // 记录各边权重
@@ -92,5 +92,21 @@ public:
     }
 
     // S2: Bellman-Ford DP T=O(VE)
-    
+    int networkDelayTime(vector<vector<int>>& times, int N, int K) {
+        int res = 0;
+        vector<int> dist(N + 1, INT_MAX);
+        dist[K] = 0;
+        for (int i = 0; i < N; ++i) {
+            for (auto e : times) {
+                int u = e[0], v = e[1], w = e[2];
+                if (dist[u] != INT_MAX && dist[v] > dist[u] + w) {
+                    dist[v] = dist[u] + w;
+                }
+            }
+        }
+        for (int i = 1; i <= N; ++i) {
+            res = max(res, dist[i]);
+        }
+        return res == INT_MAX ? -1 : res;
+    }
 };
