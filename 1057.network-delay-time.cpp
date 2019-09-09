@@ -61,7 +61,7 @@ public:
      * @param K: an integer
      * @return: how long will it take for all nodes to receive the signal
      */
-    // Dijkstra Algorithm  BFS, T=O(V^2) 单点到任意点最短路径的最大值
+    // S1: Dijkstra Algorithm  BFS, T=O(V^2) 单点到任意点最短路径的最大值
     int networkDelayTime(vector<vector<int>> &times, int N, int K) {
         int res = 0;
         vector<vector<int>> edges(101, vector<int>(101, -1));
@@ -90,4 +90,7 @@ public:
         }
         return res == INT_MAX ? -1 : res;                   // 如果不可达(K孤岛)则返回-1
     }
+
+    // S2: Bellman-Ford DP T=O(VE)
+    
 };
