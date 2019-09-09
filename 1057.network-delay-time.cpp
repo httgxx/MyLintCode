@@ -65,7 +65,7 @@ public:
     int networkDelayTime(vector<vector<int>> &times, int N, int K) {
         int res = 0;
         vector<vector<int>> edges(101, vector<int>(101, -1));
-        for (auto e : times) edges[e[0]][e[1]] = e[2];      // 记录各边权重s
+        for (auto e : times) edges[e[0]][e[1]] = e[2];      // 记录各边权重
         vector<int> dist(N + 1, INT_MAX);                   // 初始K到个点路径长,K->K=0
         dist[K] = 0;
         queue<int> q{{K}};                                  // 从起点K开始分层遍历
