@@ -73,9 +73,9 @@ public:
             unordered_set<int> visited;                     // 当前层被访问过的结点
             for (int i = q.size(); i > 0; --i) {            // 倒减i以避免顺加时q.size()已变
                 int u = q.front(); q.pop();
-                for (int v = 1; v <= 100; ++v) {            // 当前层扩散
+                for (int v = 1; v <= 100; ++v) {            // 扩散到邻居
                     if (edges[u][v] != -1 &&
-                        dist[u] + edges[u][v] < dist[v]) {  // 发现新边可使邻居路径更短 K->u->v < K->v
+                        dist[u] + edges[u][v] < dist[v]) {  // 发现某边可某邻居路径更短 K->u->v < K->v
                         if (!visited.count(v)) {            // 标记以访问来避免重复访问
                             visited.insert(v); 
                             q.push(v);                      // 扩散点入队用于下一层扩散
