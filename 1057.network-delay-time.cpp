@@ -35,7 +35,7 @@
  * Explanation: Choose the shortest one.
  * 
  * 有向图最短路径:求单点K到每个点的最短路径的最大值
- * 核心思想:当有对边(u,v)是结点u到结点v,如果dist(v)>dist(u)+w(u,v),那么dist(v)就可被更新
+ * 思路:若有边(u,v)使dist(u)+w(u,v)<dist(v)则更新dist(v)
  * 
  * 方法一: Dijkstra Algorithm (单源最短路径 单点到任意点, 权重必须为正!)
  *   以起点为中心，向外层层扩展, 直到扩展到终点为止, 用visited数组记录已访问过的结点来避重
@@ -65,22 +65,22 @@ public:
     int networkDelayTime1(vector<vector<int>> &times, int N, int K) {
         int res = 0;
         vector<vector<int>> edges(101, vector<int>(101, -1));
-        for (auto e : times) edges[e[0]][e[1]] = e[2];      // 记录各边权重
-        vector<int> dist(N + 1, INT_MAX);                   // 初始K到个点路径长,K->K=0
+        for (auto e : times) edges[e[0]][e[1]] = e[2];      // 边=>权重, <v,u,w>=>[v,u]=w
+        vector<int> dist(N + 1, INT_MAX);                   // 点=>最小路径长度,点index=1~N,0不用,故大小=N+1
         dist[K] = 0;
-        queue<int> q{{K}};                                  // 从起点K开始分层遍历
+        queue<int> q{{K}};                                  // 从起点开始分层扩散
         while (!q.empty()) {
-            unordered_set<int> visited;                     // 当前层被访问过的结点
+            unordered_set<int> visited;                     // 当前层已经访问过的结点
             for (int i = q.size(); i > 0; --i) {            // 倒减i以避免顺加时q.size()已变
-                int u = q.front(); q.pop();
-                for (int v = 1; v <= 100; ++v) {            // 扩散到邻居
+                int u = q.front(); q.pop();                 // 当前点u为起点
+                for (int v = 1; v <= 100; ++v) {            // 对1~N每个点x都检查一遍,看u是否使d(x)更短
                     if (edges[u][v] != -1 &&
-                        dist[u] + edges[u][v] < dist[v]) {  // 发现某边可某邻居路径更短 K->u->v < K->v
-                        if (!visited.count(v)) {            // 标记以访问来避免重复访问
+                        dist[u] + edges[u][v] < dist[v]) {  // 一旦发现则更新d(x)为更短
+                        if (!visited.count(v)) {            // 标记检查的点x为已被访问,防止重复访问
                             visited.insert(v); 
-                            q.push(v);                      // 扩散点入队用于下一层扩散
+                            q.push(v);                      // 更新过最短路径的x被放入队列来更新下一层
                         }
-                        dist[v] = dist[u] + edges[u][v];    // 更新邻居最小路径
+                        dist[v] = dist[u] + edges[u][v];    // 更新d(x)
                     }
                 }
             }
