@@ -65,20 +65,20 @@ public:
     int networkDelayTime1(vector<vector<int>> &times, int N, int K) {
         int res = 0;
         vector<vector<int>> edges(101, vector<int>(101, -1));
-        for (auto e : times) edges[e[0]][e[1]] = e[2];      // 边=>权重, <v,u,w>=>[v,u]=w
-        vector<int> dist(N + 1, INT_MAX);                   // 点=>最小路径长度,点index=1~N,0不用,故大小=N+1
+        for (auto e : times) edges[e[0]][e[1]] = e[2];      // 整理输入:边=>权重, <v,u,w>=>[v,u]=w
+        vector<int> dist(N + 1, INT_MAX);                   // 预备输出:点=>最小路径长度,点index=1~N,0不用,故大小=N+1
         dist[K] = 0;
         queue<int> q{{K}};                                  // 从起点开始分层扩散
         while (!q.empty()) {
             unordered_set<int> visited;                     // 当前层已经访问过的结点
             for (int i = q.size(); i > 0; --i) {            // 倒减i以避免顺加时q.size()已变
                 int u = q.front(); q.pop();                 // 当前点u为起点
-                for (int v = 1; v <= 100; ++v) {            // 对1~N每个点x都检查一遍,看u是否使d(x)更短
+                for (int v = 1; v <= 100; ++v) {            // 对1~N每个点v(包括v==u)都查一遍看u是否使d(v)更短
                     if (edges[u][v] != -1 &&
-                        dist[u] + edges[u][v] < dist[v]) {  // 一旦发现则更新d(x)为更短
-                        if (!visited.count(v)) {            // 标记检查的点x为已被访问,防止重复访问
+                        dist[u] + edges[u][v] < dist[v]) {  // 一旦发现u使d(v)更短则更新d(v)
+                        if (!visited.count(v)) {            // 防止重复访问v
                             visited.insert(v); 
-                            q.push(v);                      // 更新过最短路径的x被放入队列来更新下一层
+                            q.push(v);                      // 更新过d(v)的v入队下一层更新因v可能可使d(x)更短
                         }
                         dist[v] = dist[u] + edges[u][v];    // 更新d(x)
                     }
