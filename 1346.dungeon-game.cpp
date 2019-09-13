@@ -67,7 +67,7 @@ public:
      * @param dungeon: a 2D array
      * @return: return a integer
      */
-    // DP + 倒推  T=O(mn) S=O(mn)
+    // S1: DP + 倒推  T=O(mn) S=O(mn)
     int calculateMinimumHP(vector<vector<int>> &dungeon) {
         int m = dungeon.size(), n = dungeon[0].size();
         vector<vector<int>> dp(m + 1, vector<int>(n + 1, INT_MAX));  // dp[i][j]表示进入房间[i][j]时需要的最少血量
@@ -81,5 +81,18 @@ public:
             }
         }
         return dp[0][0]; // 倒推出进入第一个房间时需要的最少血量 
+    }
+
+    // S2: 空间优化 T=O(mn), S=O(n)
+    int calculateMinimumHP2(vector<vector<int>>& dungeon) {
+        int m = dungeon.size(), n = dungeon[0].size();
+        vector<int> dp(n + 1, INT_MAX);
+        dp[n - 1] = 1;
+        for (int i = m - 1; i >= 0; --i) {
+            for (int j = n - 1; j >= 0; --j) {  // 必须倒循环才能如此空间优化,因要先算后面的房间再算前面的房间,后房间的值会被前房间的值覆盖
+                dp[j] = max(1, min(dp[j], dp[j + 1]) - dungeon[i][j]);
+            }
+        }
+        return dp[0];
     }
 };
