@@ -50,6 +50,16 @@
  * Output: 3
  * Explanation: The path right -> down -> down -> right is the best.
  * 
+ * @Category DP
+ * @Idea
+ * DP + 倒推  T=O(mn) S=O(mn)
+ * dp[i][j]表示进入房间[i][j]时需要的最少血量
+ * dp[m+1][n+1]多留1行1列好处理dp公式中[m][]和[][n]边界情况
+ * 初始化最后: dp[m][n - 1] = dp[m-1][n] = 1
+ * 
+ * 入当前房间时需最少血量>=1且>=入下个房间时需最少血量-当前房间耗血量
+ * dp[i][j]=max(1, min(dp[i+1][j], dp[i][j+1]) - dungeon[i][j])
+ * 
  */
 class Solution {
 public:
@@ -57,16 +67,17 @@ public:
      * @param dungeon: a 2D array
      * @return: return a integer
      */
-    // DP + 倒推
+    // DP + 倒推  T=O(mn) S=O(mn)
     int calculateMinimumHP(vector<vector<int>> &dungeon) {
         int m = dungeon.size(), n = dungeon[0].size();
         vector<vector<int>> dp(m + 1, vector<int>(n + 1, INT_MAX));  // dp[i][j]表示进入房间[i][j]时需要的最少血量
-                                                                     // 多留1行1列好处理dp公式中[m-1]和[n-1]边界情况
+                                                                     // 多留1行1列好处理dp公式中[m][]和[][n]边界情况
         dp[m][n - 1] = dp[m-1][n] = 1;                               // 入房间[m-1][n-1]屠龙后需活着则从房间[m-1][n-1]出来时血量>=1 
                                                                      // 可设立dummy右房间[m-1][n]和下房间[m][n-1]且进入时最少血量=1
         for (int i = m - 1; i >= 0; --i) {
             for (int j = n - 1; j >= 0; --j) {
-                dp[i][j] = max(1, min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]); // 入当前房间时需最少血量>=1且>=入下个房间时需最少血量-当前房间耗血量
+                dp[i][j] = max(1,                                    // 入当前房间时需最少血量>=1且>=入下个房间时需最少血量-当前房间耗血量
+                               min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]);
             }
         }
         return dp[0][0]; // 倒推出入第一个房间时需要的最少血量 
