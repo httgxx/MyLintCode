@@ -51,17 +51,17 @@ public:
         vector<Interval> res;
         int n = intervals.size(), cur = 0;
         for (int i = 0; i < n; ++i) {
-            if (intervals[i].end < newInterval.start) {                     // [当前]<[新],不重叠,加[当前]到res,且插入[新]的位置后移
+            if (intervals[i].end < newInterval.start) {         // [当前]<[新],不重叠,加[当前]到res,且插入[新]的位置后移
                 res.push_back(intervals[i]);
                 ++cur;
-            } else if (intervals[i].start > newInterval.end) {              // [新]<[当前],不重叠,加[当前]到res,但插入[新]的位置不变
+            } else if (intervals[i].start > newInterval.end) {  // [新]<[当前],不重叠,加[当前]到res,但插入[新]的位置不变
                 res.push_back(intervals[i]);
-            } else {                                                    // 有重叠,合并[当前]到[新],暂时不加入res
+            } else {                                            // 有重叠,合并[当前]到[新],暂时不加入res
                 newInterval.start = min(newInterval.start, intervals[i].start);  
                 newInterval.end = max(newInterval.end, intervals[i].end);
             }
         }
-        res.insert(res.begin() + cur, newInterval);                     // 在要插[新]的地方插入[新]
+        res.insert(res.begin() + cur, newInterval);             // 在要插[新]的地方插入[新]
         return res;
     }
 };
