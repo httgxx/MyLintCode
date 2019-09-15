@@ -50,14 +50,14 @@ public:
      * @return: A new interval list.
      */
     // T=O(n) S=O(n)
-    static bool cmp(Interval i1, Interval i2) 
+    static bool cmp(Interval i1, Interval i2)           // 必须自定义且static
     { 
         return (i1.start < i2.start); 
     } 
     vector<Interval> merge(vector<Interval> &intervals) {
         if (intervals.empty()) return {};
-        sort(intervals.begin(), intervals.end(), cmp);  // 先按照start排序
-        vector<Interval> res {intervals[0]};            // 第1个区间入结果集 //坑初始化用{}而不是()
+        sort(intervals.begin(), intervals.end(), cmp);  // 先按照start排序  //坑: 自定义结构Interval故需自定义static cmp
+        vector<Interval> res {intervals[0]};            // 第1个区间入结果集 //坑: 初始化用{}而不是()
         for (int i = 1; i < intervals.size(); ++i) {    // 从第2个区间开始
             if (res.back().end < intervals[i].start) {  // 和当前最后区间比
                 res.push_back(intervals[i]);            // 无重叠则加到最后
