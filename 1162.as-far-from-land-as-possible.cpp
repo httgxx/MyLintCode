@@ -48,33 +48,30 @@ public:
     // T=O(m*n*n) m=land的个数 S=O(n)
     int maxDistance(vector<vector<int>>& g) {
         int n = g.size(), dist = 0;         // 坑: dist从0开始!!!
-        vector<pair<int, int>> dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         queue<pair<int, int>> q, q1;
         for (auto i = 0; i < n; ++i) {      // 初始化:所有land入队
             for (auto j = 0; j < n; ++j) {
-                if (g[i][j] == 1) {
-                    for (auto dir : dirs) {
-                        q.push({i + dir.first, j + dir.second});
-                    }
-                }
+                if (g[i][j] == 1) { q.emplace(i, j); }  //q.push({i, j});
             }
         }
+        vector<pair<int,int>> dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         while (!q.empty()) {
-            ++dist; // 坑:先增加dist再赋值给找到的water
-            while (!q.empty()) {
-                int i = q.front().first, j = q.front().second;
+            for (int k = q.size(); k > 0; --k) {            // 坑k>0不是k>=0
+                auto [i, j] = q.front();                    // 简化int i = q.front().first, j = q.front().second;
                 q.pop();
-                if (i >= 0 && j >= 0 && i < n && j < n && g[i][j] == 0) { // 找到新water则立即更新其最小离地距离
-                    g[i][j] = dist;
-                    for (auto dir : dirs) {
-                        q1.push({i + dir.first, j + dir.second});
+                if(g[i][j] >1) { dist = g[i][j]; }          // 上一层已访问过[i,j]用其初始化这一层dist 
+                for(const auto& dir: dirs){                 // 递归访问邻居找新water
+                    auto [x, y] = dir;
+                    int ii = i + x, jj = j + y;             // 坑: 用新的var而不改变i和j,以便于循环使用
+                    if(ii >= 0 && ii < n && jj >= 0 && jj < n && !g[ii][jj]) {   // !x比x==0的code简短
+                        g[ii][jj] = g[i][j] + 1;            // 找到新water,立即更新其最小离地距离
+                        q.emplace(ii, jj);                  // q.push({ii, jj}); // 新water入队
                     }
                 }
             }
-            swap(q1, q); // 交换reference
         }
-        return dist == 1 ? -1 : dist - 1;
-    }
+        return dist - 1;
+    } 
 
     // S2: DFS T=O(m*n*n) m=land数量,n=grid边长, S=O(n)  // Timeout!!!
     // 从每个land出发上下左右四方向走到底,更新water的最小离地距离,直到所有water都被访问过
