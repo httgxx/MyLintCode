@@ -44,7 +44,7 @@
  */
 class Solution {
 public:
-    // S1 BFS: 从每个land出发分层同步扩散 + 双队列方便debug?
+    // S1 BFS: 从每个land出发分层同步扩散
     // T=O(m*n*n) m=land的个数 S=O(n)
     int maxDistance(vector<vector<int>>& g) {
         int n = g.size(), dist = 0;         // 坑: dist从0开始!!!
