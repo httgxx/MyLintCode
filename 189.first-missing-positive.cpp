@@ -40,25 +40,37 @@ public:
      * @param A: An array of integers
      * @return: An integer
      */
-    // S1: 从左扫到右,若A[i]=i+1继续,否则交换A[i]=j和A[j-1]使得A[j-1]=j,再看
-    //int firstMissingPositive(vector<int> &A) {
-        
-    //}
+    // S1: 从左扫到右,若A[i-1]=i继续,否则交换A[i-1]=j和A[j-1]使得A[j-1]=j
+    // 再扫一遍找最小的A[i-1]!=i则i即为最小缺失正数,若1~n都不缺则最小缺失n+1
+    // T=O(n) S=O(1)
+    int firstMissingPositive(vector<int> &nums) {
+        int n = nums.size();
+        for (int i = 0; i < n; ++i) {
+            while (nums[i] > 0 && nums[i] <= n &&  // 只处理/交换1~n,其他的数会被留在/交换到缺失数字该待的位置上
+                   nums[nums[i] - 1] != nums[i]) { // expect A[i-1]=i
+                swap(nums[i], nums[nums[i] - 1]);  // 交换使得A[j-1]=j,交换后下一轮while继续检查换到i位置的新A[i]
+            }
+        }
+        for (int i = 1; i <= n; ++i) {
+            if (nums[i - 1] != i) { return i; }     // 找到最小缺失正数
+        }
+        return n + 1;                               // 1~n都不缺,则最小缺n+1
+    }
 
-
-    // S2: Set存所有数字并找出max,从1到max找最小缺的正数,1到max都有则返回max+1 // T=O(n) S=O(n)
-    int firstMissingPositive(vector<int>& nums) {
+    // S2: Set存所有数字并找出max,从1到max找最小缺的正数,1到max都有则返回max+1
+    // T=O(n) S=O(n)
+    int firstMissingPositive2(vector<int>& nums) {
         int mx = 0;
         unordered_set<int> s;
         for (int num : nums) {
-            if (num <= 0) continue;
+            if (num <= 0) { continue; }     // 坑: 记得跳过负数!!
             s.insert(num);
-            mx = max(mx, num);
+            mx = max(mx, num);              // 用set去重和找最大正数
         }
-        for (int i = 1; i <= mx; ++i) {
-            if (!s.count(i)) return i;
+        for (int i = 1; i <= mx; ++i) {     // 从1~max找最小缺失正数
+            if (!s.count(i)) { return i; }  // 找到最小缺失正数
         }
-        return mx + 1;
+        return mx + 1;                      // 1~max都有则最小缺max+1
     }
 
 };
