@@ -33,6 +33,8 @@
  *     然后再从头扫描一次数组看哪一个位置i上不是i+1,则i就是最小缺的正数     // T=O(n) S=O(1)
  * S2: Set存所有数字并找出max,从1到max找最小缺的正数,1到max都有则返回max+1 // T=O(n) S=O(n)
  * 
+ * 坑: 记得跳过非正数
+ * 坑: 1~max都有则最小缺max+1
  */
 class Solution {
 public:
@@ -54,7 +56,7 @@ public:
         for (int i = 1; i <= n; ++i) {
             if (nums[i - 1] != i) { return i; }     // 找到最小缺失正数
         }
-        return n + 1;                               // 1~n都不缺,则最小缺n+1
+        return n + 1;                               // 坑: 1~n都不缺,则最小缺n+1
     }
 
     // S2: Set存所有数字并找出max,从1到max找最小缺的正数,1到max都有则返回max+1
@@ -63,14 +65,14 @@ public:
         int mx = 0;
         unordered_set<int> s;
         for (int num : nums) {
-            if (num <= 0) { continue; }     // 坑: 记得跳过负数!!
+            if (num <= 0) { continue; }     // 坑: 记得跳过非正数!!
             s.insert(num);
             mx = max(mx, num);              // 用set去重和找最大正数
         }
         for (int i = 1; i <= mx; ++i) {     // 从1~max找最小缺失正数
             if (!s.count(i)) { return i; }  // 找到最小缺失正数
         }
-        return mx + 1;                      // 1~max都有则最小缺max+1
+        return mx + 1;                      // 坑:1~max都有则最小缺max+1
     }
 
 };
