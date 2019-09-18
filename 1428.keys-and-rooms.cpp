@@ -43,6 +43,8 @@
  * S1: BFS + visited set
  * S2: DFS
  * 
+ * 坑: 最后一定别忘检查是否有孤岛!!! return visited.size() == rooms.size(); 
+ * 
  */
 class Solution {
 public:
@@ -52,7 +54,7 @@ public:
      */
     // S1: BFS + visited set
     // T=O(n) S=O(n) n为总结点数
-    bool canVisitAllRooms(vector<vector<int>> &rooms) {
+    bool canVisitAllRooms1(vector<vector<int>> &rooms) {
         unordered_set<int> visited{{0}};
         queue<int> q{{0}};                                          // 从起始点出发
         while (!q.empty()) {
@@ -65,5 +67,20 @@ public:
             }
         }
         return visited.size() == rooms.size();                      // 坑: 检查是否有孤岛!!!
+    }
+    // S2: BFS + visited set
+    // T=O(n) S=O(n) n为总结点数
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        unordered_set<int> visited;
+        dfs(rooms, 0, visited);
+        return visited.size() == rooms.size();  // 坑: 检查是否有孤岛!!!
+    }
+    void dfs(vector<vector<int>>& rooms, int cur, unordered_set<int>& visited) {
+        visited.insert(cur);                    // 先标记为访问过
+        for (int key : rooms[cur]) {            // 再扩展到下一层
+            if (!visited.count(key)) {          // 没访问过就递归
+                dfs(rooms, key, visited);       // 扩展到的新起点
+            }
+        }
     }
 };
