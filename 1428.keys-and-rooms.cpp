@@ -68,7 +68,7 @@ public:
         }
         return visited.size() == rooms.size();                      // 坑: 检查是否有孤岛!!!
     }
-    // S2: BFS + visited set
+    // S2: DFS + visited set
     // T=O(n) S=O(n) n为总结点数
     bool canVisitAllRoomsDFS(vector<vector<int>>& rooms) {
         unordered_set<int> visited;
@@ -79,7 +79,7 @@ public:
         visited.insert(cur);                    // 先标记为访问过
         for (int key : rooms[cur]) {            // 再扩展到下一层
             if (!visited.count(key)) {          // 没访问过就递归
-                dfs(rooms, key, visited);       // 扩展到的新起点
+                dfs(rooms, key, visited);       // 用新起点来递归
             }
         }
     }
