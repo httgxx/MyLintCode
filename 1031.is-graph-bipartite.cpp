@@ -56,7 +56,7 @@ public:
      * @param graph: the given undirected graph
      * @return:  return true if and only if it is bipartite
      */
-    // S1: 染色法 T=O(V) S=(|E|)
+    // S1: 染色法 T=O(|E|)边数 S=O(|V|)点数 
     bool isBipartite(vector<vector<int>> &graph) {
         vector<int> colors(graph.size());           // 0=unvisited, 1=black, 2=white
         for (int i = 0; i < graph.size(); ++i) {    // 每个顶点都得作为起点BFS一次
