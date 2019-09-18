@@ -66,7 +66,7 @@ public:
             while (!q.empty()) {                
                 int t = q.front(); q.pop();
                 for (auto a : graph[t]) {           // 将当前顶点的每个邻居都设成不同的颜色
-                    if (colors[a] == colors[t]) { return false; }  // 一旦发现邻居同色则非二分图,终止递归
+                    if (colors[a] == colors[t]) { return false; }  // 发现邻居同色则非二分图,结束
                     if (colors[a] == 0) {           // 邻居第一次被访问
                         colors[a] = -1 * colors[t]; // 邻居设成和当前相反的颜色
                         q.push(a);                  // 进队递归
@@ -74,6 +74,6 @@ public:
                 }
             }
         }
-        return true;
+        return true;                                // 坑: 记得返回true!!!!
     }
 };
