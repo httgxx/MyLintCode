@@ -44,7 +44,7 @@
  * 3----2
  * We cannot find a way to divide the set of nodes into two independent subsets.
  *
- * @Category Graph-color grouping
+ * @Category Graph - vertices grouping/coloring
  * @Idea 染色法 0=unvisited, 1=black 2=white
  * S1: BFS 从某点出发设成col1,访问其所有邻居并都设为不同颜色col2,再将这些邻居入队进入下一层
  *     将这些邻居的邻居设为和邻居不同的颜色col1, 一旦发现邻居和当前点同色则不是二分图
