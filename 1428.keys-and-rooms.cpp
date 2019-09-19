@@ -40,8 +40,10 @@
  * Explanation: We can't enter the room with number 2.
  * 
  * @Category Graph DFS BFS
+ * @Idea T=O(|V|+|E|) S=O(|V|)
  * S1: BFS + visited set
- * S2: DFS
+ * S2: DFS + visited set
+ * 坑:在循环内检查是否访问过!!!
  * 
  * 坑: 最后一定别忘检查是否有孤岛!!! return visited.size() == rooms.size(); 
  * 
@@ -62,7 +64,7 @@ public:
             for (int key : rooms[t]) {                              // 扩展到下一层
                 if (visited.count(key)) { continue; }               // 跳过访问过的
                 visited.insert(key);                                // 标记为访问过
-                if (visited.size() == rooms.size()) { return true; }// 全部访问完,完结
+                if (visited.size() == rooms.size()) { return true; }// 全部访问完,完结 //DFS中没有
                 q.push(key);                                        // 没全访问完,继续
             }
         }
@@ -77,8 +79,8 @@ public:
     }
     void dfs(vector<vector<int>>& rooms, int cur, unordered_set<int>& visited) {
         visited.insert(cur);                    // 先标记为访问过
-        for (int key : rooms[cur]) {            // 再扩展到下一层
-            if (!visited.count(key)) {          // 没访问过就递归
+        for (int key : rooms[cur]) {            // 再扩展到下一层 // 坑:在循环内检查是否访问过!!!
+            if (!visited.count(key)) {          // 没访问过就递归 // 和BFS检查不一样
                 dfs(rooms, key, visited);       // 用新起点来递归
             }
         }
