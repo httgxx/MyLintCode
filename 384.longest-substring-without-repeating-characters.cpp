@@ -29,7 +29,8 @@
  * 
  * @Category Sliding Window
  * @Idea hashtable + sliding window
- * S1: hashtable记录字符最后出现位置, 若右边界上字符已经在窗口内出现过(即该字符前一次出现的位置>左边界),推进左边界到右边界
+ * S1: hashtable记录字符最后出现位置, 若右边界上入窗字符已出现在窗内(即上次出现位置>=左边界),
+ *     推进左边界到该字符上次出现位置+1,使上次出现的该字符出窗,并更新该字符最后出现位置=右边界
  * T=O(n) S=O(1)
  */
 class Solution {
@@ -42,10 +43,10 @@ public:
         int res = 0, left = 0;
         unordered_map<char, int> m;
         for (int right = 0; right < s.length(); ++right) {
-            if (m.count(s[right]) && m[s[right]] >= left) { 
-                left = m[s[right]] + 1;
+            if (m.count(s[right]) && m[s[right]] >= left) { // 若右边界上入窗字符已出现在窗内(即上次出现位置>=左边界)
+                left = m[s[right]] + 1;                     // 推进左边界到该字符上次出现位置+1使上次出现的该字符出窗
             }
-            m[s[right]] = right;
+            m[s[right]] = right;                            // 更新该字符的最后出现位置
             res = max(res, right - left + 1);
         }
         return res;
