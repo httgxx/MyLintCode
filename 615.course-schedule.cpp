@@ -29,10 +29,9 @@
  * Output: false
  * 
  * @Category Topologic Sort
- * @Idea
+ * @Idea 拓扑排序 T=O(|V|+|E|), S=O(|V|)
  * 所有入度为0的点入队列,依次取出各点并将依赖该点的邻居点入度-1,若邻居入度变为0则也入队列
  * 用一个counter同步统计入度为0的点的个数, 最后检查是否counter==总点数
- * 
  */
 class Solution {
 public:
