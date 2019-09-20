@@ -51,13 +51,14 @@ public:
     }
     int partition(vector<int> & nums, int left, int right) {// 按pivot分区=>左>=pivot>=右=>将pivot归位到降序排序后该在的pos
         int pivot = nums[left], l = left + 1, r = right;    // 选最左为pivot,剩下区域最左和最右各站1哨兵
-        while (l <= r) {                                    // 循环处理直到2哨兵交错
+        while (l <= r) {                                    // 循环处理直到2哨兵第一次交错
             if (nums[l] < pivot && nums[r] > pivot) {       // [l]<pivot<[r]同时满足时,左>=pivot>=右的特性被破坏
                 swap(nums[l], nums[r]);                     // 交换2哨兵所在位置的值,修复左>=pivot>=右的特性
             }                                               // 注: 同时满足条件才交换,避免了[l]==[r]时没必要的交换
             if (nums[l] >= pivot) { ++l; }                  // 先左哨兵一直右走,直到左>=pivot特性被破坏,找到第一个左<pivot
             if (nums[r] <= pivot) { --r; }                  // 再右哨兵一直左走,直到右<=pivot特性被破坏,找到第一个右>pivot
-                                                            // 注: 两比较都带=,这样若有同pivot的值,左右哨兵都会跳过,
+                                                            // 注: 两比较都带=,这样若有同pivot的值,左右哨兵都会跳过
+                                                            // 注: 每次两个哨兵都只走1步,这样第一次交错就会终止循环
         }                                                   
         swap(nums[left], nums[r]);                          // 最后交换pivot([left])和2哨兵相遇位置r的值[r] 坑:不是[right]
                                                             // 极端情况:如11,最终r移到最左端,pivot和自己交换,也不会出错
