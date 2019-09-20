@@ -26,9 +26,11 @@
  * 
  * @Category TopK  QuickSort / Heap
  * 
- * S1: QuickSort
+ * S1: QuickSort快排变体 T=O(n) S=O(1) 
+ * 找第K大,则在从大到小倒序数列中(K-1)位置上 (无第0大,第1大=[0],第k大=[k-1])
+ * 注: 快排即全部都排时avg T=O(nlogn) 但这里只找第K大而不用全部都排序,每次只用去左子区或者右子区递归
+ *     故时间复杂度T=O(1+n/2+n/4+...)=O(n)
  * 
- * S2: Heap
  * 
  * 
  */
@@ -39,13 +41,15 @@ public:
      * @param nums: An array
      * @return: the Kth largest element
      */
-    // S1: 快排变体 T=O(n) S=O(1) // 注:快排即全部都排时avg T=O(nlogn)
-    //     不用全部都排序,每次只用去左子区或者右子区递归,T=O(1+n/2+n/4+...)=O(n)
-    int kthLargestElement(int k, vector<int> &nums) {
-        int left = 0, right = nums.size() - 1;
-        while (true) {                                      // 注: 不用全部都排序,故每次只用去1个子区递归O(1+n/2+n/4+...=n)
+    // S1: 快排变体 T=O(n) S=O(1) 
+    //     找第K大,则在从大到小倒序数列中(K-1)位置上 (无第0大,第1大=[0],第k大=[k-1])
+    // 注: 快排即全部都排时avg T=O(nlogn) 但这里只找第K大而不用全部都排序,每次只用去左子区或者右子区递归
+    //     T=O(1+n/2+n/4+...)=O(n)
+    int kthLargestElement(int k, vector<int> &nums) {       // 找第K大,则在从大到小倒序数列中(K-1)位置上 (无第0大,第1大=[0],第k大=[k-1])
+        int left = 0, right = nums.size() - 1;              
+        while (true) {                                      // 注: 不用全部都排序,每次只用去1个子区递归T=O(1+n/2+n/4+...=n)
             int pos = partition(nums, left, right);         // 按pivot分区,使左>=pivot>=右,即pivot归位到降序排序后该在的pos
-            if (pos == k - 1) { return nums[pos]; }         // pos正好在第K大,返回pivot (无第0大,第1大=[0],第k大=[k-1])
+            if (pos == k - 1) { return nums[pos]; }         // pos正好在第K大,返回pivot
             if (pos > k - 1) { right = pos - 1; }           // pos在第K大右边,去pos左边递归找第K大,将新pivot归位到新pos
             else { left = pos + 1; }                        // pos在第K大左边,去pos右边递归找第K大,将新pivot归位到新pos
         }
@@ -57,7 +61,6 @@ public:
         while(l != r) {                                     // 从左右两边交替扫描，直到左右相遇
             while(r > l && nums[r] <= pivot) { --r; }       // 从右往左扫,找到第1个比pivot小的
             swap(nums[l], nums[r]);                         // 找到后与左指针的值交换  // 坑: swap([l]],[r])而不是[l]=[r]
-
             while(l < r && nums[l] >= pivot) { ++l; }       // 从左往右扫,找到第一个比pivot小的
             swap(nums[l], nums[r]);                         // 找到后与右指针的值交换  // 坑: swap([l]],[r])而不是[l]=[r]
         }
