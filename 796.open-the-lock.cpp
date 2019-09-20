@@ -74,7 +74,7 @@ public:
     // BFS 迷宫最短路径+障碍物
     int openLock(vector<string> &deadends, string &target) {
         unordered_set<string> deadlock(deadends.begin(), deadends.end());
-        if (deadlock.count("0000")) { return -1; }                 
+        if (deadlock.count("0000")) { return -1; }                      // 坑: 起始值也可能死锁!!!                 
         int res = 0;
         unordered_set<string> visited{{"0000"}};
         queue<string> q{{"0000"}};
