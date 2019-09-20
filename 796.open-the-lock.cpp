@@ -83,7 +83,7 @@ public:
             for (int k = q.size(); k > 0; --k) {
                 auto t = q.front(); q.pop();
                 for (int i = 0; i < t.size(); ++i) {
-                    for (int j = -1; j <= 1; ++j) {
+                    for (int j = -1; j <= 1; ++j) {                     // 4位数字每位分别加1减1=>共8个邻居
                         if (j == 0) { continue; }                       // 须+1或-1,跳过+0
                         string str = t;
                         str[i] = ((t[i] - '0') + 10 + j) % 10 + '0';    // 变换后的值,处理9+1=>0和0-1=>9的情况
