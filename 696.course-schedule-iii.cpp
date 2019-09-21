@@ -48,16 +48,16 @@ public:
      */
     // S1: 优先队列(最大堆) T=O(nlogn) S=O(n)
     int scheduleCourse(vector<vector<int>> &courses) {
-        sort(courses.begin(), courses.end(),    // 按结束时间排序 // 坑:比较器
+        sort(courses.begin(), courses.end(),    // 按结束时间先后排序 // 坑:比较器
             [](vector<int> & a, vector<int> & b) { return a[1] < b[1]; });
             
         int curTime = 0;
         priority_queue<int> q;
         for (auto course : courses) {
-            q.push(course[0]);                  // 课程耗时入堆来找最耗时的课
-            curTime += course[0];               // 这门课啥时能上完
-            if (curTime > course[1]) {          // 若这门课结束后才能上完
-                curTime -= q.top(); q.pop();    // 取消目前最耗时的那门课腾出时间上更多别的课
+            q.push(course[0]);                  // 课程耗时入堆,来找最耗时的课
+            curTime += course[0];               // 啥时能上完
+            if (curTime > course[1]) {          // 没上完课就结束了
+                curTime -= q.top(); q.pop();    // 取消当前最耗时的课,腾时间上更多别的课
             }
         }
         return q.size();                        // 坑:不出堆的都能上完
