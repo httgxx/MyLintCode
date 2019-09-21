@@ -23,7 +23,6 @@
  * 
  * Challenge: O(n) time, O(1) extra memory.
  * 
- * 
  * @Category TopK  QuickSort / Heap
  * 
  * S1: QuickSort快排变体 T=O(n) S=O(1) 
@@ -43,7 +42,7 @@ public:
      */
     // S1: 快排变体 T=O(n) S=O(1) 
     //     找第K大,则在从大到小倒序数列中(K-1)位置上 (无第0大,第1大=[0],第k大=[k-1])
-    // 注: 快排即全部都排时avg T=O(nlogn) 但这里只找第K大而不用全部都排序,每次只用去左子区或者右子区递归
+    // 注: 快排即全部都排时avgT=O(nlogn) 但这里只找第K大而不用全部都排序,每次只用去左子区或者右子区递归
     //     T=O(1+n/2+n/4+...)=O(n)
     int kthLargestElement(int k, vector<int> &nums) {       // 找第K大,则在从大到小倒序数列中(K-1)位置上 (无第0大,第1大=[0],第k大=[k-1])
         int left = 0, right = nums.size() - 1;              
@@ -84,5 +83,4 @@ public:
                                                             // 极端情况:如11,最终r移到最左端,pivot和自己交换,也不会出错
         return r;                                           // 返回pivot交换后的最终位置,即排序后该在的位置
     }
-
 };
