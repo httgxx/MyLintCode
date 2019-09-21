@@ -43,8 +43,8 @@
  * DP T=O(mn) S=O(mn)
  * dp[i][j]表示S[0,i)到T[0,j)的edit distance
  * dp[i][j]=
- * 1) if s[i-1]==t[j-1]: dp[i][j]=dp[i-1][j-1]
- * 2) if s[i-1]!=t[j-1]: min(dp[i-1][j], min(dp[i-1][j-1], dp[i][j-1])) + 1
+ * 1) if s[i-1]==t[j-1]: dp[i-1][j-1]
+ * 2) if s[i-1]!=t[j-1]: min(dp[i-1][j], min(dp[i-1][j-1], dp[i][j-1])) + 1xx
  * Explanation:
  * Let's say we have 2 words "abcde" and "fghij", and we already know the min distance from "abcd" to "fgh".
  * a b c d
@@ -79,6 +79,9 @@ public:
      * @param word2: A string
      * @return: The minimum number of steps.
      */
+    // DP: dp[i][0]=i,dp[0][j]=j
+    // dp[i>0][j>0]= w1[i-1]==w2[j-1] ? dp[i-1][j-1] : 1 + min(dp[i-1][j-1],min(dp[i-1][j],dp[i][j-1]))
+    // T=O(mn) S=O(mn)
     int minDistance(string &word1, string &word2) {
         int m = word1.length(), n = word2.length();
         vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
