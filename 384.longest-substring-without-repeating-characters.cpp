@@ -39,15 +39,17 @@ public:
      * @param s: a string
      * @return: an integer
      */
+    // Sliding window
+    // T=O(n) S=O(n)
     int lengthOfLongestSubstring(string &s) {
         int res = 0, left = 0;
-        unordered_map<char, int> m;
+        unordered_map<char, int> m;                         // 记录字符最后一次出现的位置
         for (int right = 0; right < s.length(); ++right) {
             if (m.count(s[right]) && m[s[right]] >= left) { // 若右边界上入窗字符已出现在窗内(即上次出现位置>=左边界)
                 left = m[s[right]] + 1;                     // 推进左边界到该字符上次出现位置+1使上次出现的该字符出窗
             }
             m[s[right]] = right;                            // 更新该字符的最后出现位置
-            res = max(res, right - left + 1);
+            res = max(res, right - left + 1);               // 更新最大长度
         }
         return res;
     }
