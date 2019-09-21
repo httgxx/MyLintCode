@@ -38,22 +38,41 @@ public:
      * @param word2: a string
      * @return: return a integer
      */
-    // DP T=O(n1*n2) S=O(n1*n2)
+    // S1: DP T=O(n1*n2) S=O(n1*n2)
+    // dp[i][j]表示w1前i变w2前j最少删除次数
     int minDistance(string &w1, string &w2) {
         int n1 = w1.length(), n2 = w2.length();
-        vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, 0)); // 须初始化
-        for (int i = 0; i <= n1; ++i) dp[i][0] = i;             // 非空word变空需要len(word)次删除操作
-        for (int j = 0; j <= n2; ++j) dp[0][j] = j;             // 非空word变空需要len(word)次删除操作
+        vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, 0));     // dp[i][j]表示w1前i变w2前j最少删除次数
+        for (int i = 0; i <= n1; ++i) { dp[i][0] = i; }
+        for (int j = 0; j <= n2; ++j) { dp[0][j] = j; }
         for (int i = 1; i <= n1; ++i) {
-            for (int j = 1; j <= n2; ++j) {
-                if (w1[i - 1] == w2[j - 1]) {                   // 坑:不是dp[i-1]而是w1[i-1]
-                    dp[i][j] = dp[i - 1][j - 1];                // 当前最后字符相同,不用删除,故最少删除操作数不变
-                }                
+            for (int j = 1; j <= n2; ++j) {                         // 不+1因为不需要删除操作
+                if (w1[i - 1] == w2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];                    
+                }
                 else {
-                    dp[i][j] = 1 + min(dp[i][j - 1], dp[i - 1][j]); // 当前最后字符不同,删哪个的都行,须求min // 坑:+1!!!
+                    dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1]); // +1因为需要1次删除操作
                 }
             }
         }
-        return dp[n1][n2];                                      // w1[1~n1]变成w2[1~n2]的最小删除操作总数
+        return dp[n1][n2];
+    }
+    // S2: DP LCS T=O(n1*n2) S=O(n1*n2)
+    // dp[i][j]表示w1前i和w2前j最长公共子序列(LCS)
+    int minDistanceLCS(string &w1, string &w2) {
+        int n1 = w1.length(), n2 = w2.length();
+        vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, 0)); // dp[i][j]表示w1前i和w2前j的LCS
+        //dp[i][0]=dp[0][j]=0 
+        for (int i = 1; i <= n1; ++i) {
+            for (int j = 1; j <= n2; ++j) {
+                if (w1[i - 1] == w2[j - 1]) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];            // +1因为最长公共子序列多了1字符
+                }
+                else {
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]); // 不+1因为字符不相同 
+                }
+            }
+        }
+        return n1 + n2 - 2 * dp[n1][n2];
     }
 };
