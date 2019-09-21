@@ -46,9 +46,9 @@ public:
         for (int i = 0; i <= n1; ++i) { dp[i][0] = i; }
         for (int j = 0; j <= n2; ++j) { dp[0][j] = j; }
         for (int i = 1; i <= n1; ++i) {
-            for (int j = 1; j <= n2; ++j) {                         // 不+1因为不需要删除操作
+            for (int j = 1; j <= n2; ++j) {
                 if (w1[i - 1] == w2[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1];                    
+                    dp[i][j] = dp[i - 1][j - 1];                    // 不+1因为不需要删除操作 
                 }
                 else {
                     dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1]); // +1因为需要1次删除操作
