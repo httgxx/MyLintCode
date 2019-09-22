@@ -57,19 +57,15 @@ class Solution {
 public:
     // Union Find T=O(logn) S=O(n))
     int findCircleNum(vector<vector<int>>& M) {
-        int n = M.size(), compCnt = n;              // 坑: 总模块数初始=n即个点各在一个模块
+        int n = M.size(), compCnt = n;                              // 坑: 总模块数初始=n,即各点各在1个模块
         vector<int> root(n);
-        for (int i = 0; i < root.size(); ++i) {
-            root[i] = i;                            // 初始化每个点的根为自己
-        }
+        for (int i = 0; i < root.size(); ++i) { root[i] = i; }      // 初始化各点根为自己
         for (int i = 0; i < n; ++i) {
             for (int j = i + 1; j < n; ++j) {
-                if (M[i][j] == 1) {                 // 每对相连的点
-                    connect(root, i, j, compCnt);   // 若不在同模块: 合并两点所在模块,总模块数-1
-                }
+                if (M[i][j] == 1) { connect(root, i, j, compCnt); } // 每对相连的点,若在不同模块,则合并2模块,总模块数-1
             }
         }
-        return compCnt;                             // 返回最后总模块数
+        return compCnt;                                             // 返回最后总模块数
     }
 private:
     void connect(vector<int>& root, int i, int j, int& compCnt){ // 若i和j在不同模块,合并模块且总模块数-1 // T=O(logn) S=O(1)
