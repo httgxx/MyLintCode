@@ -38,17 +38,18 @@ public:
      * @param word2: a string
      * @return: return a integer
      */
-    // S1: DP T=O(n1*n2) S=O(n1*n2)
+     // S1: DP T=O(n1*n2) S=O(n1*n2)
     // dp[i][j]表示w1前i变w2前j最少删除次数
-    int minDistance(string &w1, string &w2) {
+    int minDistance1(string &w1, string &w2) {
         int n1 = w1.length(), n2 = w2.length();
+        if (n1 < n2) { return minDistance(w2, w1); }                // 短w放内循环,长w放外循环
         vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, 0));     // dp[i][j]表示w1前i变w2前j最少删除次数
         for (int i = 0; i <= n1; ++i) { dp[i][0] = i; }
         for (int j = 0; j <= n2; ++j) { dp[0][j] = j; }
         for (int i = 1; i <= n1; ++i) {
             for (int j = 1; j <= n2; ++j) {
                 if (w1[i - 1] == w2[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1];                    // 不+1因为不需要删除操作 
+                    dp[i][j] = dp[i - 1][j - 1];                    // 不+1因为不需要删除操作                   
                 }
                 else {
                     dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1]); // +1因为需要1次删除操作
@@ -57,9 +58,10 @@ public:
         }
         return dp[n1][n2];
     }
+    
     // S2: DP LCS T=O(n1*n2) S=O(n1*n2)
     // dp[i][j]表示w1前i和w2前j最长公共子序列(LCS)
-    int minDistanceLCS(string &w1, string &w2) {
+    int minDistance2(string &w1, string &w2) {
         int n1 = w1.length(), n2 = w2.length();
         vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, 0)); // dp[i][j]表示w1前i和w2前j的LCS
         //dp[i][0]=dp[0][j]=0 
@@ -74,5 +76,25 @@ public:
             }
         }
         return n1 + n2 - 2 * dp[n1][n2];
+    }
+    
+    // S3: DFS+记忆搜索 T=O(n1*n2) S=O(n1*n2)
+    int minDistance(string &w1, string &w2) {
+        int n1 = w1.length(), n2 = w2.length();
+        vector<vector<int>> memo(n1 + 1, vector<int>(n2 + 1, 0));   // m[i][j]=w1[i~n1-1]变w2[j~n2-1]最少删除次数
+        return dfsMemo(w1, w2, 0, 0, memo);
+    }
+    int dfsMemo(string &w1, string &w2, int p1, int p2, vector<vector<int>> &memo) {
+        if (memo[p1][p2] != 0) { return memo[p1][p2]; }             // 记忆已有,直接返回
+        if (p1 == w1.length()) { return w2.length() - p2; }         // w1已变完,w2剩 // 坑:返n2-p2不是p2
+        if (p2 == w2.length()) { return w1.length() - p1; }         // w2已变完,w1剩 // 坑:返n1-p1不是p1
+        if (w1[p1] == w2[p2])  {
+            memo[p1][p2] = dfsMemo(w1, w2, p1 + 1, p2 + 1, memo);   // 不+1因为不需要删除操作
+        }
+        else {
+            memo[p1][p2] = 1+ min(dfsMemo(w1, w2, p1 + 1, p2, memo),// +1因为需要1次删除操作 
+                                  dfsMemo(w1, w2, p1, p2 + 1, memo));
+        }
+        return memo[p1][p2];
     }
 };
