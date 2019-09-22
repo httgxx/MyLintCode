@@ -82,7 +82,7 @@ public:
         sort(g.begin(), g.end(), greater<int>());           // 小朋友按胃口从大到小倒序排 O(nlogn)
         sort(s.begin(), s.end(), greater<int>());           // 饼干按从大到小倒序排 O(mlogm)
         int res = 0;                                        // 满足的小朋友个数
-        for (int i = 0, j = 0; j < g.size() && i < s.size(); ++j) {// 贪婪法:先用大饼干喂胃口大的小朋友 O(max(m,n)) // 坑:别忘j<g.size()!!!
+        for (int i = 0, j = 0; j < g.size() && i < s.size(); ++j) {// 贪婪法:先用大饼干喂胃口大的小朋友 O(max(m,n)) // 坑:别忘i<s.size()!!!
             if (s[i] >= g[j]) { ++i; ++res; }               // 若当前小朋友已饱,则用下个饼干(++i)喂下个小朋友，饱孩子数+1
                                                             // 若当前小朋友不饱,则用当前饼干(i不变)喂下个小朋友
                                                             // 饱或不饱,当前小朋友都不再喂(++j),大饼干喂不饱小饼干更加喂不饱
