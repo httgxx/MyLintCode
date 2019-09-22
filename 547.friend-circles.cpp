@@ -55,29 +55,38 @@
  */
 class Solution {
 public:
+    // Union Find T=O(logn) S=O(n))
     int findCircleNum(vector<vector<int>>& M) {
-        int n = M.size(), res = n;                  // 坑:初始化孤岛数为n,即所有点单独为孤岛
+        int n = M.size(), compCnt = n;              // 坑: 总模块数初始=n即个点各在一个模块
         vector<int> root(n);
-        for (int i = 0; i < n; ++i) { root[i] = i; }// 初始化:各点的根设为自身 
+        initRoots(root);                            // 初始化每个点的根为自己
         for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {       // 对于每条边(顶点为i,j)
-                if (M[i][j] == 1) {                 
-                    int p1 = findFoot(root, i);     // Find: 找i的根
-                    int p2 = findFoot(root, j);     // Find: 找j的根
-                    if (p1 != p2) {                 // 两根不同则连通两根 // 坑:连通的不是“边的顶点"而是“边的顶点的祖先"
-                        root[p2] = p1;
-                        --res;                      // -1: 2点联通后少了一个孤岛
-                    }
+            for (int j = i + 1; j < n; ++j) {
+                if (M[i][j] == 1) {                 // 每对相连的点
+                    connect(root, i, j, compCnt);   // 若不在同模块: 合并两点所在模块,总模块数-1
                 }
-            }   
+            }
         }
-        return res;
+        return compCnt;                                 // 返回最后总模块数
     }
-    int findFoot(vector<int>& root, int i) {        // 找i的根
-        while (i != root[i]) {                      // 找当前祖先的父亲,直到发现其父亲是其自己(根)
-            root[i] = root[root[i]];                // 压缩路径
+private:
+    void initRoots(vector<int>& root) {             // 初始化root[] // T=O(n), S=O(n)
+        for (int i = 0; i < root.size(); ++i) {
+            root[i] = i;                            // 各点的根为自己
+        }
+    }
+    void connect(vector<int>& root, int i, int j, int& compCnt){ // 合并i和j所在的模块 // T=O(logn) S=O(1)
+        int rooti = find(root, i);                  // 找到i的根
+        int rootj = find(root, j);                  // 找到j的根
+        if (rooti == rootj) { return; }             // 若同根/同模块,返回
+        root[rootj] = rooti;                       // 否则合并两模块:让i的根成为j的根的父亲=>j的模块加入i的模块成为子模块
+        --compCnt;                                  // 总模块数-1  // 下次find(j模块里的点)时再压缩路径
+    }
+    int find(vector<int>& root, int i) {            // 找i的根 // T=O(logn) S=O(1)
+        while (i != root[i]) {                      // 将根的根设为根,直到根为自己(模块的根))
+            root[i] = root[root[i]];                // 压缩i到根的路径
             i = root[i];
         }
-        return i;                                   // 返回根
+        return i;                                   // 返回i的根
     }
 };
