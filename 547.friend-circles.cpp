@@ -72,11 +72,11 @@ public:
         return compCnt;                             // 返回最后总模块数
     }
 private:
-    void connect(vector<int>& root, int i, int j, int& compCnt){ // 合并i和j所在的模块 // T=O(logn) S=O(1)
+    void connect(vector<int>& root, int i, int j, int& compCnt){ // 若i和j在不同模块,合并模块且总模块数-1 // T=O(logn) S=O(1)
         int rooti = find(root, i);                  // 找到i的根
         int rootj = find(root, j);                  // 找到j的根
-        if (rooti == rootj) { return; }             // 若同根/同模块,返回
-        root[rootj] = rooti;                       // 否则合并两模块:让i的根成为j的根的父亲=>j的模块加入i的模块成为子模块
+        if (rooti == rootj) { return; }             // 若同根/模块,返回
+        root[rootj] = rooti;                        // 若不同根/模块,合并模块:让i的根成为j的根的父亲=>j模块加入i模块成为子模块
         --compCnt;                                  // 总模块数-1  // 下次find(j模块里的点)时再压缩路径
     }
     int find(vector<int>& root, int i) {            // 找i的根 // T=O(logn) S=O(1)
