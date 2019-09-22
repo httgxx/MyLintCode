@@ -59,7 +59,9 @@ public:
     int findCircleNum(vector<vector<int>>& M) {
         int n = M.size(), compCnt = n;              // 坑: 总模块数初始=n即个点各在一个模块
         vector<int> root(n);
-        initRoots(root);                            // 初始化每个点的根为自己
+        for (int i = 0; i < root.size(); ++i) {
+            root[i] = i;                            // 初始化每个点的根为自己
+        }
         for (int i = 0; i < n; ++i) {
             for (int j = i + 1; j < n; ++j) {
                 if (M[i][j] == 1) {                 // 每对相连的点
@@ -67,14 +69,9 @@ public:
                 }
             }
         }
-        return compCnt;                                 // 返回最后总模块数
+        return compCnt;                             // 返回最后总模块数
     }
 private:
-    void initRoots(vector<int>& root) {             // 初始化root[] // T=O(n), S=O(n)
-        for (int i = 0; i < root.size(); ++i) {
-            root[i] = i;                            // 各点的根为自己
-        }
-    }
     void connect(vector<int>& root, int i, int j, int& compCnt){ // 合并i和j所在的模块 // T=O(logn) S=O(1)
         int rooti = find(root, i);                  // 找到i的根
         int rootj = find(root, j);                  // 找到j的根
