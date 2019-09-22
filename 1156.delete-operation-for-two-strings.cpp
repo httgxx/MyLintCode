@@ -25,11 +25,14 @@
  * Output: 4
  * Explanation: You need three steps to make "horse" to "os" and another step to make "ros" to "os".
  * 
- * @Category DP LongestCommonSubsequence
+ * @Category DP LongestCommonSubsequence DFS+记忆搜索
  * @Idea DP T=O(mn) S=O(mn)
- * dp[i][j]表示使word1前i个字符和word2前j个字符相等的最少删除操作数
+ * S1: dp[i][j]表示使word1前i个字符和word2前j个字符相等的最少删除操作数
  * = 若最后一个字符同(w1[i]==w2[j]) w1[i-1]!=w2[j-1]: min(dp[i-1][j], min(dp[i-1][j-1], dp[i][j-1])) + 1
  * 坑: 当前最后字符不同,删哪个的都行,须求min // 坑:+1!!!
+ * 
+ * S2: DFS+记忆搜索 T=O(mn) S=O(mn)
+ * lintcode运行时更快.why?
  */
 class Solution {
 public:
@@ -38,7 +41,28 @@ public:
      * @param word2: a string
      * @return: return a integer
      */
-     // S1: DP T=O(n1*n2) S=O(n1*n2)
+    // S3: DFS+记忆搜索 T=O(n1*n2) S=O(n1*n2) //
+    int minDistance(string &w1, string &w2) {
+        int n1 = w1.length(), n2 = w2.length();
+        vector<vector<int>> memo(n1 + 1, vector<int>(n2 + 1, 0));   // m[p1][p2]=(w1以[p1]开头的后缀)变为(w2以[p2]开头的后缀)所需最小删除次数
+        return dfsMemo(w1, w2, 0, 0, memo);                         // p1, p2分别表示w1,w2后缀的起始点
+    }
+    int dfsMemo(string &w1, string &w2, int p1, int p2, vector<vector<int>> &memo) { // p1=w1后缀起始位,p2=w2后缀起始位
+        if (memo[p1][p2] != 0) { return memo[p1][p2]; }             // 记忆已有,直接返回
+        if (p1 == w1.length()) { return w2.length() - p2; }         // w1后缀空,w2后缀长度n2-p2 // 坑:返n2-p2不是p2
+        if (p2 == w2.length()) { return w1.length() - p1; }         // w2后缀空,w1后缀长度n1-p1 // 坑:返n1-p1不是p1
+        if (w1[p1] == w2[p2])  {
+            memo[p1][p2] = dfsMemo(w1, w2, p1 + 1, p2 + 1, memo);   // p1开头的后缀比(p1+1)开头的后缀长1,p2开头的后缀比(p2+1)开头的后缀长1
+                                                                    // 若长的1位相同,转换p1开头的后缀到p2开头的后缀所需删除次数相同
+        }
+        else {
+            memo[p1][p2] = 1+ min(dfsMemo(w1, w2, p1 + 1, p2, memo),// 若长的1位不同,+1多删除1次,可以删w1[p2+1],也可以删w2[p2+1],取min 
+                                  dfsMemo(w1, w2, p1, p2 + 1, memo));
+        }
+        return memo[p1][p2];                                        // m[p1][p2]=(w1以[p1]开头的后缀)变为(w2以[p2]开头的后缀)所需最小删除次数
+    }
+
+    // S1: DP T=O(n1*n2) S=O(n1*n2)
     // dp[i][j]表示w1前i变w2前j最少删除次数
     int minDistance1(string &w1, string &w2) {
         int n1 = w1.length(), n2 = w2.length();
@@ -76,26 +100,5 @@ public:
             }
         }
         return n1 + n2 - 2 * dp[n1][n2];
-    }
-    
-    // S3: DFS+记忆搜索 T=O(n1*n2) S=O(n1*n2)
-    int minDistance(string &w1, string &w2) {
-        int n1 = w1.length(), n2 = w2.length();
-        vector<vector<int>> memo(n1 + 1, vector<int>(n2 + 1, 0));   // m[p1][p2]=(w1以[p1]开头的后缀)变为(w2以[p2]开头的后缀)所需最小删除次数
-        return dfsMemo(w1, w2, 0, 0, memo);                         // p1, p2分别表示w1,w2后缀的起始点
-    }
-    int dfsMemo(string &w1, string &w2, int p1, int p2, vector<vector<int>> &memo) { // p1=w1后缀起始位,p2=w2后缀起始位
-        if (memo[p1][p2] != 0) { return memo[p1][p2]; }             // 记忆已有,直接返回
-        if (p1 == w1.length()) { return w2.length() - p2; }         // w1后缀空,w2后缀长度n2-p2 // 坑:返n2-p2不是p2
-        if (p2 == w2.length()) { return w1.length() - p1; }         // w2后缀空,w1后缀长度n1-p1 // 坑:返n1-p1不是p1
-        if (w1[p1] == w2[p2])  {
-            memo[p1][p2] = dfsMemo(w1, w2, p1 + 1, p2 + 1, memo);   // p1开头的后缀比(p1+1)开头的后缀长1,p2开头的后缀比(p2+1)开头的后缀长1
-                                                                    // 若长的1位相同,转换p1开头的后缀到p2开头的后缀所需删除次数相同
-        }
-        else {
-            memo[p1][p2] = 1+ min(dfsMemo(w1, w2, p1 + 1, p2, memo),// 若长的1位不同,+1多删除1次,可以删w1[p2+1],也可以删w2[p2+1],取min 
-                                  dfsMemo(w1, w2, p1, p2 + 1, memo));
-        }
-        return memo[p1][p2];                                        // m[p1][p2]=(w1以[p1]开头的后缀)变为(w2以[p2]开头的后缀)所需最小删除次数
     }
 };
