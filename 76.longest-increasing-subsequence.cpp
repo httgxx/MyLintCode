@@ -92,7 +92,7 @@ public:
                     dp[i] = max(dp[i], dp[j] + 1);  // 看是否能用这个小的数最结尾+当前数构成更长的LIS
                 }
             }
-            res = max(res, dp[i]);                  // 更新当前最大LIS长度
+            res = max(res, dp[i]);                  // 更新当前最大LIS长度 // 坑: 每次求dp[i]就要更新max,而不是只最后用dp[n-1]来更新max!!!
         }
         return res;
     }
