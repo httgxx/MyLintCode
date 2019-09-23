@@ -64,15 +64,10 @@ public:
             for (auto &c : child) { c = NULL; }  // 手动全赋NULL // 坑: 勿忘&不然不改变!!!
         }
     };
-
     WordDictionary() {
         root = new TrieNode();                  // 坑:别忘初始化root!!!
     }
-
-    /*
-     * @param word: Adds a word into the data structure.
-     * @return: nothing
-     */
+    // Adds a word into the data structure.
     void addWord(string &word) {
         TrieNode *p = root;
         for (auto c : word) {
@@ -82,29 +77,22 @@ public:
         }
         p->isWord = true;
     }
-
-    /*
-     * @param word: A word could contain the dot character '.' to represent any one letter.
-     * @return: if the word is in the data structure.
-     */
+    // Search a word which could contain the dot character '.' to represent any one letter
     bool search(string &word) {
-        return searchHelper(word, root, 0);                     // search(w,parent,idx)在parent的儿子里找w[idx]
+        return search(word, root, 0);                           // search(w,parent,idx)在parent的儿子里找w[idx]
     }
-
-    bool searchHelper(string &word, TrieNode *parent, int i) {  // i是当前word中待match的字符的index
+    // Recursive search helper
+    bool search(string &word, TrieNode *parent, int i) {        // i是当前word中待match的字符的index
         if (i == word.length()) { return parent->isWord; }      // 整个word都match完
         if (word[i] == '.') {                                   // 遇到'.'
             for (auto &c : parent->child) {                     // 在每个儿子的儿子中找word的下个字符
-                if (c && searchHelper(word, c, i + 1)) {        // 递归匹配下个字符
-                    return true;                                // 从递归最底层返回true,继续返回true
-                }
+                if (c && search(word, c, i + 1)) { return true;}// 递归匹配下个字符,将从底层递归返回的true返回上层
             }
             return false;                                       // 每个儿子的支路都匹配失败,返回false
         }
         else {
-            TrieNode *t = parent->child[word[i] - 'a'];
-            return t && searchHelper(word, t, i + 1);           // 在当前匹配的儿子的儿子中找word的下个字符
-                                                                // 从递归最底层返回的结果直接返回上1层
+            TrieNode *t = parent->child[word[i] - 'a'];         // 在当前匹配的儿子的儿子中找word的下个字符
+            return t && search(word, t, i + 1);                 // 将从底层递归返回的结果返回上层
         }
     }
 private:
