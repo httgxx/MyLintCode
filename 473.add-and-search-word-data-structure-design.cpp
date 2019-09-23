@@ -94,7 +94,8 @@ public:
             }
             return false;
         } else {
-            return p->child[word[i] - 'a'] && searchWord(word, p->child[word[i] - 'a'], i + 1);
+            TrieNode * t = p->child[word[i] - 'a'];
+            return t && searchWord(word, t, i + 1);
         }
     }
     
