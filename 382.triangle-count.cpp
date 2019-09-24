@@ -41,9 +41,9 @@ public:
     // S1 双指针 O(n) O(1)
     int triangleCount(vector<int>& nums) {
         int res = 0, n = nums.size();
-        sort(nums.begin(), nums.end());         // 先从小到大排序
-        for (int i = n - 1; i >= 2; --i) {      // 从后往前扫,每次将扫到的数当作三角形的1边长度
-            int left = 0, right = i - 1;        // 双指针从两端向中间取三角形的另外2边长度
+        sort(nums.begin(), nums.end());     // 先从小到大排序
+        for (int i = n - 1; i >= 2; --i) {  // 从后往前扫,每次将扫到的数当作三角形的1边长度
+            int left = 0, right = i - 1;    // 双指针从两端向中间取三角形的另外2边长度
             while (left < right) {
                 if (nums[left] + nums[right] > nums[i]) {
                     res += right - left;    // 若另2边之和>第1边,合法三角形个数+=两指针所夹数字总个数,
