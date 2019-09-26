@@ -38,7 +38,7 @@
  * randomSet.getRandom();
  * 
  * @Category DataStructure Design (Hashtable<int,int> + array/vector)
- * @Idea:数字插到数组尾,或交换到尾后删除尾,Hashtable存数字在数组中的映射
+ * @Idea:数字插到数组尾,或交换到尾后删除尾,Hashtable存数字在数组中位置的映射
  */
 class RandomizedSet {
 public:
