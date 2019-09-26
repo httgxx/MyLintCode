@@ -37,7 +37,7 @@
  * // Since 2 is the only number in the set, getRandom always return 2.
  * randomSet.getRandom();
  * 
- * @Category DataStructure Design (Hashtable + array/vector)
+ * @Category DataStructure Design (Hashtable<int,int> + array/vector)
  * @Idea:数字插到数组尾,或交换到尾后删除尾,Hashtable存数字在数组中的映射
  */
 class RandomizedSet {
