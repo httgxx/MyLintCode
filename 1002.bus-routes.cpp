@@ -50,11 +50,13 @@ public:
      */
     // 图:点={站},边={站->站} 站=>站上能搭乘的公交=>公交能到的下1站
     // 求站S到站T要换乘的最少公交数 = 各种公交换乘方案中,公交换乘次数最少的那个(公交数最少而不是站最少!!)  
-    // S1:BFS分层遍历,每层从1个站通过换1个没坐过的公交(坐过表明从那车可直接达到当前站),到达目标站时终止遍历
+    // S1:BFS
+    // 分层遍历,每层从1个站通过换1个没坐过的公交(坐过表明从那车可直接达到当前站),到达目标站时终止遍历
+    // T= O(m*m*n) m=公交总数 n=每个公交线路上总站数, S=O(mn+m)
     int numBusesToDestination(vector<vector<int>> &routes, int S, int T) {
         if (S == T) { return 0; }                           // 特例
         unordered_map<int, vector<int>> stop2bus;           // 创建站->公交的map
-        for (int bus = 0; bus < routes.size(); ++bus) {     // 根据公交线路->站的map创建站->公交的map
+        for (int bus = 0; bus < routes.size(); ++bus) {     // 根据公交线路->站的map创建站->公交的map //T=O(mn) S=O(mn)
             for (int stop : routes[bus]) {
                 stop2bus[stop].push_back(bus);
             }
