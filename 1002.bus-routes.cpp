@@ -62,7 +62,7 @@ public:
             }
         }
         int res = 0;
-        unordered_set<int> visitedBus;                      // 重复访问同公交则不应该再继续走,说明该公交先头不换乘也能直接到达当前站,故
+        unordered_set<int> visitedBus;                      // 坐过地车不坐,因为再坐肯定比原先坐的时候不换要少换乘
         queue<int> q{{S}};
         while (!q.empty()) {
             ++res;
