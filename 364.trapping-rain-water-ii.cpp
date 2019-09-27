@@ -38,7 +38,7 @@ public:
      * @param heights: a matrix of integers
      * @return: an integer
      */
-    // BFS + visited + 2维坐标1维化: T=O() S=O()
+    // BFS + visited + 2维坐标1维化: T=O(mnlog(mn))) S=O(mn)
     int trapRainWater(vector<vector<int>>& heights) {
         if (heights.empty()) { return 0; }
         int m = heights.size(), n = heights[0].size(), res = 0, mx = INT_MIN;
