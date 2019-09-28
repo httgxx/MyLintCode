@@ -53,9 +53,9 @@ public:
         while(left < right) {
             int mid = left + (right - left) / 2;
             int count = 0,  j = matrix[0].size() - 1;                   // 从右上角开始找mid是第几小
-            for(int i = 0; i < matrix.size(); i++) {
-                while(j >= 0 && matrix[i][j] > mid) j--;                // mid小了左移
-                count += (j + 1);                                       // mid大/等于了上移
+            for(int i = 0; i < matrix.size(); i++) {                    // 当前下移变大
+                while(j >= 0 && matrix[i][j] > mid) j--;                // 当前>mid,不断左移变小,直到当前<=mid或左移到边界
+                count += (j + 1);                                       // 又有j+1个数比mid小,几+=j+1
             }
             if(count < k) { left = mid + 1; }                           // 几<K,去右区找更大mid来增加'几'
             else { right = mid; }                                       // 几>=K,去左区找更小/相等mid来减少/保持'几'
