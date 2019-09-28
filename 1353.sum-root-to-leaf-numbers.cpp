@@ -46,13 +46,23 @@
  * 
  * @Category Tree - Divide & Conquer
  * @Idea
- * S1: DFS
+ * S1: Divide & Conquer T=O(n) S=O(n)栈空间
+ * 核心: sum=sum*10+root
  * return dfs(root,0)
  * dfs(root, sum)
  *    if(!root) return sum 
  *    sum = sum * 10 + root
  *    if(!left && !right) return sum
  *    return dfs(left, sum) + dfs(right, sum)
+ * 
+ * S2: BFS + 栈 T=O(n) S=O(n)栈空间
+ * 核心: child->val += child->val * 10
+ * while(栈非空)
+ *   根=栈顶pop
+ *   若根为叶子: res+=根
+ *   右子->val += 右子->val * 10 后入栈
+ *   左子->val += 左子->val * 10 后入栈
+ * return res
  */
 /**
  * Definition of TreeNode:
@@ -73,14 +83,39 @@ public:
      * @param root: the root of the tree
      * @return: the total sum of all root-to-leaf numbers
      */
-    int sumNumbers(TreeNode* root) {
+    // S1: Divide & conquer 
+    // sum=sum*10+root
+    int sumNumbers1(TreeNode* root) {
         return sumNumbersDFS(root, 0);
     }
     int sumNumbersDFS(TreeNode* root, int sum) {
         if (!root) { return 0; }                            // dfs到底开始返回                            
         sum = sum * 10 + root->val;                         // 访问根
         if (!root->left && !root->right) { return sum; }    // 叶子结点            
-        return sumNumbersDFS(root->left, sum) +             // 访问左子+访问右子 divid & conquer
+        return sumNumbersDFS(root->left, sum) +             // 访问左子+访问右子
             sumNumbersDFS(root->right, sum);
+    }
+
+    // S2: BFS + stack T=O(n) S=O(n)
+    // child += child->val * 10
+    int sumNumbers(TreeNode* root) {
+        if (!root) return 0;
+        int res = 0;
+        stack<TreeNode*> st{{root}};
+        while (!st.empty()) {
+            TreeNode *t = st.top(); st.pop();
+            if (!t->left && !t->right) {
+                res += t->val;
+            }
+            if (t->right) {
+                t->right->val += t->val * 10;
+                st.push(t->right);
+            }
+            if (t->left) {
+                t->left->val += t->val * 10;
+                st.push(t->left);
+            }
+        }
+        return res;
     }
 };
