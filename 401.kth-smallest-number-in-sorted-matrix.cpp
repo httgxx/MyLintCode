@@ -47,7 +47,23 @@ public:
      * @param k: An integer
      * @return: the kth smallest number in the matrix
      */
-    // S1: 二分 + 左下角开始  T=O((m+n)lgn) S=O(1)
+    // S1: (精简代码)二分 + 从右上角开始
+    int kthSmallest(vector<vector<int>> &matrix, int k) {
+        int left = matrix[0][0], right = matrix.back().back() + 1;      // [lo, hi) // 坑: +1
+        while(left < right) {
+            int mid = left + (right - left) / 2;
+            int count = 0,  j = matrix[0].size() - 1;                   // 从右上角开始找mid是第几小
+            for(int i = 0; i < matrix.size(); i++) {
+                while(j >= 0 && matrix[i][j] > mid) j--;                // mid小了左移
+                count += (j + 1);                                       // mid大/等于了上移
+            }
+            if(count < k) { left = mid + 1; }                           // 几<K,去右区找更大mid来增加'几'
+            else { right = mid; }                                       // 几>=K,去左区找更小/相等mid来减少/保持'几'
+        }
+        return left;                                                    // 找最小/左的满足条件(第K小)的数
+    }
+
+    // S2:???? 二分 + 左下角开始  T=O((m+n)lgn) S=O(1)
     int kthSmallest1(vector<vector<int>> &matrix, int k) {
         int left = matrix[0][0], right = matrix.back().back();
         while (left < right) {                          // T=O(max(m,n)log(max-min)))=O(klogn)
@@ -71,19 +87,4 @@ public:
         return res;                                                     // 找最小/左的满足条件(第K小)的数
     }
 
-    // S2: (精简代码)二分 + 从右上角开始
-    int kthSmallest(vector<vector<int>> &matrix, int k) {
-        int left = matrix[0][0], right = matrix.back().back() + 1;      // [lo, hi)
-        while(left < right) {
-            int mid = left + (right - left) / 2;
-            int count = 0,  j = matrix[0].size() - 1;                   // 从右上角开始找mid是第几小
-            for(int i = 0; i < matrix.size(); i++) {
-                while(j >= 0 && matrix[i][j] > mid) j--;                // mid小了左移
-                count += (j + 1);                                       // mid大/等于了上移
-            }
-            if(count < k) { left = mid + 1; }                             // 几<K,去右区找更大mid来增加'几'
-            else { right = mid; }                                          // 几>=K,去左区找更小/相等mid来减少/保持'几'
-        }
-        return left;
-    }
 };
