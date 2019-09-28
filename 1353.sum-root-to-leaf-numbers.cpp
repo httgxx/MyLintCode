@@ -103,15 +103,15 @@ public:
         int res = 0;
         stack<TreeNode*> st{{root}};
         while (!st.empty()) {
-            TreeNode *t = st.top(); st.pop();
-            if (!t->left && !t->right) {
+            TreeNode *t = st.top(); st.pop();   // 出栈为根
+            if (!t->left && !t->right) {        // 若为叶子:值累加入res
                 res += t->val;
             }
-            if (t->right) {
+            if (t->right) {                     // 若有右子:值+=值*10后右子入栈
                 t->right->val += t->val * 10;
                 st.push(t->right);
             }
-            if (t->left) {
+            if (t->left) {                      // 若有左子:值+=值*10后左子入栈
                 t->left->val += t->val * 10;
                 st.push(t->left);
             }
