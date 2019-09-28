@@ -47,7 +47,7 @@ public:
      * @param k: An integer
      * @return: the kth smallest number in the matrix
      */
-    // S1: (精简代码)二分 + 从右上角开始
+    // S1: (精简代码)二分 + 从右上角开始 T=O((m+n)lg(max(m,n)) S=O(1)
     int kthSmallest(vector<vector<int>> &matrix, int k) {
         int left = matrix[0][0], right = matrix.back().back() + 1;      // [lo, hi) // 坑: +1
         while(left < right) {
