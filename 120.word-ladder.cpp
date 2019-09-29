@@ -30,7 +30,7 @@
  * Output：5
  * Explanation："hit"->"hot"->"dot"->"dog"->"cog"
  * 
- * @Category 迷宫 BFS DFS
+ * @Category 迷宫最短路径 BFS
  * @Idea BFS queue+字典set + set.erase(访问过的词)
  * T=O(26*L)=O(L) S=O(nL)) L为单词长度, n为字典里单词数
  * 
