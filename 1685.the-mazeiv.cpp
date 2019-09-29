@@ -52,7 +52,7 @@ public:
         visited[startX][startY] = true;                                         // 设S为已访问过
         vector<vector<int>> time(m, vector<int>(n, 0));                         // 记录到达各点的时间
         time[startX][startY] = 0;                                               // 到达S的时间=0
-        vector<vector<int>> dirs{{0,-1},{-1,0},{0,1},{1,0}};
+        vector<vector<int>> dirs{{0,1},{0,-1},{-1,0},{1,0}};
         queue<pair<int, int>> q;                                                // q{<x,y>}
         q.push({startX, startY});                                               // T入队列
         while (!q.empty()) {
@@ -79,16 +79,17 @@ public:
     void bfs(vector<vector<char>> &maps){
         queue<node>q;
         bool vis[1100][1100];
+        vector<vector<int>> dirs{{0,1},{0,-1},{-1,0},{1,0}};
         memset(vis,0,sizeof(vis));
         q.push(S);
         while(!q.empty())
         {
             node now=q.front();q.pop();
             if(now.x==T.x&&now.y==T.y) {ans=now.t;break;}
-            for(int i=0;i<4;i++){
+            for (auto d : dirs) {  
                 node next;
-                next.x=now.x+dx[i];
-                next.y=now.y+dy[i];
+                next.x=now.x+d[0];
+                next.y=now.y+d[1];
                 next.t=now.t+1;
                 if(next.x<0||next.x>=n||next.y<0||next.y>=m) continue;
                 if(vis[next.x][next.y]==1) continue;
