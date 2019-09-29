@@ -73,8 +73,13 @@ public:
     {
         int x,y,t;
     }S,T;
-    int n,m,ans=-1;
-    void bfs(vector<vector<char>> &maps){
+    int ans=-1;
+    int theMazeIV(vector<vector<char>> &maps) {
+        int n=maps.size(), m=maps[0].size();
+        for(int i=0;i<maps.size();i++)
+            for(int j=0;j<maps[i].size();j++)
+                if(maps[i][j]=='S') S.x=i,S.y=j,S.t=0;
+            	else  if(maps[i][j]=='T') T.x=i,T.y=j,T.t=0;
         queue<node>q;
         bool vis[1100][1100];
         vector<vector<int>> dirs{{0,1},{0,-1},{-1,0},{1,0}};
@@ -96,14 +101,6 @@ public:
                 q.push(next);
             }
         }
-    }
-    int theMazeIV(vector<vector<char>> &maps) {
-        n=maps.size(),m=maps[0].size();
-        for(int i=0;i<maps.size();i++)
-            for(int j=0;j<maps[i].size();j++)
-                if(maps[i][j]=='S') S.x=i,S.y=j,S.t=0;
-            	else  if(maps[i][j]=='T') T.x=i,T.y=j,T.t=0;
-        bfs(maps);
         return ans;
     }
 };
