@@ -42,22 +42,22 @@ public:
      * @param dict: a set of string
      * @return: An integer
      */
-    // 
+    // 迷宫 BFS T=O(26*L)=O(L) S=O(nL)) L为单词长度, n为字典里单词数
     int ladderLength(string &start, string &end, unordered_set<string> &dict) {
-        if (!dict.count(end)) { dict.insert(end); }          // 坑: 看清题只需中间转换词在dict中而不需end也在dic中,故若end不在字典中则需加入!!!
+        if (!dict.count(end)) { dict.insert(end); }          // 坑: 题说中间转换词须在dict中没说end一定也在,故end不在字典中则需加入!!!
         queue<string> q{{start}};
         int res = 0;
         while (!q.empty()) {
             for (int k = q.size(); k > 0; --k) {
                 string word = q.front(); q.pop();
                 if (word == end) { return res + 1; }        // 找到end返回长度 //坑: 须+1
-                for (int i = 0; i < word.size(); ++i) {
+                for (int i = 0; i < word.size(); ++i) {     // O(L*...) 为单词长度
                     string newWord = word;
-                    for (char ch = 'a'; ch <= 'z'; ++ch) {  // 访问25个邻居
+                    for (char ch = 'a'; ch <= 'z'; ++ch) {  // 访问26个邻居 O(26*...) 
                         newWord[i] = ch;
-                        if (dict.count(newWord) && newWord != word) {
+                        if (dict.count(newWord) && newWord != word) { 
                             q.push(newWord);                // 邻居在字典里且未被访问过,入队列下层访问
-                            dict.erase(newWord);            // 坑: 邻居不用再被访问了
+                            dict.erase(newWord);            // 坑: 邻居不用再被访问了,剪枝!!!
                         }   
                     }
                 }
