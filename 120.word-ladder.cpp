@@ -31,8 +31,11 @@
  * Explanation："hit"->"hot"->"dot"->"dog"->"cog"
  * 
  * @Category 迷宫 BFS DFS
- * @Idea
+ * @Idea BFS queue+字典set + set.erase(访问过的词)
+ * T=O(26*L)=O(L) S=O(nL)) L为单词长度, n为字典里单词数
  * 
+ * 坑: 题说中间转换词须在dict中没说end一定也在,故end不在字典中则需加入!!!
+ * 坑: set.erase(邻居) 邻居将不用再被访问了,剪枝!!!
  */
 class Solution {
 public:
