@@ -32,48 +32,44 @@ public:
      * @param maps: 
      * @return: nothing
      */
-    // BFS + 
-    int theMazeIV1(vector<vector<char>> &maps) {
+    // BFS + 2维id1维化 + 记录time
+    int theMazeIV(vector<vector<char>> &maps) {
         int m = maps.size(), n = maps[0].size();
-        int startX, startY, endX, endY;
-        for(int i = 0; i < m; i++) {                                            // 题目没给,故得找S和T的坐标
+        int startId = -1, endId = -1;
+        for(int i = 0; i < m; i++) {                                // 题目没给,故得找S和T的坐标
             for(int j = 0; j < maps[i].size(); j++) {
-                if(maps[i][j] == 'S') {
-                    startX = i;
-                    startY = j;
-                }
-            	else if (maps[i][j] == 'T') {
-                    endX = i;
-                    endY = j;
-                }
+                if(maps[i][j] == 'S') { startId = n * i + j; }      // 2维id1维化 // 坑: n*i不是m*i
+            	else if (maps[i][j] == 'T') { endId = n * i + j; }
+                if (startId >= 0 && endId >= 0) { break; }
             }
         }
-        vector<vector<bool>> visited(m, vector<bool>(n, false));                // 记录到达各点的时间
-        visited[startX][startY] = true;                                         // 设S为已访问过
-        vector<vector<int>> time(m, vector<int>(n, 0));                         // 记录到达各点的时间
-        time[startX][startY] = 0;                                               // 到达S的时间=0
         vector<vector<int>> dirs{{0,1},{0,-1},{-1,0},{1,0}};
-        queue<pair<int, int>> q;                                                // q{<x,y>}
-        q.push({startX, startY});                                               // T入队列
+        unordered_map<int, int> time;                               // 记录时间以及是否访问过
+        time[startId] = 0;
+        queue<int> q;                                               // q{<x,y>}
+        q.push(startId);                                            // S入队列
         while (!q.empty()) {
-            auto t = q.front(); q.pop();
-            int tx = t.first, ty = t.second, tTime = time[tx][ty];
-            if (tx == endX && ty == endY) { return tTime; }          // 若到达终点,结束返回
-            for (auto d : dirs) {                                               // 否则访问邻居 
-                int x = tx + d[0], y = ty + d[1], curTime = tTime + 1;
-                if(x < 0 || x >= n || y < 0|| y >= m) continue;
-                if(visited[x][y] == 1) continue;
-                if(maps[x][y] == '#') continue;
-                visited[x][y] = true;
-                q.push({x, y});
+            auto id = q.front(); q.pop();
+            int x = id / n, y = id % n, t = time[id];               // 1维id2维化 // 坑: i/n不是i/n
+            if (id == endId) { return t;}                           // 若到达终点,结束返回
+            for (auto d : dirs) {                                   // 否则访问邻居 
+                int nx = x + d[0], ny = y + d[1];
+                int nid = nx * n + ny;                              // 2维id1维化 // 坑: n*nx不是m*nx
+                if((nx >= 0 && nx < m && ny >= 0 && ny < n) &&      // 未出界/被访问/撞墙,更新t且入队
+                   time.count(nid) == 0 && maps[nx][ny] != '#') {
+                    time[nid] = t + 1;
+                    q.push(nid);
+                }
             }
         }
+        return -1;
     }
+
     struct node
     {
         int x,y,t;
     }S,T;
-    int theMazeIV(vector<vector<char>> &maps) {
+    int theMazeIV2(vector<vector<char>> &maps) {
         int n=maps.size(), m=maps[0].size();
         for(int i=0;i<maps.size();i++)
             for(int j=0;j<maps[i].size();j++)
