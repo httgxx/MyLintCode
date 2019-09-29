@@ -23,6 +23,37 @@
  * the empty space. You may assume that the borders of the maze are all walls.
  * The start and destination coordinates are represented by row and column
  * indexes.
+ * 
+ * Example 1:
+ * Input: map = 
+ * [
+ *  [0,0,1,0,0],
+ *  [0,0,0,0,0],
+ *  [0,0,0,1,0],
+ *  [1,1,0,1,1],
+ *  [0,0,0,0,0]
+ * ]
+ * start = [0,4]
+ * end = [3,2]
+ * Output: false
+ *
+ * Example 2:
+ * Input: map = 
+ * [
+ *  [0,0,1,0,0],
+ *  [0,0,0,0,0],
+ *  [0,0,0,1,0],
+ *  [1,1,0,1,1],
+ *  [0,0,0,0,0]
+ * ]
+ * start = [0,4]
+ * end = [4,4]
+ * Output: true
+ * 
+ * @Category Maze BFS DFS
+ * @Idea
+ * S1: BFS + visited[][] + 没撞墙就同向一直走
+ * T=O(mn) S=O(mn)
  */
 class Solution {
 public:
