@@ -45,7 +45,7 @@ public:
         }
         vector<vector<int>> dirs{{0,1},{0,-1},{-1,0},{1,0}};
         unordered_map<int, int> time;                               // 记录时间以及是否访问过
-        time[startId] = 0;
+        time[startId] = 0;                                          // 记录S时间
         queue<int> q;                                               // q{<x,y>}
         q.push(startId);                                            // S入队列
         while (!q.empty()) {
@@ -55,44 +55,11 @@ public:
             for (auto d : dirs) {                                   // 否则访问邻居 
                 int nx = x + d[0], ny = y + d[1];
                 int nid = nx * n + ny;                              // 2维id1维化 // 坑: n*nx不是m*nx
-                if((nx >= 0 && nx < m && ny >= 0 && ny < n) &&      // 未出界/被访问/撞墙,更新t且入队
+                if((nx >= 0 && nx < m && ny >= 0 && ny < n) &&      // 若未出界,未被访问过,未撞墙
                    time.count(nid) == 0 && maps[nx][ny] != '#') {
-                    time[nid] = t + 1;
+                    time[nid] = t + 1;                              // 邻居更新时间且入队列下一层访问
                     q.push(nid);
                 }
-            }
-        }
-        return -1;
-    }
-
-    struct node
-    {
-        int x,y,t;
-    }S,T;
-    int theMazeIV2(vector<vector<char>> &maps) {
-        int n=maps.size(), m=maps[0].size();
-        for(int i=0;i<maps.size();i++)
-            for(int j=0;j<maps[i].size();j++)
-                if(maps[i][j]=='S') S.x=i,S.y=j,S.t=0;
-            	else  if(maps[i][j]=='T') T.x=i,T.y=j,T.t=0;
-        vector<vector<int>> dirs{{0,1},{0,-1},{-1,0},{1,0}};
-        unordered_set<int> visited;
-        queue<node>q;
-        q.push(S);
-        while(!q.empty())
-        {
-            node now=q.front();q.pop();
-            if(now.x==T.x&&now.y==T.y) {return now.t;}
-            for (auto d : dirs) {  
-                node next;
-                next.x=now.x+d[0];
-                next.y=now.y+d[1];
-                next.t=now.t+1;
-                if(next.x<0||next.x>=n||next.y<0||next.y>=m) continue;
-                if(visited.count(m * next.x + next.y)) continue;
-                if(maps[next.x][next.y]=='#') continue;
-                visited.insert(m * next.x + next.y);
-                q.push(next);
             }
         }
         return -1;
