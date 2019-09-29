@@ -69,12 +69,11 @@ public:
             }
         }
     }
-
-    int n,m,ans=-1;
     struct node
     {
         int x,y,t;
     }S,T;
+    int n,m,ans=-1;
     int dx[4]={0,0,-1,1};
     int dy[4]={1,-1,0,0};
     void bfs(vector<vector<char>> &maps){
