@@ -80,8 +80,7 @@ public:
                 if(maps[i][j]=='S') S.x=i,S.y=j,S.t=0;
             	else  if(maps[i][j]=='T') T.x=i,T.y=j,T.t=0;
         vector<vector<int>> dirs{{0,1},{0,-1},{-1,0},{1,0}};
-        bool vis[1100][1100];
-        memset(vis,0,sizeof(vis));
+        unordered_set<int> visited;
         queue<node>q;
         q.push(S);
         while(!q.empty())
@@ -94,9 +93,9 @@ public:
                 next.y=now.y+d[1];
                 next.t=now.t+1;
                 if(next.x<0||next.x>=n||next.y<0||next.y>=m) continue;
-                if(vis[next.x][next.y]==1) continue;
+                if(visited.count(m * next.x + next.y)) continue;
                 if(maps[next.x][next.y]=='#') continue;
-                vis[next.x][next.y]=1;
+                visited.insert(m * next.x + next.y);
                 q.push(next);
             }
         }
