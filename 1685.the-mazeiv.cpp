@@ -73,22 +73,21 @@ public:
     {
         int x,y,t;
     }S,T;
-    int ans=-1;
     int theMazeIV(vector<vector<char>> &maps) {
         int n=maps.size(), m=maps[0].size();
         for(int i=0;i<maps.size();i++)
             for(int j=0;j<maps[i].size();j++)
                 if(maps[i][j]=='S') S.x=i,S.y=j,S.t=0;
             	else  if(maps[i][j]=='T') T.x=i,T.y=j,T.t=0;
-        queue<node>q;
-        bool vis[1100][1100];
         vector<vector<int>> dirs{{0,1},{0,-1},{-1,0},{1,0}};
+        bool vis[1100][1100];
         memset(vis,0,sizeof(vis));
+        queue<node>q;
         q.push(S);
         while(!q.empty())
         {
             node now=q.front();q.pop();
-            if(now.x==T.x&&now.y==T.y) {ans=now.t;break;}
+            if(now.x==T.x&&now.y==T.y) {return now.t;}
             for (auto d : dirs) {  
                 node next;
                 next.x=now.x+d[0];
@@ -101,6 +100,6 @@ public:
                 q.push(next);
             }
         }
-        return ans;
+        return -1;
     }
 };
