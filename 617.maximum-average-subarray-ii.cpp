@@ -46,6 +46,7 @@ public:
      * @param k: an integer
      * @return: the maximum average
      */
+    // 二分法 T=O(nlog(max + min)) S=O(n)
     double maxAverage(vector<int>& nums, int k) {
         int n = nums.size();
         double left = INT_MAX, right = INT_MIN;
