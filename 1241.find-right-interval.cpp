@@ -20,6 +20,25 @@
  * relationship for interval i. If the interval j doesn't exist, store -1 for
  * the interval i. Finally, you need output the stored value of each interval
  * as an array.
+ * 
+ * Example 1:
+ * Input: [ [1,2] ]
+ * Output: [-1]
+ * Explanation: There is only one interval in the collection, so it outputs -1.
+ * 
+ * Example 2:
+ * Input: [ [3,4], [2,3], [1,2] ]
+ * Output: [-1, 0, 1]
+ * 
+ * Explanation: There is no satisfied "right" interval for [3,4].
+ * For [2,3], the interval [3,4] has minimum-"right" start point;
+ * For [1,2], the interval [2,3] has minimum-"right" start point.
+ * 
+ * Example 3:
+ * Input: [ [1,4], [2,3], [3,4] ]
+ * Output: [-1, 2, -1]
+ * Explanation: There is no satisfied "right" interval for [1,4] and [3,4].
+ * For [2,3], the interval [3,4] has minimum-"right" start point.
  */
 /**
  * Definition of Interval:
@@ -56,16 +75,17 @@ public:
         }
         return res;
     }
+    // T=O(nlogn) S=O(n)
     vector<int> findRightInterval(vector<Interval>& intervals) {
         vector<int> res;
         map<int, int> m;
         for (int i = 0; i < intervals.size(); ++i) {
-            m[intervals[i].start] = i;
+            m[intervals[i].start] = i;              // m[start]=i
         }
         for (auto interval : intervals) {
-            auto it = m.lower_bound(interval.end);
-            if (it == m.end()) res.push_back(-1);
-            else res.push_back(it->second);
+            auto it = m.lower_bound(interval.end);  // 遍历区间找m中第1个>=当前end的start 
+            if (it == m.end()) res.push_back(-1);   // 找不到,当前区间没有右区间,返回-1
+            else res.push_back(it->second);         // 找到,区间index加入结果集
         }
         return res;
     }
