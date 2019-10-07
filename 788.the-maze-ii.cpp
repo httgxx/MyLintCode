@@ -96,7 +96,7 @@ public:
                 }
             }
         }
-        int res = dists[destination[0]][destination[1]];
-        return (res == INT_MAX) ? -1 : res;
+        int res = dists[destination[0]][destination[1]];                        // 取终点处所走的最小步数
+        return (res == INT_MAX) ? -1 : res;                                     // 坑: INT_MAX时返回-1
     }
 };
