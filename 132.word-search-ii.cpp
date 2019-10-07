@@ -56,7 +56,7 @@ public:
         vector<string> res;
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {               // T=O(mn*...)
-                if (T.root->child[board[i][j] - 'a']) { // 若字典Trie中有以[i,j]处字符开头的词,看能否DFS找到1个单词匹配Trie中分支
+                if (T.root->child[board[i][j] - 'a']) { // 若Trie有以字符[i,j]开头的词,看能否DFS找到单词匹配Trie中此分支
                     search(board, T.root->child[board[i][j] - 'a'], i, j, visit, res);  // 找到则加入res T=O(n)
                 }
             }
