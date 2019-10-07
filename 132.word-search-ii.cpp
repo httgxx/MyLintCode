@@ -44,18 +44,20 @@ public:
      * @param words: A list of string
      * @return: A list of string
      */
+    // DFS(Visited+回溯) + Trie 
+    // T=O(m*n*n) S=O(m*n) m=字典中单词数, n=字典中单词平均长度
     vector<string> wordSearchII(vector<vector<char>>& board, vector<string>& words) {
         if (words.empty() || board.empty() || board[0].empty()) { return {}; }
         
         int m = board.size(), n = board[0].size();
         vector<vector<bool>> visit(m, vector<bool>(n, false));
         Trie T;
-        for (auto &a : words) { T.insert(a); }          // 建Trie
+        for (auto &word : words) { T.insert(word); }    // 建Trie T=O(mn)) S=O(mn) m=字典中单词数,n=字典中单词平均长度
         vector<string> res;
         for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                if (T.root->child[board[i][j] - 'a']) { // 看每个词是否在Trie中 //坑:直接从Trie2层开始找
-                    search(board, T.root->child[board[i][j] - 'a'], i, j, visit, res);  // 在则加入res
+            for (int j = 0; j < n; ++j) {               // T=O(mn*...)
+                if (T.root->child[board[i][j] - 'a']) { // 若字典Trie中有以[i,j]处字符开头的词,看能否DFS找到1个单词匹配Trie中分支
+                    search(board, T.root->child[board[i][j] - 'a'], i, j, visit, res);  // 找到则加入res T=O(n)
                 }
             }
         }
