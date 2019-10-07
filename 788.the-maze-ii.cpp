@@ -69,6 +69,8 @@ public:
      * @param destination: the destination
      * @return: the shortest distance for the ball to stop at the destination
      */
+    // BFS + 一个方向上不停走直到撞墙
+    // T=O(mn*max(m,n)) S=O(mn)
     int shortestDistance(vector<vector<int>>& maze, vector<int>& start, vector<int>& destination) {
         int m = maze.size(), n = maze[0].size();
         vector<vector<int>> dists(m, vector<int>(n, INT_MAX));                  // 初始化:从起点到终点的路上各点处走过的最小步数=INT_MAX
@@ -76,11 +78,11 @@ public:
         queue<pair<int, int>> q;
         q.push({start[0], start[1]});                                           // 起点入队列
         dists[start[0]][start[1]] = 0;                                          // 起点处走过的步数=0,也表明访问过
-        while (!q.empty()) {
+        while (!q.empty()) {                                                    // T=O(mn*...)
             auto t = q.front(); q.pop();
             for (auto d : dirs) {                                               // 往4个方向
                 int x = t.first, y = t.second, dist = dists[t.first][t.second]; // 从队首点所在位置出发
-                while (x >= 0 && x < m && y >= 0 && y < n && maze[x][y] == 0) { // 此方向上只要不出界不撞墙就闷头滚,边滚边计步数
+                while (x >= 0 && x < m && y >= 0 && y < n && maze[x][y] == 0) { // 此方向上只要不出界不撞墙就闷头滚且+步数 T=O(max(m,n)*...)
                     x += d[0];
                     y += d[1];
                     ++dist;
