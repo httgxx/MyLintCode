@@ -79,7 +79,7 @@ public:
         while (!q.empty()) {
             auto t = q.front(); q.pop();
             for (auto d : dirs) {                                               // 往4个方向
-                int x = t.first, y = t.second, dist = dists[t.first][t.second];     // 取队首,得到目前走的步数
+                int x = t.first, y = t.second, dist = dists[t.first][t.second]; // 从队首点所在位置出发
                 while (x >= 0 && x < m && y >= 0 && y < n && maze[x][y] == 0) { // 此方向上只要不出界不撞墙就闷头滚,边滚边计步数
                     x += d[0];
                     y += d[1];
