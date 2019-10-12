@@ -37,8 +37,24 @@ public:
      */
     // Graph是树的要求: 连通且无环
     // T=O(|V|=|E|) S=O(|V|)
-    bool validTree(int n, vector<vector<int>> &edges) {
+    bool validTree1(int n, vector<vector<int>> &edges) {
         vector<int> roots(n, -1);                   // 初始化为-1
+        for (auto a : edges) {                      // 每条边的两端点分别找root
+            int x = find1(roots, a[0]);
+            int y = find1(roots, a[1]);
+            if (x == y) { return false; }           // 若已经同root说明之前已经连通,则加此边就形成环=>非树
+            roots[x] = y;                           // 否则将一端设为另一端儿子
+        }
+        return edges.size() == n - 1;               // 若有孤岛则不连通=>非树
+    }
+    int find1(vector<int> &roots, int i) {           // 坑:不能
+        while (roots[i] != -1) { i = roots[i]; }
+        return i;
+    }
+
+    bool validTree(int n, vector<vector<int>> &edges) {
+        vector<int> roots(n, -1);                       
+        for (int i = 0; i < n; ++i) { roots[i] = i;}// 初始化为i
         for (auto a : edges) {                      // 每条边的两端点分别找root
             int x = find(roots, a[0]);
             int y = find(roots, a[1]);
@@ -48,7 +64,7 @@ public:
         return edges.size() == n - 1;               // 若有孤岛则不连通=>非树
     }
     int find(vector<int> &roots, int i) {           // 坑:不能
-        while (roots[i] != -1) { i = roots[i]; }
+        while (roots[i] != i) { i = roots[i]; }
         return i;
     }
 };
