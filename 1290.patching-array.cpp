@@ -46,18 +46,17 @@ public:
      * @param n: an integer
      * @return: the minimum number of patches required
      */
-    // S1: 找/更新最小不能由当前访问过的数字所表示的数字miss
-    // T=O(n) S=O(1)
+    // S1: 找/更新最小不能由当前访问过的数字所表示的数字 T=O(n) S=O(1)
     int minPatches(vector<int> &nums, int n) {
         long miss = 1, res = 0, i = 0;                  // 最小不能表示数miss初始为1
         while (miss <= n) {                             // 只要最大数字还没法被表示,就继续补充数
-                                                        // 加入[i]后,可表示值范围=[1,miss)+[[i], miss+[i]) //=[1,miss)+[i]+[1+[i],miss+[i])
+                                                        // 加入[i]后,可表示值范围=[1,miss)+[[i],miss+[i]) //=[1,miss)+[i]+[1+[i],miss+[i])
             if (i < nums.size() && nums[i] <= miss) {   // 若[i]<=miss,右边界..miss)和左边界[[i]..合并,可表示值范围变为[1, miss+[i])
                 miss += nums[i++];                      //   新miss=旧miss+[i],且不需额外添数字
             } 
             else {                                      // 若[i]>miss,中间部分[miss,[i])还不能被表示
                 miss += miss;                           //   加入miss,可表示值范围变为[1, miss]+[1+miss,miss+miss)=[1, miss+miss)
-                ++res;                                  //   新miss=旧miss+旧miss,且额外添数字数+=1
+                ++res;                                  //   新miss=旧miss*2,且额外添数字次数+=1
             }
         }
         return res;
