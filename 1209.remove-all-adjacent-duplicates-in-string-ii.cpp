@@ -48,12 +48,12 @@ public:
     // S1: vector as stack <char, count> : stack 同top 且count=k 则pop
     // T=O(n) S=O(n)
     string removeDuplicates(string S, int k) {
-        vector<pair<int, char>> stack = {{0, '#'}};                     // vector做stack存<char,count>,加dummy'#'处理空串
+        vector<pair<int, char>> stack = {{0, '#'}};                     // vector做stack存<char,count>,加dummy'#'处理最后字符
         for (char& c : S) {
             if (stack.back().second != c) { stack.push_back({1, c}); }  // 不同前则入栈
             else if (++stack.back().first == k) { stack.pop_back(); }   // 同前且k次则出栈
         }
-        string res;
+        string res = "";
         for (auto &p : stack) {                                         // 重组去重后的串
             res += string(p.first, p.second);
         }
