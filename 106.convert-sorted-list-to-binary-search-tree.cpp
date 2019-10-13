@@ -63,7 +63,7 @@ public:
      * @return: a tree node
      */
     // S1: 快慢指针找中点做根,分治递归 T=O(n) S=O(1)
-    TreeNode* sortedListToBST(ListNode* head) {
+    TreeNode* sortedListToBST1(ListNode* head) {
         if (!head) { return NULL; }
         return helper(head, NULL);
     }
@@ -81,7 +81,7 @@ public:
     }
 
     // S1: 快慢指针找中点做根,分治递归 T=O(n) S=O(1)
-    TreeNode *sortedListToBST2(ListNode* head) {
+    TreeNode *sortedListToBST(ListNode* head) {
         if (!head) { return NULL; }
         if (!head->next) { return new TreeNode(head->val); }
         ListNode *slow = head, *fast = head, *last = slow;
