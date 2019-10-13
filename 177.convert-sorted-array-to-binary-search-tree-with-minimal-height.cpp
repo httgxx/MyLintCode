@@ -48,7 +48,6 @@
  * 
  */
 
-
 class Solution {
 public:
     /*
@@ -56,7 +55,7 @@ public:
      * @return: A tree node
      */
     // S1: 分治递归 中点做根+左右分别递归 T=O(n) S=O(1) + 栈空间
-    TreeNode* sortedArrayToBST1(vector<int>& nums) {
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
         return helper(nums, 0 , nums.size() - 1);
     }
     TreeNode* helper(vector<int>& nums, int left, int right) {
@@ -69,7 +68,7 @@ public:
     }
 
     // S2: 分治递归 中点做根+左右分别递归 T=O(n) S=O(n) + 栈空间
-    TreeNode* sortedArrayToBST(vector<int>& nums) {
+    TreeNode* sortedArrayToBST2(vector<int>& nums) {
         if (nums.empty()) { return NULL; }
         int mid = nums.size() / 2;
         TreeNode *cur = new TreeNode(nums[mid]);
