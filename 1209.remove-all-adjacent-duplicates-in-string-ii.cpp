@@ -47,11 +47,11 @@ class Solution {
 public:
     // S1: vector as stack <char, count> : stack 同top 且count=k 则pop
     // T=O(n) S=O(n)
-    string removeDuplicates1(string S, int k) {
+    string removeDuplicates(string S, int k) {
         vector<pair<char, int>> stack = {{'#', 0}};                     // vector做stack存<char,count>,加dummy'#'处理空串
         for (char& c : S) {
             if (stack.back().first != c) { stack.push_back({c, 1}); }   // 不同前则入栈
-            else if (++stack.back().first == k) { stack.pop_back(); }   // 同前且k次则出栈
+            else if (++stack.back().second == k) { stack.pop_back(); }  // 同前且k次则出栈
         }
         string res;
         for (auto &p : stack) {                                         // 重组去重后的串
@@ -61,7 +61,7 @@ public:
     }
     // S2: 2 pointers + counter: i,j同向拷贝,若i同前且count=k则回退2
     // T=O(n) S=O(1)
-    string removeDuplicates(string s, int k) {
+    string removeDuplicates2(string s, int k) {
         int i = 0, n = s.length();
         vector<int> count(n);
         for (int j = 0; j < n; ++j, ++i) {
