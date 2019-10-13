@@ -50,6 +50,14 @@
  */
 class Solution {
 public:
+    // S1: string as char stack 同top则pop
+    string removeDuplicates1(string S) {
+        string res = "";
+        for (char& c : S)
+            if (res.size() && c == res.back()) { res.pop_back(); }  // 同top则pop
+            else { res.push_back(c); }                              // 不同则push
+        return res;
+    }
     // S2: 2 pointers i,j同向拷贝,若i同前则回退2
     string removeDuplicates(string s) {
         int i = 0;
