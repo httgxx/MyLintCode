@@ -37,7 +37,7 @@ public:
      * @return: the result of expression
      */
     // stack
-    int calculate(string s) {
+    int calculate1(string s) {
         long res = 0, num = 0, n = s.size();
         char op = '+';
         stack<int> st;
@@ -68,7 +68,7 @@ public:
     // S2: 先读操作数,再读操作符,每次遇到操作符则先用上次的操作符计算临时结果,
     //     再看如果这次操作符:只在+-时才将临时结果加入最终结果之后清零,否则临时结果继续
     // T=O(n) S=O(1)
-    int calculate1(string &s) {
+    int calculate(string &s) {
         long res = 0, curRes = 0, num = 0, n = s.size();
         char op = '+';
         for (int i = 0; i < n; ++i) {
