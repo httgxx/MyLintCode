@@ -27,8 +27,12 @@
  * 
  * @Category stack
  * @Idea stack
+ * S1: stack T=O(n) S=O(n)
+ * 先读操作数,再读操作符,遇操作符则入栈前操作数,乘除则马上更新栈顶,加减则统一成加(正负)前操作数入栈,最后累加出栈
  * 
- * 
+ * S2: T=(n) S=O(1)
+ * 先读操作数,再读操作符,每次遇到操作符则先用上次的操作符计算临时结果
+ * 再看如果这次操作符:只在+-时才将临时结果加入最终结果之后清零,否则临时结果继续
  */
 class Solution {
 public:
@@ -36,7 +40,8 @@ public:
      * @param s: the given expression
      * @return: the result of expression
      */
-    // stack
+    // S1: stack T=O(n) S=O(n)
+    // 先读操作数,再读操作符,遇操作符则入栈前操作数,*/则马上更新栈顶,+-则统一成加(正负)前操作数入栈,最后累加出栈
     int calculate(string s) {
         long res = 0, num = 0, n = s.size();
         char op = '+';
