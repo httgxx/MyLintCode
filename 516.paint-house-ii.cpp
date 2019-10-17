@@ -47,23 +47,24 @@ public:
      * @param costs: n x k cost matrix
      * @return: an integer, the minimum cost to paint all houses
      */
+    // DP T=O(mn) S=O(1)
     int minCostII(const vector<vector<int>>& costs) {
         if (costs.empty() || costs[0].empty()) return 0;                // 特例:没房子刷不要钱
         int m = costs.size(), n = costs[0].size();
         int min1 = 0, min2 = 0, lastCol = -1;                           // 刷完当前房子后的全局最小(min1)和次小(min2)总费,以及全局最小对应的房子颜色(lastCol)
                                                                         // (坑1:全局最小/次小总费初始值不是INT_MAX而是0,因为会先被用来计算而不是比较)
-        for (int i = 0; i < m; ++i) {                                   // 每刷完1个房子[i],用其花费更新局部最小和次小总费
+        for (int i = 0; i < m; ++i) {                                   // 每刷完1个房子[i],更新全局最小/次小总费
             int curMin1 = INT_MAX, curMin2 = INT_MAX, curMin1Col = -1;  // (坑2:局部最小/次小总费初始值不是0而是INT_MAX,因为会先被用来比较再被更新)
-            for (int j = 0; j < n; ++j) {                               // 枚举房子[i]刷成的颜色j,看不同颜色对应的花费能否得到新的局部最小/次小总费
-                int cost = costs[i][j] + (j != lastCol ? min1 : min2);  // 由于不能连续同色，故根据颜色j是否和上次全局最小对应的房子颜色同色,来选当前房子花费
-                if (cost < curMin1) {                                   // 发现新的局部最小,更新局部最小=当前花费,局部次小=旧全局最小,更新全局最小对应的房子颜色为j
+            for (int j = 0; j < n; ++j) {                               // 房子[i]刷成每种颜色j,更新局部最小/次小总费
+                int cost = costs[i][j] + (j != lastCol ? min1 : min2);  // 由于不能连续同色，故根据颜色j是否和上次全局最小对应的颜色同色,来计算当前总费(当前花费+最小还是次小)
+                if (cost < curMin1) {                                   // 发现当前总费<局部最小,则新局部最小=当前总费,新局部次小=旧局部最小,更新局部最小对应的房子颜色为j
                     curMin2 = curMin1;                                  // (坑3:局部最小/次小而不是全局最小/次小)
                     curMin1 = cost;
                     curMin1Col = j;
                 } 
-                else if (cost < curMin2) { curMin2 = cost; }            // 发现新的局部次小,更新局部次小=当前花费
+                else if (cost < curMin2) { curMin2 = cost; }            // 发现当前总费>=局部最小但是<局部次小,则新局部次小=当前总费 (局部最小和对应的房子颜色不变)
             }
-            min1 = curMin1;                                             // 对房子[i]枚举完所有颜色,用局部最小/次小更新全局最小/次小,以及全局最小对应的颜色
+            min1 = curMin1;                                             // 对房子[i]枚举完所有颜色后,用局部最小/次小更新全局最小/次小,以及全局最小对应的房子颜色
             min2 = curMin2;
             lastCol = curMin1Col;
         }
