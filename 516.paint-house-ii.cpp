@@ -56,7 +56,7 @@ public:
         for (int i = 0; i < m; ++i) {                                   // 每刷完1个房子[i],更新全局最小/次小总费
             int curMin1 = INT_MAX, curMin2 = INT_MAX, curMin1Col = -1;  // (坑2:局部最小/次小总费初始值不是0而是INT_MAX,因为会先被用来比较再被更新)
             for (int j = 0; j < n; ++j) {                               // 房子[i]刷成每种颜色j,更新局部最小/次小总费
-                int cost = costs[i][j] + (j != lastCol ? min1 : min2);  // 由于不能连续同色，故根据颜色j是否和上次全局最小对应的颜色同色,来计算当前总费(当前花费+最小还是次小)
+                int cost = costs[i][j] + (j != lastCol ? min1 : min2);  // 由于不能连续同色，故根据颜色j是否和上次全局最小对应颜色同色,来计算当前总费(当前花费+全局最小还是次小)
                 if (cost < curMin1) {                                   // 发现当前总费<局部最小,则新局部最小=当前总费,新局部次小=旧局部最小,更新局部最小对应的房子颜色为j
                     curMin2 = curMin1;                                  // (坑3:局部最小/次小而不是全局最小/次小)
                     curMin1 = cost;
