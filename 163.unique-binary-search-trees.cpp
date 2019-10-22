@@ -95,6 +95,7 @@ public:
     //      =cnt(左子树0个数且右子树i-1个数//根1个) + cnt(左子树1个数且右子树i-2个数) + ... + cnt(左子树i-1个数且右子树0个数)
     //      =dp[0]*dp[i-1]+dp[1]*dp[i-2]+...+dp[i-2]*dp[1]+dp[i-1]*dp[0]
     //      =sum{dp[j]dp[i-1-j] | j=0~i-1}
+    // T=O(n) S=O(n)
     int numTrees(int n) {
         vector<int> dp(n + 1);          
         dp[0] = dp[1] = 1;
