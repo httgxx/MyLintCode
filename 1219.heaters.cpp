@@ -31,8 +31,11 @@
  * Explanation: The two heater was placed in the position 1 and 4. We need to use radius 1 standard,
  * then all the houses can be warm
  * 
- * @Category
- * @Idea 已知房子位置和heater位置,求heater所需的最小加热半径来cover所有房子
+ * @Category BS 二分
+ * @Idea 已知房子和heater位置,求heater所需的最小加热半径
+ * 先按heater位置排序,再对每个房子二分找不小于该房子的首个heater位置,计算这个heater和前一个heater哪个离该房字近
+ * 近的heater选来加热该房子,并用近的距离做新的加热半径更新最值
+ * T=O(nlogn) S=O(1)
  * 
  */
 class Solution {
@@ -42,6 +45,10 @@ public:
      * @param heaters: positions of heaters
      * @return: the minimum radius standard of heaters
      */
+    // 二分
+    // 先按heater位置排序,再对每个房子二分找不小于该房子的首个heater位置,计算这个heater和前一个heater哪个离该房字近
+    // 近的heater选来加热该房子,并用近的距离做新的加热半径更新最值
+    // T=O(nlogn) S=O(1)
     int findRadius(vector<int> &houses, vector<int> &heaters) {
         int res = 0, n = heaters.size();
         sort(heaters.begin(), heaters.end());                               // 先按heater位置排序
