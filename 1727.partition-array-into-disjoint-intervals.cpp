@@ -42,13 +42,15 @@ public:
     int partitionDisjoint(vector<int> &A) {
         int leftLast = 0, leftMax = A[0], curMax = leftMax;
         for (int i = 1; i < A.size(); ++i) {
-            curMax = max(curMax, A[i]);     // 更新当前最大
             if (A[i] < leftMax) {           // 若发现当前比左段最大值要小,则一定得将当前包含进左段,否则违法右段<=左段
-                leftLast = i;                //   扩展左段直到包含当前数字
+                leftLast = i;               //   扩展左段直到包含当前数字
                 leftMax = curMax;           //   扩展时可能会包含进比左段最大值大的数,所以须更新左段最大=当前最大
                 cout<<leftMax<<","<<i<<endl;
-            }                               // 若当前数字>=当前左段最大,则不用扩展左段,当前数字属于右段
+            }
+            else {
+                curMax = max(curMax, A[i]); // 若当前数字>=当前左段最大,则不用扩展左段,当前数字属于右段，但要更新当前最大
+            }                            
         }
-        return leftLast + 1;                 // 坑:返回左段长度=左段最后数字index+1
+        return leftLast + 1;                // 坑:返回左段长度=左段最后数字index+1
     }
 };
