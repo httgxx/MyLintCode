@@ -39,8 +39,12 @@
  * Total coins 15 + 15 + 5  = 35
  * 
  * @Category DP
- * @Idea
- * 
+ * @Idea DP 
+ * 因为计算打爆气球的价值得看留下的左右气球,所以连接左右两端预留价值为1的dummy气球方便计算边界条件.
+ * 枚举那段气球被曝,再枚举这段气球最后被爆的气球.
+ * dp[i][j]表示只打爆区间[i,j]所有气球(包括[i]和[j],保留[0,i-1],[j+1,n-1])时能获得的最大收益
+ * = max(dp[i][n], dp[i][k-1]+score+dp[k+1][j]))且score=A[i]*A[k]*A[j],i<=k<=j 
+ * T=O(n^3) S=O(n^2)
  */
 class Solution {
 public:
@@ -49,7 +53,7 @@ public:
      * @return: An integer, maximum coins
      */
     // DP
-    // dp[i][j]:只打爆区间[i,j]所有气球(包括[i]和[j],保留[0,i-1],[j+1,n-1])时能获得的最大收益
+    // dp[i][j]表示只打爆区间[i,j]所有气球(包括[i]和[j],保留[0,i-1],[j+1,n-1])时能获得的最大收益
     // = max(dp[i][n], dp[i][k-1]+score+dp[k+1][j]))且score=A[i]*A[k]*A[j],i<=k<=j   
     // T=O(n^3) S=O(n^2)
     int maxCoins(vector<int> &nums) {
