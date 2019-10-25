@@ -49,7 +49,7 @@ public:
      * @return: An integer, maximum coins
      */
     // DP
-    // dp[i][j]:打爆区间[i,j]所有气球(包括[i]和[j])时能获得的最大收益
+    // dp[i][j]:只打爆区间[i,j]所有气球(包括[i]和[j],保留[0,i-1],[j+1,n-1])时能获得的最大收益
     // = max(dp[i][n], dp[i][k-1]+score+dp[k+1][j]))且score=A[i]*A[k]*A[j],i<=k<=j   
     // T=O(n^3) S=O(n^2)
     int maxCoins(vector<int> &nums) {
