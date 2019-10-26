@@ -87,7 +87,7 @@ private:
         }
     };
     
-    void search(vector<vector<char>>& board, TrieNode* p, int i, int j,             // 从Trie结点p看字符[i][j]是否lead to词
+    void search(vector<vector<char>>& board, TrieNode* p, int i, int j,             // 从Trie结点p看字符[i][j]是否匹配到词
                 vector<vector<bool>>& visit, vector<string>& res) {
         if (!p->word.empty()) {                                                     // 若词在字典中,则加入res
             res.push_back(p->word);
@@ -99,9 +99,9 @@ private:
             int nx = dist[0] + i, ny = dist[1] + j;
             if (nx >= 0 && nx < board.size() && ny >= 0 && ny < board[0].size() &&  // 若邻居没出界
                 !visit[nx][ny] && p->child[board[nx][ny] - 'a']) {                  // 且没访问过且是某个词的前缀
-                search(board, p->child[board[nx][ny] - 'a'], nx, ny, visit, res);   // 则递归查看那邻居是否lead to词
+                search(board, p->child[board[nx][ny] - 'a'], nx, ny, visit, res);   // 则递归查看那邻居是否匹配到词
             }
         }
-        visit[i][j] = false;        // 坑: 回溯,恢复board[i][j]未为访问过,这样才能找别的单词时用同一个字符
+        visit[i][j] = false;                                                        // 坑: 回溯,[i][j]未访问,可在别词中用
     }
 };
