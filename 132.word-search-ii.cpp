@@ -34,8 +34,9 @@
  * Challenge: Using trie to implement your algorithm.
  *
  * @Category: DFS(Visited+回溯) + Trie 
- * @Idea 
- * 根据words建立Trie,DFS检查每个词是否在Trie中则
+ * @Idea Trie + DFS
+ * 根据words建立Trie,DFS检查每个词是否在Trie中
+ * T=O(m*n*n) S=O(m*n) m=字典中单词数, n=字典中单词平均长度
  */
 class Solution {
 public:
@@ -47,17 +48,17 @@ public:
     // DFS(Visited+回溯) + Trie 
     // T=O(m*n*n) S=O(m*n) m=字典中单词数, n=字典中单词平均长度
     vector<string> wordSearchII(vector<vector<char>>& board, vector<string>& words) {
-        if (words.empty() || board.empty() || board[0].empty()) { return {}; }
+        if (words.empty() || board.empty() || board[0].empty()) { return {}; }          // 特例空board
         
         int m = board.size(), n = board[0].size();
         vector<vector<bool>> visit(m, vector<bool>(n, false));
         Trie T;
-        for (auto &word : words) { T.insert(word); }    // 建Trie T=O(mn)) S=O(mn) m=字典中单词数,n=字典中单词平均长度
+        for (auto &word : words) { T.insert(word); }                                    // 按字典建Trie T=O(mn)) S=O(mn)
         vector<string> res;
         for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {               // T=O(mn*...)
-                if (T.root->child[board[i][j] - 'a']) { // 若Trie有以字符[i,j]开头的词,看能否DFS找到单词匹配Trie中此分支
-                    search(board, T.root->child[board[i][j] - 'a'], i, j, visit, res);  // 找到则加入res T=O(n)
+            for (int j = 0; j < n; ++j) {                                               // T=O(mn*...)
+                if (T.root->child[board[i][j] - 'a']) {                                 // 若Trie有[i,j]开头的前缀
+                    search(board, T.root->child[board[i][j] - 'a'], i, j, visit, res);  // DFS在Trie中找match的词 T=O(n)
                 }
             }
         }
@@ -86,21 +87,21 @@ private:
         }
     };
     
-    void search(vector<vector<char>>& board, TrieNode* p, int i, int j,
-                vector<vector<bool>>& visit, vector<string>& res) {  // 检查boar[i][j]结尾的词是否在Trie中
-        if (!p->word.empty()) {   // 当前结点的词在字典中,则加词入res
+    void search(vector<vector<char>>& board, TrieNode* p, int i, int j,             // 从Trie结点p看字符[i][j]是否lead to词
+                vector<vector<bool>>& visit, vector<string>& res) {
+        if (!p->word.empty()) {                                                     // 若词在字典中,则加入res
             res.push_back(p->word);
-            p->word.clear();      // 坑: 加完后清空当前结点记录的词以避免重复词入res
+            p->word.clear();                                                        // 坑: 加后清空当前结点对应的词避重
         }
-        visit[i][j] = true;         // 标记board[i][j]已被访问过
+        visit[i][j] = true;                                                         // 标记board[i][j]已被访问过
         int dists[][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for (auto &dist : dists) {  // DFS访问board[i][j]的4个邻居
+        for (auto &dist : dists) {                                                  // DFS访问board[i][j]的4个邻居
             int nx = dist[0] + i, ny = dist[1] + j;
             if (nx >= 0 && nx < board.size() && ny >= 0 && ny < board[0].size() &&  // 若邻居没出界
-                !visit[nx][ny] && p->child[board[nx][ny] - 'a']) {                  // 且未访问过且作为前缀对应有词
-                search(board, p->child[board[nx][ny] - 'a'], nx, ny, visit, res);   // 看以邻居结尾的词是否在Trie中
+                !visit[nx][ny] && p->child[board[nx][ny] - 'a']) {                  // 且没访问过且是某个词的前缀
+                search(board, p->child[board[nx][ny] - 'a'], nx, ny, visit, res);   // 则递归查看那邻居是否lead to词
             }
         }
-        visit[i][j] = false;        // 回溯:恢复board[i][j]未为访问过
+        visit[i][j] = false;        // 坑: 回溯,恢复board[i][j]未为访问过,这样才能找别的单词时用同一个字符
     }
 };
