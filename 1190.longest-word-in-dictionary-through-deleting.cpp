@@ -45,30 +45,7 @@ public:
      * @param s: a string
      * @param d: List[str]
      * @return: return a string
-     * S1: 先排序字典,再每个字典词去串中找匹配,第一个有匹配的词即是
-     * 先排序字典:按长度由大到小,再按字母顺序由小到大(输出字符顺序不能变所以不能排).
-     * 对字典中每个词,从头扫描给定串,若词中每个字符都能在串中找到匹配,说明串包含该词.
-     * 因为字典中的词已经排序,所以第一个匹配的词就是能匹配的最长词.
-     * T=O(m*logm*(n1*logn1) + m*n2)=O(m*n1*log(m+n1) + m*n2) S=O(1) 
-     * m=字典中词的数量,n1=字典中词的平均长度,n2=给定串长度
-     * [注]适合字典中词不多(m小)很长(n1大=>logn1好)的情况
-     */
-     string findLongestWord1(string &s, vector<string> &d) {
-        sort(d.begin(), d.end(), [](string a, string b) {   // 字典按从长到短,同长则按字目先后排序
-            if (a.size() == b.size()) return a < b;
-            return a.size() > b.size();
-        });
-        for (string str : d) {                              // 对字典中每个词
-            int i = 0;
-            for (char c : s) {                              // 从头扫描给定串
-                if (i < str.size() && c == str[i]) { ++i; } // 若词的字符在给定串中找到匹配,则继续扫串 
-            }
-            if (i == str.size()) { return str; }            // 若词的所有字符都在给定串中,返回词
-        }
-        return "";                                          // 若字典中的每个词都不在给定串中,返回空
-    }
-
-    /* S2: 不用排序字典,所有字典词都去串中找匹配,每次发现匹配到的词就更新结果
+     * S2: 不用排序字典,所有字典词都去串中找匹配,每次发现匹配到的词就更新结果
      * 对字典中每个词,从头扫描给定串,若词中每个字符都能在串中找到匹配,说明串包含该词.
      * 每找到匹配的词就看是否更长和字典顺序更前,是则更新结果.
      * T=O(m*n1*n2) S=O(1)
@@ -88,5 +65,28 @@ public:
             }
         }
         return res;                                         // 返回结果(可能为""")
+    }
+
+    /* S1: 先排序字典,再每个字典词去串中找匹配,第一个有匹配的词即是
+     * 先排序字典:按长度由大到小,再按字母顺序由小到大(输出字符顺序不能变所以不能排).
+     * 对字典中每个词,从头扫描给定串,若词中每个字符都能在串中找到匹配,说明串包含该词.
+     * 因为字典中的词已经排序,所以第一个匹配的词就是能匹配的最长词.
+     * T=O(m*logm*(n1*logn1) + m'*n1*n2)=O(m*n1*log(m+n1) + m'*n1*n2) S=O(1)
+     * m=字典中所有词数量,m'=排序后字典中第一匹配的词的index,n1=字典中词的平均长度,n2=给定串长度
+     * [注]适合字典中词不多(m小)很长(n1大=>logn1)的情况
+     */
+     string findLongestWord2(string &s, vector<string> &d) {
+        sort(d.begin(), d.end(), [](string a, string b) {   // 字典按从长到短,同长则按字目先后排序
+            if (a.size() == b.size()) return a < b;
+            return a.size() > b.size();
+        });
+        for (string str : d) {                              // 对字典中每个词
+            int i = 0;
+            for (char c : s) {                              // 从头扫描给定串
+                if (i < str.size() && c == str[i]) { ++i; } // 若词的字符在给定串中找到匹配,则继续扫串 
+            }
+            if (i == str.size()) { return str; }            // 若词的所有字符都在给定串中,返回词
+        }
+        return "";                                          // 若字典中的每个词都不在给定串中,返回空
     }
 };
