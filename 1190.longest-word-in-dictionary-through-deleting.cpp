@@ -53,7 +53,7 @@ public:
      * m=字典中词的数量,n1=字典中词的平均长度,n2=给定串长度
      * [注]适合字典中词不多(m小)很长(n1大=>logn1好)的情况
      */
-     string findLongestWord(string &s, vector<string> &d) {
+     string findLongestWord1(string &s, vector<string> &d) {
         sort(d.begin(), d.end(), [](string a, string b) {   // 字典按从长到短,同长则按字目先后排序
             if (a.size() == b.size()) return a < b;
             return a.size() > b.size();
@@ -74,7 +74,7 @@ public:
      * T=O(m*n1*n2) S=O(1)
      * [注]适合字典中词多(m大)且短(n1小)的情况
      */
-    string findLongestWord2(string s, vector<string>& d) {
+    string findLongestWord(string s, vector<string>& d) {
         string res = "";
         for (string str : d) {                              // 对字典中每个词
             int i = 0;                                      // 从头扫描给定串
@@ -82,7 +82,8 @@ public:
                 if (i < str.size() && c == str[i]) { ++i; }
             }
             if (i == str.size() &&                          // 若词的所有字符都在给定串中
-                (str.size() >= res.size() || str < res)) {  // 且比当前找到的结果更长或字典顺序更前
+                (str.size() > res.size() ||                 // 且找到比当前结果更长
+                (str.size() == res.size() && str < res))) { //   或跟当前结果等长但字典顺序更前
                     res = str;                              // 则更新结果
             }
         }
