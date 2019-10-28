@@ -56,7 +56,7 @@
  */
 class Solution {
 public:
-    /* 串b是串a的subset的条件: 串b中所有字符在串a中都出现过
+   /* 串b是串a的subset的条件: 串b中所有字符在串a中都出现过
     * 串a是universal的条件是: 集合B中所有词都是a的subset
     * 求集合A中所有universal: 找集合A中的所有串a满足:集合B中所有串b都是a的subset,即a包含集合B中出现过的所有字符
     * 1. 扫描B中所有串b,统计每个出现的字符在单个串中出现的最大次数 charCntMax[char]=count
