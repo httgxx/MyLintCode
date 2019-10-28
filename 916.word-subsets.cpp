@@ -56,19 +56,26 @@
  */
 class Solution {
 public:
+    /* 串b是串a的subset的条件: 串b中所有字符在串a中都出现过
+    * 串a是universal的条件是: 集合B中所有词都是a的subset
+    * 求集合A中所有universal: 找集合A中的所有串a满足:集合B中所有串b都是a的subset,即a包含集合B中出现过的所有字符
+    * 1. 扫描B中所有串b,统计每个出现的字符在单个串中出现的最大次数 charCntMax[char]=count
+    * 2. 扫描A中所有串a,查看B中出现过的所有字符都在a中出现,且在a中出现的次数>=在B中单个串中出现的最大次数 
+    * T=O(m1+n1 + m2*n2) S=O(1)
+    */
     vector<string> wordSubsets(vector<string>& A, vector<string>& B) {
         vector<string> res;
         vector<int> charCntMax(26, 0);
         for (string &b : B) {                               // 扫描集合B中所有串b
             vector<int> t = getCharCnt(b);                  // 统计串b中各字符的出现次数 T=O(m2*n2)
-            for (int i = 0; i < 26; ++i) {              
-                charCntMax[i] = max(charCntMax[i], t[i]);   // 更新B中各字符的单串出现最大次数
+            for (int i = 0; i < 26; ++i) {                  // 更新B中各字符的单串出现最大次数 T=O(1)
+                charCntMax[i] = max(charCntMax[i], t[i]);
             }
         }
         for (string &a : A) {                               // 扫描集合A中所有串a T=O(m1*n1)
             vector<int> t = getCharCnt(a);                  // 统计串a中各字符的出现次数 T=O(m1*n1)
             int i = 0;
-            for (; i < 26; ++i) {
+            for (; i < 26; ++i) {                           // T=O(1)
                 if (t[i] < charCntMax[i]) { break; }        // 若某字符B中单串出现次数>在串a中出现次数,a不是universal
             }
             if (i == 26) res.push_back(a);                  // 若B中每个字符的单串出现次数<=a中出现次数,则a是universal
