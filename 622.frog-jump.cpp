@@ -81,7 +81,7 @@ public:
         for (auto pos : stones) { dp[pos] = unordered_set<int>(); }     //       从i可继续跳的距离=弹跳力-1,弹跳力,弹跳力+1
         dp[0].insert(0);                                                // 跳到石头0时跳了0距离
         for (auto pos : stones) {                                       // 扫描每块石头 // T=O(n*...)
-            for (auto k : dp[pos]) {                                    //   针对跳到石头i的每种弹跳力 // T=O(n*n*...)
+            for (auto k : dp[pos]) {                                    //   针对石头i的每种弹跳力 // T=O(n*n*...)
                 for (int jump = k - 1; jump <= k + 1; ++jump) {         //     针对每种能继续跳的距离(弹跳力-1,弹跳力,弹跳力+1)
                     if (jump > 0 && dp.find(pos + jump) != dp.end()) {  //         若能正好跳到后面某石头
                         dp[pos + jump].insert(jump);                    //             则更新该石头的弹跳力
