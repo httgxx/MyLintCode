@@ -58,22 +58,20 @@ public:
     // 每到达一个位置,找出下一跳能跳到的所有石头,对每个新位置递归,直到绝路或已到(新位置>=终点),记忆结果并返回上层递归
     // T=O(n^2) S=O(n)
     bool canCross(vector<int> &stones) {
-        unordered_map<int, bool> m;                         // 记忆搜索
-        return helper(stones, 0, 0, m);                     // 递归
+        unordered_map<int, bool> m;                                     // 记忆搜索
+        return helper(stones, 0, 0, m);                                 // 递归
     }
-    bool helper(vector<int>& stones, int pos, int jump,     // jump=上一跳(到当前位置pos)跳的距离
-                unordered_map<int, bool>& m) {              //      这一跳只能jump-1,jump,或jump+1
-        int n = stones.size(), key = pos | jump << 11;      // 巧:pos和jump值存到1个int里
-        if (pos >= n - 1) { return true; }                  // 已达/超终点,返回true不用记忆(why?)
-        if (m.count(key)) { return m[key]; }                // 以前到过当前位置,返回记忆结果
-        for (int i = pos + 1; i < n; ++i) {                 // 首次到达当前位置,扫描剩下的每个石头
-            int dist = stones[i] - stones[pos];             //     计算该石头到当前位置的距离(看是否能跳到)
-            if (dist < jump - 1) { continue; }              //     石头太近跳不到,继续看下个石头
-            if (dist > jump + 1) { return m[key] = false; } //     石头太远跳不到,绝路走不下去,返回false并记忆
-            if (helper(stones, i, dist, m)) {               //     石头可跳到,递归表明可达终点,返回true并记忆
-                return m[key] = true;
-            }
+    bool helper(vector<int>& stones, int pos, int jump,                 // jump=上一跳(到当前位置pos)跳的距离
+                unordered_map<int, bool>& m) {                          //      这一跳只能jump-1,jump,或jump+1
+        int n = stones.size(), key = pos | jump << 11;                  // 巧:pos和jump值存到1个int里
+        if (pos >= n - 1) { return true; }                              // 已达/超终点,返回true不用记忆(why?)
+        if (m.count(key)) { return m[key]; }                            // 以前到过当前位置,返回记忆结果
+        for (int i = pos + 1; i < n; ++i) {                             // 首次到达当前位置,扫描剩下的每个石头
+            int dist = stones[i] - stones[pos];                         //     计算该石头到当前位置的距离(看是否能跳到)
+            if (dist < jump - 1) { continue; }                          //     石头太近跳不到,继续看下个石头
+            if (dist > jump + 1) { return m[key] = false; }             //     石头太远跳不到,绝路走不下去,返回false并记忆
+            if (helper(stones, i, dist, m)) { return m[key] = true; }   //     石头可跳到,递归表明可达终点,返回true并记忆
         }
-        return m[key] = false;                              //  从剩下的所有石头都没法到终点,绝路,返回false并记忆
+        return m[key] = false;                                          //  从剩下的所有石头都没法到终点,绝路,返回false并记忆
     }
 };
