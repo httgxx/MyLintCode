@@ -54,10 +54,9 @@ public:
      * @param stones: a list of stones' positions in sorted ascending order
      * @return: true if the frog is able to cross the river or false
      */
-    // 递归+记忆搜索
+    // S1: 递归+记忆搜索  T=O(n^2) S=O(n)
     // 每到达一个位置,找出下一跳能跳到的所有石头,对每个新位置递归,直到绝路或已到(新位置>=终点),记忆结果并返回上层递归
-    // T=O(n^2) S=O(n)
-    bool canCross(vector<int> &stones) {
+    bool canCross1(vector<int> &stones) {
         unordered_map<int, bool> m;                                     // 记忆搜索
         return helper(stones, 0, 0, m);                                 // 递归
     }
@@ -73,5 +72,23 @@ public:
             if (helper(stones, i, dist, m)) { return m[key] = true; }   //     石头可跳到,递归表明可达终点,返回true并记忆
         }
         return m[key] = false;                                          //  从剩下的所有石头都没法到终点,绝路,返回false并记忆
+    }
+
+    // S2: DP (迭代)  T=O(n^2) S=O(n^2)
+    // dp[i]=石头i的弹跳力集合(所有跳到i的所跳距离)
+    bool canCross(vector<int> &stones) {
+        unordered_map<int, unordered_set<int>> dp;                      // dp[i]=石头i的弹跳力集合(所有跳到i的所跳距离)
+        for (auto pos : stones) { dp[pos] = unordered_set<int>(); }     //       从i可继续跳的距离=弹跳力-1,弹跳力,弹跳力+1
+        dp[0].insert(0);                                                // 跳到石头0时跳了0距离
+        for (auto pos : stones) {                                       // 扫描每块石头 // T=O(n*...)
+            for (auto k : dp[pos]) {                                    //   针对跳到石头i的每种弹跳力 // T=O(n*n*...)
+                for (int jump = k - 1; jump <= k + 1; ++jump) {         //     针对每种能继续跳的距离(弹跳力-1,弹跳力,弹跳力+1)
+                    if (jump > 0 && dp.find(pos + jump) != dp.end()) {  //         若能正好跳到后面某石头
+                        dp[pos + jump].insert(jump);                    //             则更新该石头的弹跳力
+                    }
+                }
+            }
+        }
+        return !dp[stones.back()].empty();                              // 最后一块石头的弹跳力是否>0,即是否有从前面石头跳到它
     }
 };
