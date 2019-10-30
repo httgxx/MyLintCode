@@ -60,8 +60,8 @@
 class Solution {
 public:
    /* 递归分支计算根所在子树的
-    * 金币balance=左子树金币balance+右子树金币balance+根value-1 //根需留一个金币
-    * 使金币balance=0的最小moves=使左子树金币balance=0的最少moves+使右子树金币balance=0的最少moves
+    *   金币balance=左子树金币balance+右子树金币balance+根value-1 //根需留一个金币
+    *   使金币balance=0的最小moves=使左子树金币balance=0的最少moves+使右子树金币balance=0的最少moves
     *                          =|左子树金币balance|+|右子树金币balance|
     * 如此递归到叶节点:叶节点的金币balance=结点value-1(总共1个结点只须1个金币,其他都是多余)
     * 再bottom-up返回到root层递归,得到累加的所有moves
@@ -72,7 +72,7 @@ public:
         return moves;
     }
     int balance(TreeNode *root, int & moves) {              // 分治递归
-        if (root == NULL) { return 0; }                     // 递归到叶节点的左右null
+        if (root == NULL) { return 0; }                     // 递归到叶节点的左右null子树
         int leftBalance = balance(root->left, moves);       // 计算左子树金币balance,累加左子树达到金币balance=0所需最少moves
         int rightBalance = balance(root->right, moves);     // 计算右子树金币balance,累加右子树达到金币balance=0所需最少moves
         moves += abs(leftBalance) + abs(rightBalance);      // 累加根所在子树达到金币balance=0所需最少moves
