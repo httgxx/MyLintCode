@@ -75,7 +75,7 @@ public:
         if (root == NULL) { return 0; }                     // 递归到叶节点的左右null子树
         int leftBalance = balance(root->left, moves);       // 计算左子树金币balance,累加左子树达到金币balance=0所需最少moves
         int rightBalance = balance(root->right, moves);     // 计算右子树金币balance,累加右子树达到金币balance=0所需最少moves
-        moves += abs(leftBalance) + abs(rightBalance);      // 累加根所在子树达到金币balance=0所需最少moves
+        moves += abs(leftBalance) + abs(rightBalance);      // 累加根所在子树达到金币balance=0所需经由根的最少moves
         return leftBalance + rightBalance + root->val - 1;  // 返回根所在子树的金币balance=左子数balance+右子树balance+root值-1
                                                             // 根为叶子时金币balance=0+0+叶值-1(总共1个结点只须1个金币,其他都是多余)
     }
