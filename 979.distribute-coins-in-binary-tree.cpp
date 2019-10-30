@@ -71,7 +71,7 @@ public:
         balance(root, moves);                               // 递归
         return moves;
     }
-    int balance(TreeNode *root, int & moves) {             // 分治递归
+    int balance(TreeNode *root, int & moves) {              // 分治递归
         if (root == NULL) { return 0; }                     // 递归到叶节点的左右null
         int leftBalance = balance(root->left, moves);       // 计算左子树金币balance,累加左子树达到金币balance=0所需最少moves
         int rightBalance = balance(root->right, moves);     // 计算右子树金币balance,累加右子树达到金币balance=0所需最少moves
