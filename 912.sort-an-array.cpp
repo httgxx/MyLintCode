@@ -37,31 +37,31 @@ public:
     vector<int> sortArray1(vector<int>& nums) {
         int n = nums.size(), j = 0;
         vector<int> res(n), count(100001);
-        for (int num : nums) { ++count[num + 50000]; }  // 待排序的数做index统计计数,index>=0所以须[-5000,5000]=>[0,10000]
+        for (int num : nums) { ++count[num + 50000]; }      // 待排序的数做index统计计数,index>=0所以须[-5000,5000]=>[0,10000]
         for (int i = 0; i < count.size(); ++i) {
-            while (count[i]-- > 0) {                    // index按小到大顺序将计数>0的数是多大的d'd'd'd'vvvvvvvvvvvvvvvvvvv加入结果集
-                res[j++] = i - 50000;                   // 加入结果集时必须[0,10000]=>[-5000,5000]恢复后再加
+            while (count[i]-- > 0) {                        // index按小到大顺序将计数>0的数加入结果集
+                res[j++] = i - 50000;                       // 加入结果集时必须[0,10000]=>[-5000,5000]恢复后再加
             }
         }
         return res;
     }
 
-    // Quick Sort
+    // Quick Sort T=O(lognX) S=O(n)
     vector<int> sortArray(vector<int>& nums) {
         quickSort(nums, 0, (int)nums.size() - 1);
         return nums;
     }
     void quickSort(vector<int>& nums, int start, int end) {
         if (start >= end) { return; }
-        int pivot = nums[start], i = start + 1, j = end;
+        int pivot = nums[start], i = start + 1, j = end;    // 二分找pivot
         while (i <= j) {
-            if (nums[i] > pivot && nums[j] < pivot) {
+            if (nums[i] > pivot && nums[j] < pivot) {       // 按pivot来将左边>pivot的和右边<pivot的元素交换
                 swap(nums[i++], nums[j--]);
             }
             if (nums[i] <= pivot) { ++i; }
             if (nums[j] >= pivot) { --j; }
         }
-        swap(nums[start], nums[j]);
+        swap(nums[start], nums[j]);                         // 坑:最后一次交换队首和j
         quickSort(nums, start, j - 1);
         quickSort(nums, j + 1, end);
     }
