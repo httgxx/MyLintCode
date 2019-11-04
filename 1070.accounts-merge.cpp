@@ -104,6 +104,6 @@ public:
         return res;
     }
     string find(string s, unordered_map<string, string>& root) {            // 递归find&set root+压缩路径
-        return root[s] == s ? s : root[s] = find(root[s], root);
+        return root[s] == s ? s : (root[s] = find(root[s], root));
     }
 };
