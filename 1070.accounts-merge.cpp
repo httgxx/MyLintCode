@@ -79,23 +79,22 @@ public:
         for (auto account : accounts) {                 // 1.初始化: 将输入的每个user当作1个component // T=O(mn) S=O(mn)
             for(int i = 1; i < account.size(); ++i) {   //   对该user的每个email
                 user[account[i]] = account[0];          //     记录该email对应的user
-                root[account[i]] = account[1];          //     将第1个email设为component的root且设为该user所有emails的root(即加入该component)
+                root[account[i]] = account[i];          //     将第1个email设为component的root且设为该user所有emails的root(即加入该component)
             }                                           // 注!!!:初始化结束后,同component中不同email可能会有不同root,因为如果同1个email在不同
         }                                               //       components出现过,则该email的root会被更新为它出现过的最后一个component的root
+        
         for (auto account : accounts) {                 // 2.合并component: 含有相同email的component合并成一个connected_component
-            string newRoot = find(account[1], root);    // T=O(mnlogn) S=O(mn)
-            for(int i = 1; i < account.size(); ++i) {
-                root[find(account[i], root)] = newRoot;       
+            for(int i = 2; i < account.size(); ++i) {
+                doUnion(account[1], account[i], root);       
             }                     
         }
-        unordered_map<string, set<string>> merged;      // 3.合并email: 找出属于每个connected_component的所有emails
-        for (auto account : accounts) {                 // T=O(mnlogn) S=O(mn)
-            for (int i = 1; i < account.size(); ++i) {
-                merged[find(account[i], root)].insert(account[i]);
-            }
+        unordered_map<string, set<string>> mergedRoot;  // 3.合并email: 找出属于每个connected_component的所有emails
+        for (auto email2Root : root) {
+            string finalRoot = find(email2Root.first, root);
+            mergedRoot[finalRoot].insert(email2Root.first);
         }
         vector<vector<string>> res;                     // res[i]=[user,email,email,email] // T=O(mnlogn) S=O(mn)
-        for (auto root2Emails : merged) {               // 4.输出: 每个合并后的connected_component里的所有email排序后+user加入结果集
+        for (auto root2Emails : mergedRoot) {           // 4.输出: 每个合并后的connected_component里的所有email排序后+user加入结果集
             vector<string> mergedAccount(root2Emails.second.begin(), root2Emails.second.end()); 
             mergedAccount.insert(mergedAccount.begin(), user[root2Emails.first]);
             res.push_back(mergedAccount);                                                     
@@ -103,7 +102,13 @@ public:
 
         return res;
     }
-    string find(string s, unordered_map<string, string>& root) {    // 递归找祖先root并压缩路径
+private:
+    string find(string s, unordered_map<string, string>& root) {            // 递归找祖先root并压缩路径
         return root[s] == s ? s : (root[s] = find(root[s], root));
+    }
+    void doUnion(string a, string b, unordered_map<string, string>& root) {   // 合并两个string所在的component
+        string rootA = find(a, root);
+        string rootB = find(b, root);
+        if (rootA != rootB) { root[rootB] = rootA; }
     }
 };
