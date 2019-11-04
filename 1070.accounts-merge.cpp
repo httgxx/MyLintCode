@@ -82,21 +82,18 @@ public:
                 root[account[i]] = account[1];                              //     将第1个email设为component的root且设为该user所有emails的root(即加入该component)
             }                                                               // 注!!!:初始化结束后,同component中不同email可能会有不同root,因为如果同1个email在不同
         }                                                                   //       components出现过,则该email的root会被更新为它出现过的最后一个component的root
-
         for (auto account : accounts) {                                     // 2.合并component: 含有相同email的component合并成一个connected_component
             string newRoot = find(account[1], root);                        // T=O(mnlogn) S=O(mn)
             for(int i = 1; i < account.size(); ++i) {
                 root[find(account[i], root)] = newRoot;       
             }                     
         }
-        
-        unordered_map<string, set<string>> mergedComponents;                // 3. 合并email: 找出属于每个connected_component的所有emails
+        unordered_map<string, set<string>> mergedComponents;                // 3.合并email: 找出属于每个connected_component的所有emails
         for (auto account : accounts) {                                     // T=O(mnlogn) S=O(mn)
             for (int i = 1; i < account.size(); ++i) {
                 mergedComponents[find(account[i], root)].insert(account[i]);
             }
         }
-
         vector<vector<string>> res;                                         // res[i]=[user,email,email,email] // T=O(mnlogn) S=O(mn)
         for (auto root2Emails : mergedComponents) {                         // 4.输出: 每个合并后的connected_component里的所有email排序后+user加入结果集
             vector<string> mergedAccount(root2Emails.second.begin(), root2Emails.second.end()); 
@@ -106,10 +103,7 @@ public:
 
         return res;
     }
-private:
     string find(string s, unordered_map<string, string>& root) {            // 递归find&set root+压缩路径
-        if(root[s] == s) { return s; }
-        root[s] = find(root[s], root);
-        return root[s]; 
+        return root[s] == s ? s : root[s] = find(root[s], root);
     }
 };
