@@ -80,9 +80,8 @@ public:
             for(int i = 1; i < account.size(); ++i) {   //   对该user的每个email
                 user[account[i]] = account[0];          //     记录该email对应的user
                 root[account[i]] = account[1];          //     将第1个email设为component的root且设为该user所有emails的root(即加入该component)
-            }                                           // 注!!!:初始化结束后,同component中不同email可能会有不同root,因为若同email在不同
-        }                                               //       components,则该email的root会被更新为它出现过的最后一个component的root
-
+            }                                           // 注!:初始化结束后,同component中不同email可能会有不同root,因为若同email在不同
+        }                                               //     components,则该email的root会被更新为它出现过的最后一个component的root
         for (auto account : accounts) {                 // 2.合并component: 合并含有相同email的component // T=O(mnlogn) S=O(1)
             for(int i = 2; i < account.size(); ++i) {
                 doUnion(account[1], account[i], root);  // 坑: 是union而不是root[account[i]]=account[1]!!!
