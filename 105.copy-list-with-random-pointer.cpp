@@ -37,25 +37,6 @@ public:
      * @param head: The head of linked list with a random pointer.
      * @return: A new head of a deep copy of the list.
      */
-    // S1: 递归+map[node]=copy_node
-    // 建表保存每个node都 map[node]=copy, node->random => map[node->random]
-    // T=O(n) S=O(n)
-    RandomListNode* copyRandomList1(RandomListNode* head) {
-        unordered_map<RandomListNode*, RandomListNode*> m;
-        return helper(head, m);
-    }
-    RandomListNode* helper(
-        RandomListNode* node,
-        unordered_map<RandomListNode*, RandomListNode*>& m) {       // 在map中找原node对应的copy_node
-            if (!node) { return nullptr; }                          // 递归返回
-            if (m.count(node)) { return m[node]; }                 // 找到copy则返回
-            RandomListNode *res = new RandomListNode(node->label); // 没找copy则新建加入
-            m[node] = res;
-            res->next = helper(node->next, m);                     // 新建copy node时random和next都可以递归
-            res->random = helper(node->random, m);
-            return res;
-    }
-
     // S2: copy+insert next to origin, 这样就可以方便找random's copy(=random->next)
     // T=O(n) S=O(1)
     RandomListNode* copyRandomList(RandomListNode* head) {
@@ -83,5 +64,24 @@ public:
             cur = cur->next;
         }
         return res;
+    }
+
+    // S1: 递归+map[node]=copy_node
+    // 建表保存每个node都 map[node]=copy, node->random => map[node->random]
+    // T=O(n) S=O(n)
+    RandomListNode* copyRandomList1(RandomListNode* head) {
+        unordered_map<RandomListNode*, RandomListNode*> m;
+        return helper(head, m);
+    }
+    RandomListNode* helper(
+        RandomListNode* node,
+        unordered_map<RandomListNode*, RandomListNode*>& m) {       // 在map中找原node对应的copy_node
+            if (!node) { return nullptr; }                          // 递归返回
+            if (m.count(node)) { return m[node]; }                 // 找到copy则返回
+            RandomListNode *res = new RandomListNode(node->label); // 没找copy则新建加入
+            m[node] = res;
+            res->next = helper(node->next, m);                     // 新建copy node时random和next都可以递归
+            res->random = helper(node->random, m);
+            return res;
     }
 };
