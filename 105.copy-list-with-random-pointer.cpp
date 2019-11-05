@@ -40,7 +40,7 @@ public:
     // S1: 递归+map[node]=copy_node
     // 建表保存每个node都 map[node]=copy, node->random => map[node->random]
     // T=O(n) S=O(n)
-    RandomListNode* copyRandomList(RandomListNode* head) {
+    RandomListNode* copyRandomList1(RandomListNode* head) {
         unordered_map<RandomListNode*, RandomListNode*> m;
         return helper(head, m);
     }
@@ -54,5 +54,34 @@ public:
             res->next = helper(node->next, m);                     // 新建copy node时random和next都可以递归
             res->random = helper(node->random, m);
             return res;
+    }
+
+    // S2: copy+insert next to origin, 这样就可以方便找random's copy(=random->next)
+    // T=O(n) S=O(1)
+    RandomListNode* copyRandomList(RandomListNode* head) {
+        if (!head) return nullptr;                              // 处理特例:没node
+        RandomListNode *cur = head;
+        while (cur) {                                           // 遍历每个node
+            RandomListNode *t = new RandomListNode(cur->label); //   拷贝每个node(还没设置random)
+            t->next = cur->next;                                //   每个拷贝的node都插到原node之后    
+            cur->next = t;
+            cur = t->next;
+        }
+        cur = head;
+        while (cur) {                                           // 再次遍历每个node
+            if (cur->random) {                                  //   random指向的是某个node,该node后面紧接就是其copy
+                cur->next->random = cur->random->next;          //   故random->next就是random的copy,可以赋给copy_node->random
+            }
+            cur = cur->next->next;
+        }
+        cur = head;
+        RandomListNode *res = head->next;
+        while (cur) {                                           // 最后遍历每个node
+            RandomListNode *t = cur->next;                      //   把所有的copy_node抽出来加入结果
+            cur->next = t->next;
+            if (t->next) t->next = t->next->next;
+            cur = cur->next;
+        }
+        return res;
     }
 };
