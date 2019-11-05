@@ -52,7 +52,7 @@ public:
      * @param pattern: pattern string
      * @return: list of matching words
      */
-    // 找一个字符串的字符出现规律, word和pattern的字符出现规律相同则算word匹配pattern
+    // 找字符串的字符出现规律, word和pattern的字符出现规律相同则算word匹配pattern
     // T=O(mn) S=O(mn)  m=word的个数, n=word/pattern的长度
     vector<string> findAndReplacePattern(vector<string>& words, string pattern) {
         vector<string> res;
