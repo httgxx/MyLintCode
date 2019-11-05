@@ -68,7 +68,7 @@ public:
         for (char c : word) {                       // 对每个字符,统计该字符首次出现之前所有出现过的字符种类数                               
             if (!m.count(c)) { m[c] = m.size(); }   // e.g. xyy=>011
         }
-        for (int i = 0; i < word.size(); ++i) {     // 将字符种类数当作未偏移量加到'a'编码成字符形成pattern
+        for (int i = 0; i < word.size(); ++i) {     // 将字符种类数当作偏移量加+'a'编码成字符形成pattern
             word[i] = 'a' + m[word[i]];             // e.g. xyy=>011=>abb
         }
         return word;
