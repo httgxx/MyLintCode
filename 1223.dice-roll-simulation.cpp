@@ -53,6 +53,12 @@
  */
 class Solution {
 public:
+    // DP
+    // dp[i][j][k]表示第i次掷色子得j点且j已连续出现了k次
+    // k==1时: dp[i][j][1]=sum(dp[i-1][*][*])-sum(dp[i-1][j][*]
+    // k>1时:  dp[i][j][k]=dp[i-1][j][k-1]
+    // 最后累加 dp[n][*][*]
+    // T=O(m*n*k*t) m=掷色子最多次数 n=每个色子的最大值 k=点数可以连续出现的最大次数        
     int dieSimulator(int n, vector<int>& rollMax) {
         constexpr int kMaxRolls = 15;
         constexpr int kMod = 1e9 + 7;
@@ -77,7 +83,6 @@ public:
                 }
             }
         }
-        
         int ans = 0;
         for (int j = 0; j < 6; ++j) {                                   // 累计dp[n][*][*]
             for (int k = 1; k <= rollMax[j]; ++k) {
