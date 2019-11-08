@@ -42,13 +42,13 @@
  * Output:[["baba","abat","baba","atan"],["baba","abat","baba","atal"]]
  * 
  * @Category Trie+递归DFS
- * @Idea 
+ * @Idea T=O(mn) S=O(mn) m=单词个数 n=单词长度
  * 枚举每个单词为第1行
  *   再枚举含有第2列前1行的前缀的所有单词填入第2行
  *     递归给第3行找单词填(即枚举含有第3列前2行的前缀的所有单词填入第3行)
  *       ...
- *       直到第word.length行被填完,即找到符合条件的word square加入结果集
- * 返回所有满足条件的word sqaure
+ *       直到递归到第word.length行,即之前已经填满了length行,找到符合条件的word square,加入结果集
+ * 最后返回所有满足条件的word sqaure
  */
 class Solution {
 public:
