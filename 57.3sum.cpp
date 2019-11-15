@@ -39,7 +39,7 @@ public:
      * @param numbers: Give an array numbers of n integer
      * @return: Find all unique triplets in the array which gives the sum of zero.
      */
-    // 2Sum + 剪枝 T=O(n) S=O(1)
+    // 2Sum=0-[i] + 剪枝 T=O(n) S=O(1)
     vector<vector<int>> threeSum(vector<int>& nums) {
         vector<vector<int>> res;
         sort(nums.begin(), nums.end());                                     // 先从小到大排序 T=O(nlogn)
