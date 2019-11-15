@@ -32,8 +32,17 @@
  * Explanation：You can place a person at node 1, and he can supervise node 1, 2, 3, 4, 5.
  * 
  * @Category DP+DFS
- * @Idea
- * 
+ * @Idea DP+DFS
+ * T=O(n^2) S=O(n^2)
+ * dp[x]=-i时表示自身向下i层需要被覆盖。dp[x]=i时表示自身向上i层可以被覆盖
+ * dfs(cur, pre, k)
+ *   Mn表示从当前结点向下需要覆盖的层数,Mx表示从当前结点向上可以覆盖的层数
+ *   若Mn == INF叶子节点，设为-1表示自身一层需要被覆盖
+ *   若Mn <= -k，说明必须放置一个人，dp[u]=k，说明向上k层可以被覆盖
+ *   若Mn + Mx > 0，说明某个子树向上覆盖的范围大于其它子树需要被覆盖的范围，那么Mx - 1就是说可以覆盖的范围减去一层
+ *   否则是Mn - 1,需要被覆盖的层数加1
+ * if(dp[1] < 0) { ++res; }
+ * return res;
  */
 class Solution {
 public:
