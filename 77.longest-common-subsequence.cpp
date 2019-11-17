@@ -35,11 +35,15 @@
  * 
  * S2: 递归+记忆搜索
  * T=O(mn) S=O(mn)
- * helper(subLenA, subLenB, mem)=
- *     if A[subLenA-1]==B[subLenB-1]: 1+helper(subLenA-1,subLenB-1)
- *     else: max(helper(subLenA-1,subLenB), helper(subLenA, subLenB-1))
+ * helper(A,subEndIdxA,B,subEndIdxB, mem)=
+ *     if 有记忆值mem[subEndIdxA+1][subEndIdxB+1]则返回记忆值
+ *     else 计算值并更新记忆
+ *          if A[subEndIdxA]==B[subEndIdxB]: 1+helper(subEndIdxA,subEndIdxB)
+ *          else: max(helper(subEndIdxA-1,subEndIdxB), helper(subEndIdxA, subEndIdxB-1))
+ *     return 新计算的记忆值
  * 坑1: 初始化mem所有为-1而非0来区分没计算过的情况和不匹配的情况
  * 坑2: [al+1][bl+1]因mem[0][i]=0指长为0的A子串(而非首字符A[0])不匹配B
+ * 坑3: helper参数传的是subStr末元素index而不是subStr长度, 故m[endA+1][endB+1]
  */
 class Solution {
 public:
@@ -76,17 +80,17 @@ public:
                                                                 // 坑2: 须[al+1][bl+1]因mem[0][i]=0指长为0的A子串(而非首字符A[0])不匹配B
         for (int i = 0; i <= al; ++i) { m[i][0] = 0; }          // 初始化首行首列m[0][j]=m[i][0]=0
         for (int j = 0; j <= bl; ++j) { m[0][j] = 0; }
-        return helper(A, al - 1, B, bl - 1, m);                 // 递归+记忆搜索
+        return helper(A, al - 1, B, bl - 1, m);                 // 递归+记忆搜索 // 坑3: 参数传的是subStr末元素index而不是subStr长度
     }
     int helper(const string &A, int endA, const string &B, int endB, vector<vector<int>>& m) {
-        if(m[endA + 1][endB + 1] >= 0) {
+        if(m[endA + 1][endB + 1] >= 0) {                        // 坑3: 参数传的是subStr末元素index而不是subStr长度, 故m[endA+1][endB+1]
             return m[endA + 1][endB + 1];                       // 若有记忆,直接返回记忆值
         }        
-        m[endA + 1][endB + 1] =                                 // 若无记忆,计算并更新记忆    
+        m[endA + 1][endB + 1] =                                 // 若无记忆,计算并更新记忆 // 坑3: m[endA+1][endB+1]   
             A[endA] == B[endB]
             ? 1 + helper(A, endA - 1, B, endB - 1, m)           //   若最后同, 则最后字符构成新LCM
             : max(helper(A, endA - 1, B, endB, m),              //   若最后不同,则去掉A[i]或B[j]求最大
                   helper(A, endA, B, endB - 1, m));
-        return m[endA + 1][endB + 1];
+        return m[endA + 1][endB + 1];                           // 返回新计算的记忆值 // 坑3: m[endA+1][endB+1]
     }
 };
