@@ -75,7 +75,7 @@ public:
     int longestCommonSubsequence2(const string& A, const string& B) {
         if (A.empty() || B.empty()) { return 0; }               // 坑: 特例
         int al = A.length(), bl = B.length();
-        vector<vector<int>> m(al + 1, vector<int>(bl + 1, -1)); // 记忆m[i][j]=A[0,i]和B[0,j]的LCS 坑:al+1,bl+1
+        vector<vector<int>> m(al + 1, vector<int>(bl + 1, -1)); // 记忆m[i][j]=A[0,i-1]和B[0,j-1]的LCS
                                                                 // 坑1: 须初始化所有为-1而非0来区分没计算过的情况和不匹配的情况
                                                                 // 坑2: 须[al+1][bl+1]因mem[0][i]=0指长为0的A子串(而非首字符A[0])不匹配B
         for (int i = 0; i <= al; ++i) { m[i][0] = 0; }          // 初始化首行首列m[0][j]=m[i][0]=0
