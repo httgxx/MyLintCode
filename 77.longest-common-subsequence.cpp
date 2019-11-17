@@ -53,7 +53,7 @@ public:
      * @return: The length of longest common subsequence of A and B
      */
     // S1: DP 双序列 T=O(mn) S=O(mn)
-    int longestCommonSubsequence1(string &A, string &B) {
+    int longestCommonSubsequence(string &A, string &B) {
         if (A.empty() || B.empty()) { return 0; }               // 坑: 特例
         int al = A.length(), bl = B.length();
         vector<vector<int>> dp(al + 1, vector<int>(bl + 1, 0)); // dp[i][j]表示A[0,i)和B[0,j)的LCS,(m+1)*(n+1),初始化=0
@@ -72,7 +72,7 @@ public:
 
     // S2: 递归+记忆搜索
     // T=O(mn) S=O(mn)
-    int longestCommonSubsequence(const string& A, const string& B) {
+    int longestCommonSubsequence2(const string& A, const string& B) {
         if (A.empty() || B.empty()) { return 0; }               // 坑: 特例
         int al = A.length(), bl = B.length();
         vector<vector<int>> m(al + 1, vector<int>(bl + 1, -1)); // 记忆m[i][j]=A[0,i]和B[0,j]的LCS 坑:al+1,bl+1
