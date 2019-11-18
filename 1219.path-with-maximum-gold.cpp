@@ -72,21 +72,28 @@ public:
     // T=O(4*3^n)=O(4*3^25) S=O(n)=O(25) n=含有金子的cell数目(根据题意n<=25) 
     int getMaximumGold(vector<vector<int>>& g) {
         int m = g.size(), n = g[0].size(), ans = 0;
-        function<int(int, int)> dfs = [&](int x, int y) {
-            if (x < 0 || x >= m || y < 0 || y >= n || g[x][y] == 0) return 0;
-            int c = 0;
-            swap(c, g[x][y]);   // g[x][y]=0标记[x,y]为已经访问过(没金子)
-            int r = c + max({dfs(x - 1, y), dfs(x + 1, y), dfs(x, y - 1), dfs(x, y + 1)});
-            swap(c, g[x][y]);   // 回溯取消标记
-            return r;
-        };
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {   
-                ans = max(ans, dfs(i, j));
+                ans = max(ans, dfs(g, i, j));
             }
         }
         return ans;
     }
+    int dfs(vector<vector<int>>& g, int x, int y) {
+        int m = g.size(), n = g[0].size(), ans = 0;
+        if (x < 0 || x >= m || y < 0 || y >= n || g[x][y] == 0) {
+            return 0;       // 若出界或没金则返0
+        }           
+        int c = 0;
+        swap(c, g[x][y]);   // g[x][y]=0标记[x,y]为已经访问过(没金子)
+        int r = c + max({   // 递归邻居更新max
+            dfs(g, x - 1, y),
+            dfs(g, x + 1, y), 
+            dfs(g, x, y - 1), 
+            dfs(g, x, y + 1)});
+        swap(c, g[x][y]);   // 回溯(去掉访问标记)
+        return r;
+    };
 
     int getMaximumGold2(vector<vector<int>>& g) {
         int res = 0;
