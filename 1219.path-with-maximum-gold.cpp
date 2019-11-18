@@ -48,10 +48,22 @@
  * 0 <= grid[i][j] <= 100
  * There are at most 25 cells containing gold.
  * 
- * @Category DFS
- * @Idea DFS
+ * @Category DFS+backtrack
+ * @Idea DFS 递归+回溯
  * 注:题目给出condition: grid最大15x15,最多25个cell有金子,每个cell最多100金,所以直接DFS
- * 
+ * T=O(4*3^n)=O(4*3^25) S=O(n)=O(25) n=含有金子的cell数目<=25
+ * - main()
+ * for(i=0~m-1)
+ *    for(j=0~n-1)
+ *       res = max(res, dfs(g, i, j));
+ * return res
+ * - dfs(g,i,j)
+ *   if(出界或没金g[i][j]==0) return 0
+ *   origin=g[i][j]     // 巧:标记为访问过(没金子)
+ *   next=0
+ *   for(上/下/左/右邻居) next=max(next,dfs(邻居))
+ *   g[i][j]=origin     // 回溯(取消标记)
+ *   return origin+next // 坑:勿忘+origin
  */
 class Solution {
 public:
@@ -68,16 +80,16 @@ public:
         return res;
     }
     int dfs(vector<vector<int>>& g, int i, int j) {
-        vector<int> dirs = {0, 1, 0, -1, 0};
-        if (i < 0 || i >= g.size() || i < 0 || j >= g[0].size() || g[i][j] == 0) {
+        if (i < 0 || i >= g.size() || j < 0 || j >= g[0].size() || g[i][j] == 0) {
             return 0;                                               // 若出界或没金则返0
         }
-        int res = 0, origin = g[i][j];
+        int origin = g[i][j], next = 0;
         g[i][j] = 0;                                                // 标记位访问过(没金子)
-        for (int k = 0; k < 4; ++k) {                               // 访问各邻居
-            res = max(res, dfs(g, i + dirs[k], j + dirs[k + 1]));   // 递归子,更新max
+        vector<int> dirs = {0, 1, 0, -1, 0};
+        for (int k = 0; k < 4; ++k) {
+            next = max(next, dfs(g, i + dirs[k], j + dirs[k + 1]));// 递归各邻居,更新max
         }
-        g[i][j] = origin;                                           // 回溯,去掉访问标记  
-        return res + origin;
+        g[i][j] = origin;                                           // 回溯(去掉访问标记)  
+        return next + origin;                                       // 坑: 勿忘+当前cell
     }
 };
