@@ -70,7 +70,7 @@ public:
     // DFS 递归+回溯
     // 设cell值为0(没金子)来标记访问过
     // T=O(4*3^n)=O(4*3^25) S=O(n)=O(25) n=含有金子的cell数目(根据题意n<=25) 
-    int getMaximumGold1(vector<vector<int>>& g) {
+    int getMaximumGold(vector<vector<int>>& g) {
         int m = g.size(), n = g[0].size(), ans = 0;
         function<int(int, int)> dfs = [&](int x, int y) {
             if (x < 0 || x >= m || y < 0 || y >= n || g[x][y] == 0) return 0;
@@ -81,14 +81,14 @@ public:
             return r;
         };
         for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < m; ++j) {   
+            for (int j = 0; j < n; ++j) {   
                 ans = max(ans, dfs(i, j));
             }
         }
         return ans;
     }
 
-    int getMaximumGold(vector<vector<int>>& g) {
+    int getMaximumGold2(vector<vector<int>>& g) {
         int res = 0;
         for (int i = 0; i < g.size(); ++i) {
             for (int j = 0; j < g[0].size(); ++j) {
