@@ -70,16 +70,34 @@ public:
     // DFS 递归+回溯
     // 设cell值为0(没金子)来标记访问过
     // T=O(4*3^n)=O(4*3^25) S=O(n)=O(25) n=含有金子的cell数目(根据题意n<=25) 
+    int getMaximumGold1(vector<vector<int>>& g) {
+        int m = g.size(), n = g[0].size(), ans = 0;
+        function<int(int, int)> dfs = [&](int x, int y) {
+            if (x < 0 || x >= m || y < 0 || y >= n || g[x][y] == 0) return 0;
+            int c = 0;
+            swap(c, g[x][y]);   // g[x][y]=0标记[x,y]为已经访问过(没金子)
+            int r = c + max({dfs(x - 1, y), dfs(x + 1, y), dfs(x, y - 1), dfs(x, y + 1)});
+            swap(c, g[x][y]);   // 回溯取消标记
+            return r;
+        };
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < m; ++j) {   
+                ans = max(ans, dfs(i, j));
+            }
+        }
+        return ans;
+    }
+
     int getMaximumGold(vector<vector<int>>& g) {
         int res = 0;
         for (int i = 0; i < g.size(); ++i) {
             for (int j = 0; j < g[0].size(); ++j) {
-                res = max(res, dfs(g, i, j));
+                res = max(res, helper(g, i, j));
             }
         }
         return res;
     }
-    int dfs(vector<vector<int>>& g, int i, int j) {
+    int helper(vector<vector<int>>& g, int i, int j) {
         if (i < 0 || i >= g.size() || j < 0 || j >= g[0].size() || g[i][j] == 0) {
             return 0;                                               // 若出界或没金则返0
         }
@@ -87,7 +105,7 @@ public:
         g[i][j] = 0;                                                // 标记位访问过(没金子)
         vector<int> dirs = {0, 1, 0, -1, 0};
         for (int k = 0; k < 4; ++k) {
-            next = max(next, dfs(g, i + dirs[k], j + dirs[k + 1]));// 递归各邻居,更新max
+            next = max(next, helper(g, i + dirs[k], j + dirs[k + 1]));// 递归各邻居,更新max
         }
         g[i][j] = origin;                                           // 回溯(去掉访问标记)  
         return next + origin;                                       // 坑: 勿忘+当前cell
