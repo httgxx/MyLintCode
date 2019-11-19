@@ -56,10 +56,10 @@ public:
         double res = DBL_MAX, qsum = 0, n = quality.size();                 // 坑: double, DBL_MAX
         vector<pair<double, int>> workers;                                  // workers<pair<工资/技能,技能>>
         priority_queue<int> pq;                                             // 用最大堆求技能最小的K个工人
-        for (int i = 0; i < n; ++i) {                                       // T=O(n) S=O(n)
+        for (int i = 0; i < n; ++i) {                                       // T=O(n)
             workers.push_back({ double(wage[i]) / quality[i], quality[i] });// 先按工资/技能从小到大排,再按技能从小到大排
         }
-        sort(workers.begin(), workers.end());                               // T=O(nlogn)
+        sort(workers.begin(), workers.end());                               // T=O(nlogn) S=O(n)
         for (auto worker : workers) {                                       // T=O(nlogk) S=O(k)
             qsum += worker.second;                                          // 累计堆内技能总和
             pq.push(worker.second);                                         // 当前技能入堆
