@@ -41,7 +41,15 @@
  * 1 <= quality[i] <= 10000
  * 1 <= wage[i] <= 10000
  * Answers within 10^-5 of the correct answer will be considered correct.
- * 
+ *
+ * @Category Greedy
+ * @Idea 贪心 T=O(nlogn) S=O(n)
+ * 1. 工资越低技能越高的工人越省成本,所以要找工资/技能比值小的工人
+ *    工资/技能比值相同时,技能越低工资越低,所以要找技能小的工人
+ *    故先按工资/技能从小到大排,再按技能从小到大排
+ * 2. 用最大堆求当前技能最小的K个工人
+ *    每次堆内>k个人, 去掉技能最大的(最贵的)工人
+ *    每次堆内有k个人,计算总花费=技能总和*工资/技能,更新最小花费值
  */
 class Solution {
 public:
