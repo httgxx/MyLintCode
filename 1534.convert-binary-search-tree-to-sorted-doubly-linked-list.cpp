@@ -59,9 +59,19 @@
  *    1   3
  * Output: "left:1->3->2  right:1->2->3"
  * 
- * @Category BFS Pre-order
+ * @Category BFS In-order
  * @Idea BFS 中序遍历
+ * DFS in-order
  * 循环双向链表(head=原先的二叉搜索树中的最左结点即最小值结点,tail=最右结点,head和tail互连
+ * pre = head = NULL
+ * 递归inorder(cur, pre, head)
+ *     if(!cur) return
+ *     inorder(cur->left, pre, head)
+ *     处理cur: if(!head) head=cur
+ *     inorder(cur->left, pre, head)
+ * 连首尾 pre->right = head; head->left = pre; 
+ * 返回首
+ * T=O(n) S=O(1)//extra space
  */
 /**
  * Definition of TreeNode:
@@ -86,24 +96,24 @@ public:
     // T=O(n) S=O(1)//extra space
     TreeNode * treeToDoublyList(TreeNode * root) {
         if (!root) { return NULL; }         // 特例:空串
-        TreeNode *head = NULL, *pre = NULL;
+        TreeNode *pre = NULL, *head = NULL;
         inorder(root, pre, head);           // 递归
         pre->right = head;                  // 尾->首
         head->left = pre;                   // 尾<-首
         return head;
     }
     void inorder(TreeNode* cur, TreeNode*& pre, TreeNode*& head) {
-        if (!cur) { return; }
+        if (!cur) { return; }               // 递归结束
         inorder(cur->left, pre, head);      // 递归左子树
-        if (!head) {                        // 首node
-            head = cur;
+        if (!head) {                        // 若首node: head==null => pre=head=cur
             pre = cur;
-        } 
-        else {
-            pre->right = cur;               // pre->cur
-            cur->left = pre;                // pre<-cur
-            pre = cur;                      // pre前移
+            head = cur;
         }
+        else {                              // 若非首node: head!=null
+            pre->right = cur;               //   pre->cur
+            cur->left = pre;                //   pre<-cur
+        }
+        pre = cur;                          // 坑: pre前移
         inorder(cur->right, pre, head);     // 递归右子树
     }
 };
