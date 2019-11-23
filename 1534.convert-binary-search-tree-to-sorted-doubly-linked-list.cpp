@@ -67,7 +67,7 @@
  * 递归inorder(cur, pre, head)
  *     if(!cur) return
  *     inorder(cur->left, pre, head)
- *     处理cur: if(!head) head=cur
+ *     处理cur: if(!head) head=pre=cur; else pre->cur->head 且 pre=cur
  *     inorder(cur->left, pre, head)
  * 连首尾 pre->right = head; head->left = pre; 
  * 返回首
@@ -113,7 +113,7 @@ public:
             pre->right = cur;               //   pre->cur
             cur->left = pre;                //   pre<-cur
         }
-        pre = cur;                          // 坑: pre前移
+        pre = cur;                          // 坑: 勿忘pre前移!!!
         inorder(cur->right, pre, head);     // 递归右子树
     }
 };
