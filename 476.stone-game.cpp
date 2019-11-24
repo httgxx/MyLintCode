@@ -11,12 +11,10 @@
  * Total Submissions: 14771
  * Testcase Example:  '[3,4,3]\n'
  *
- * There is a stone game.At the beginning of the game the player picks `n`
- * piles of stones in a line.
+ * There is a stone game.At the beginning of the game the player picks `n` piles of stones in a line.
  * 
  * The goal is to merge the stones in one pile observing the following rules: 
- * 1. At each step of the game,the player can merge two adjacent piles to a new
- * pile.
+ * 1. At each step of the game,the player can merge two adjacent piles to a new pile.
  * 2. The score is the number of stones in the new pile. 
  * 
  * You are to determine the minimum of the total score.
@@ -34,8 +32,12 @@
  *  3. Merge the last two piles => [10], score = 18
  * 
  * @Category DP 区间型
+ * @Idea DP 区间型
+ * 每次合并相邻石头堆cost为两堆之和,求最小总cost
+ * sum[i]表示原序列[0,i]区间的石子重量和=>[i,j]间石子重量和=sum[j]-sum[i-1]
  * dp[i][j]表示合并原序列[i,j]区间的石子的最小代价
- * dp[i][j] = min{dp[i][k] + dp[k+1][j]|k} + sum[i][j], sum[i][j]表示原序列[i,j]区间的石子重量和
+ * 找i和j之间的k使得dp[i][j]最小
+ * = min{dp[i][k] + dp[k+1][j] + sum[i][j] | k=[i,j)}
  * 初始 f[i][i] = sum[i][i], f[i][i+1] = sum[i][i+1]
  * 返回 f[0][n-1]
  */
@@ -47,34 +49,20 @@ public:
      */
     int stoneGame(vector<int> &A) {
         int n = A.size();
-        if (n <= 1) { return 0; }
-        vector<int> sum, num;
-        sum.resize(n + 1);
-        num.resize(n + 1);
-
-        vector<vector<int>> f, s;
-        for (int i = 0; i <= n; i++) {
-            f.push_back(num);
-            s.push_back(num);
-        }
-        
-        for (int i = 1; i <= n; i++) {
-            num[i] = A[i-1];
-            sum[i] = sum[i-1] + num[i];
-            f[i][i] = 0;
-            s[i][i] = i;
-        }
-        
-        for (int len = 2; len <= n; len++)
-            for (int i = 1; i <= n - len + 1; i++) {
-                int j = i + len - 1;
-                f[i][j] = 0x7fffffff / 3;
-                for (int k = s[i][j-1]; k <= s[i+1][j]; k++)
-                    if (f[i][k-1] + f[k][j] + sum[j] - sum[i-1] < f[i][j]) {
-                        f[i][j] = f[i][k-1] + f[k][j] + sum[j] - sum[i-1];
-                        s[i][j] = k;
-                    }
+        if (n <= 1) { return 0; }                       // 特例:空串或只有1堆
+        vector<int> sum(n, 0);                          // 计算前缀和sum[i]=[0,i]间石子重量和
+        sum[0] = A[0];                                  // sum[0]单独赋值,for(1~n-1)
+        for (int i = 1; i < n; ++i) { sum[i] = sum[i - 1] + A[i]; }
+        vector<vector<int>> dp(n, vector<int>(n, 0));   // dp[i][j]表示合并[i,j]间石子的最小代价
+        for (int len = 1; len <= n; ++len) {            // 枚举区间长度
+            for (int i = 0; i + len < n; ++i) {         //   枚举区间起点
+                int curSum = sum[i + len] - sum[i - 1]; //     [i,j]间石子重量和=sum[j]-sum[i-1]
+                dp[i][i + len] = INT_MAX;
+                for (int k = i; k < i + len; ++k) {     //     枚举[i,i+len]间k更新dp[i][j]最小值
+                    dp[i][i + len] = min(dp[i][i + len], dp[i][k] + dp[k + 1][i + len] + curSum);
+                }
             }
-        return f[1][n];
+        }
+        return dp[0][n - 1];
     }
 };
