@@ -48,7 +48,8 @@
  * Explanation: There are three 132 patterns in the sequence: [-1, 3, 2], [-1,
  * 3, 0] and [-1, 2, 0].
  * 
- * 
+ * @Category 单调栈
+ * @Idea 单调栈 T=O(n) S=O(n)
  */
 class Solution {
 public:
