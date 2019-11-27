@@ -38,8 +38,10 @@
  * dp[i][j]表示合并原序列[i,j]区间的石子的最小代价
  * 找i和j之间的k使得dp[i][j]最小
  * = min{dp[i][k] + dp[k+1][j] + sum[i][j] | k=[i,j)}
+ * 坑:!!!单串无需合并,故dp[i][i]=0而不是A[i]
  * 初始 f[i][i] = sum[i][i], f[i][i+1] = sum[i][i+1]
  * 返回 f[0][n-1]
+ * 坑
  */
 class Solution {
 public:
@@ -49,17 +51,20 @@ public:
      */
     int stoneGame(vector<int> &A) {
         int n = A.size();
-        if (n <= 1) { return 0; }                       // 特例:空串或只有1堆
-        vector<int> sum(n, 0);                          // 计算前缀和sum[i]=[0,i]间石子重量和
-        sum[0] = A[0];                                  // sum[0]单独赋值,for(1~n-1)
+        if (n <= 1) { return 0; }                               // 坑:单串不需合并,花费为0而非A[0]!!
+        
+        vector<int> sum(n, 0);                                  // 计算前缀和sum[i]=[0,i]间石子重量和
+        sum[0] = A[0];                                          // sum[0]单独赋,再for(1~n-1)循环计算
         for (int i = 1; i < n; ++i) { sum[i] = sum[i - 1] + A[i]; }
-        vector<vector<int>> dp(n, vector<int>(n, 0));   // dp[i][j]表示合并[i,j]间石子的最小代价
-        for (int len = 1; len <= n; ++len) {            // 枚举区间长度
-            for (int i = 0; i + len < n; ++i) {         //   枚举区间起点
-                int curSum = sum[i + len] - sum[i - 1]; //     [i,j]间石子重量和=sum[j]-sum[i-1]
-                dp[i][i + len] = INT_MAX;
-                for (int k = i; k < i + len; ++k) {     //     枚举[i,i+len]间k更新dp[i][j]最小值
-                    dp[i][i + len] = min(dp[i][i + len], dp[i][k] + dp[k + 1][i + len] + curSum);
+        
+        vector<vector<int>> dp(n, vector<int>(n, INT_MAX));     // dp求最小值故初始化成INT_MAX
+        for (int i = 0; i < n; ++i) { dp[i][i] = 0; }           // 坑!: dp[i][i]=0而非A[i],单串不需合并
+        
+        for (int len = 1; len <= n; ++len) {                    // 枚举区间长度k>=2
+            for (int i = 0; i + len < n; ++i) {                 //   枚举区间起点i
+                int t = sum[i + len] - (i > 0 ? sum[i - 1] : 0);// [i,j]间石子重量和=sum[j]-sum[i-1]
+                for (int k = i; k < i + len; ++k) {             // 枚举[i,i+len]中k,使得dp[i][j]最小
+                    dp[i][i + len] = min(dp[i][i + len], dp[i][k] + dp[k + 1][i + len] + t);
                 }
             }
         }
