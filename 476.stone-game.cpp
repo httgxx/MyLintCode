@@ -50,10 +50,10 @@ public:
      * @param A: An integer array
      * @return: An integer
      */
-    // dp[i][j]表示合并原序列[i,j]区间的石子的最小代价
-    // = min{dp[i][k] + dp[k+1][j] + sum[i,j] | i<=k<j }
+    // dp[i][j]表示合并[i,j]间石子的最小代价=min{dp[i][k] + dp[k+1][j] + sum[i,j] | i<=k<j }
     // sum[i,j]=prefixSum[j] - i > 0 ? prefixSum[i-1] : 0
     // 坑:单堆不需合并,dp[i][i]=0而非A[i]
+    // 坑:i<=k<j k从i开始而非i+1
     // T=O(n^2) S=O(n^2)
     int stoneGame(vector<int> &A) {
         int n = A.size();
