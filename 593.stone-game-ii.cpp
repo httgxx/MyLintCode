@@ -37,8 +37,7 @@
  * 
  * @Category DP 区间型 有环 
  * @Idea dp+有环
- * 有环: [1,2,3] => [1,2,3,1,2]
- * 因可从环任意地方开始,须延长sum到所有可能起点都到终点才可,即2n-1长
+ * 有环则从环任意地方开始,须延长sum到所有可能起点都到终点才可,即2n-1长,e.g.[1,2,3] => [1,2,3,1,2]
  * 计算sum[i]=sum[i-1]+A[i%n] //而非A[i]因为有循环外延
  * dp[i][j]代表从i合并到j的最少花费=min(dp[i][k] + dp[k+1][j] + sum[i,j])
  * sum[i,j]=prefixSum[j]-(i>0?prefixSum[i-1]:0) //坑!()必须要
@@ -54,22 +53,23 @@ public:
      * @param A: An integer array
      * @return: An integer
      */
-    // dp[i][j]表示合并[i,j]间石子的最小代价=min{dp[i][k] + dp[k+1][j] + sum[i,j] | i<=k<j }
-    // sum[i,j]=prefixSum[j] - i > 0 ? prefixSum[i-1] : 0
-    // 坑:单堆不需合并,dp[i][i]=0而非A[i]
-    // 坑:i<=k<j k从i开始而非i+1
+    // dp[i][j]代表从i合并到j的最少花费=min(dp[i][k] + dp[k+1][j] + sum[i,j])
+    // sum[i,j]=prefixSum[j]-(i>0?prefixSum[i-1]:0) //坑!()必须要
+    // 有环则从环任意地方开始,须延长sum到所有可能起点都到终点才可,即2n-1长,e.g.[1,2,3] => [1,2,3,1,2]
+    // 计算sum[i]=sum[i-1]+A[i%n] //而非A[i]因为有循环外延
+    // 最后返回min{dp[i][i+n-1] | 0<=i<=n-1}
     // T=O(n^2) S=O(n^2)
     int stoneGame2(vector<int> &A) {
         int n = A.size();
         if (n <= 1) { return 0; }                               // 坑:单堆不需合并,花费为0而非A[0]!!
-        
+
         int m = 2 * n - 1;
         vector<int> sum(m, 0);                                 // 计算前缀和sum[i]=[0,i]间石子重量和
         sum[0] = A[0];                                          // sum[0]单独赋,再for(1~2n-1)循环计算
         for (int i = 1; i < m; ++i) {
             sum[i] = sum[i - 1] + A[i % n];                     // 坑: +A[i%n]而非A[i]
         }
-        
+
         vector<vector<int>> dp(m, vector<int>(m, INT_MAX));     // dp求最小值故初始化成INT_MAX
         for (int i = 0; i < m; ++i) { dp[i][i] = 0; }           // 坑!:单堆不需合并dp[i][i]=0而非A[i]
 
