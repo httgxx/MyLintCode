@@ -69,7 +69,7 @@ public:
         for (int len = 2; len <= n; ++len) {                    // 枚举区间长度k>=2
             for (int i = 0; i + len - 1 < n; ++i) {             //   枚举区间起点i
                 int last = i + len - 1;
-                int t = sum[last] - (i > 0 ? sum[i - 1] : 0);   // [i,j]间石子重量和=sum[j]-sum[i-1]
+                int t = sum[last] - (i > 0 ? sum[i - 1] : 0);   // [i,j]间石子重量和=sum[j]-sum[i-1] // 坑!别忘()!!!
                 for (int k = i; k < last; ++k) {                // 枚举[i,i+len]中k,使得dp[i][j]最小
                     dp[i][last] = min(dp[i][last], dp[i][k] + dp[k + 1][last] + t);
                 }
