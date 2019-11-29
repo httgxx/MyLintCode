@@ -74,22 +74,22 @@ public:
         unordered_map<int, int> freq, canAppend;
         for (auto num : nums) { ++freq[num]; }  // 统计每个数字出现频率
         for (auto num : nums) {
-            if (freq[num] == 0 ) { continue; }  // num已经被预支去造新3连顺,故跳过
-            if (canAppend[num] > 0) {           // num没被预支但可挂接当前某连续子区间
-                --canAppend[num];               //    挂接[i] 
-                ++canAppend[num + 1];           //    标明[i+1]可挂接当前某连续子区间
+            if (freq[num] == 0 ) { continue; }  // 若num已经被预支去造新3连顺,故跳过
+            if (canAppend[num] > 0) {           // 若num没被预支但可挂接当前某连续子区间
+                --canAppend[num];               //    挂接num 
+                ++canAppend[num + 1];           //    标明num+1可挂接当前某连续子区间 // 可>=3连顺
             }
-            else if (freq[num + 1] > 0 &&       // 若[i]可以和[i+1],[i+2]建新3连胜
+            else if (freq[num + 1] > 0 &&       // 若num可以和num+1,num+2建新3连胜
                      freq[num + 2] > 0) {
-                --freq[num + 1];                //    预支[i+1]建新3连胜
-                --freq[num + 2];                //    预支[i+2]建新3连胜
-                ++canAppend[num + 3];           //    标明[i+3]可挂接当前某某连续子区间
+                --freq[num + 1];                //    预支num+1建新3连胜
+                --freq[num + 2];                //    预支num+2建新3连胜
+                ++canAppend[num + 3];           //    标明num+3可挂接当前某某连续子区间
             }
-            else { return false; }
+            else { return false; }              // 若num不属于3连顺,返回false
 
             --freq[num];                        // 坑: 千万别忘!!!
         }
 
-        return true;
+        return true;                            // 每个数字都在某个>=3连顺里
     }
 };
