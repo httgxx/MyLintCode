@@ -42,17 +42,12 @@ public:
             if (num > 0) { ++posCnt; }
             else if (num < 0) { ++negCnt; }
         }
-        int posIndex = posCnt > negCnt ? 0 : 1;                         // 多的数先放Idx=0
-        int negIndex = 1 - posIndex;
+        int posIdx = posCnt > negCnt ? 0 : 1, negIdx = 1 - posIdx;      // 多的数先放
         int n = A.size();
-        while (posIndex < n && negIndex < n) {
-            while (posIndex < n && A[posIndex] > 0) { posIndex += 2; }  // 找到下一个该为正但实为负的index1
-            while (negIndex < n && A[negIndex] < 0) { negIndex += 2; }  // 找到下一个该为负但实为正的index2
-            if (posIndex < n && negIndex < n) {                         // 交换index1和index2满足双方正负性
-                swap(A[posIndex], A[negIndex]);
-                //posIndex += 2;                                          // 坑:同时继续递进2
-                //negIndex += 2;
-            }
+        while (posIdx < n && negIdx < n) {
+            while (posIdx < n && A[posIdx] > 0) { posIdx += 2; }        // 找到下一个该为正但实为负的位置1
+            while (negIdx < n && A[negIdx] < 0) { negIdx += 2; }        // 找到下一个该为负但实为正的位置2
+            if (posIdx < n && negIdx < n) {swap(A[posIdx], A[negIdx]);} // 交换位置1和2使两个正反性都反转
         }
     }
 };
