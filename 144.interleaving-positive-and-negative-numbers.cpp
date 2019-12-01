@@ -50,8 +50,8 @@ public:
             while (negIndex < n && A[negIndex] < 0) { negIndex += 2; }  // 找到下一个该为负但实为正的index2
             if (posIndex < n && negIndex < n) {                         // 交换index1和index2满足双方正负性
                 swap(A[posIndex], A[negIndex]);
-                posIndex += 2;                                          // 坑:同时继续递进2
-                negIndex += 2;
+                //posIndex += 2;                                          // 坑:同时继续递进2
+                //negIndex += 2;
             }
         }
     }
