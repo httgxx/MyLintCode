@@ -76,8 +76,11 @@ public:
      * @param root: the root of binary tree
      * @return: new root
      */
-    // S1: 递归
-    TreeNode * upsideDownBinaryTree(TreeNode * root) {
+    // S1: 递归 T=O(n) S=O(logn)栈空间
+    // 先判断根是否存在且其有没有左子,若否直接返回
+    // 不停的对左子递归直到最左子开始翻转:左子->根,右子->左子,根->右子
+    // 翻好后回到上一层左子继续翻转,直至翻转完整棵树
+    TreeNode * upsideDownBinaryTree1(TreeNode * root) {
         if (!root || !root->left) { return root; }  // 特例:无根或无左子则立返
         TreeNode *l = root->left, *r = root->right; 
         TreeNode *res = upsideDownBinaryTree(l);    // 递归到最左叶子res 
@@ -86,5 +89,20 @@ public:
         root->left = NULL;                          // 旧根左右子清空
         root->right = NULL;                         
         return res;                                 // 返回新根(旧左子)
+    }
+
+    // S2: 迭代 T=O(n) S=O(1)
+    // 从上往下开始翻转，直至翻转到最左子节点
+    TreeNode * upsideDownBinaryTree(TreeNode * root) {
+        TreeNode *cur = root, *pre = NULL, *next = NULL, *tmp = NULL;
+        while (cur) {
+            next = cur->left;   // traverse当前左子
+            cur->left = tmp;    // 旧右子->新左子
+            tmp = cur->right;   // track当前右子成为下层旧右子
+            cur->right = pre;   // 旧根->新右子
+            pre = cur;          // track当前根成为下层旧根
+            cur = next;         // 进到下层左子
+        }
+        return pre;
     }
 };
