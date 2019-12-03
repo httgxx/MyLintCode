@@ -95,17 +95,19 @@ the rectangle defined by its upper left corner (row1, col1) and lower right
  */
 class NumMatrix {
 public:
-    NumMatrix(vector<vector<int>> matrix) {
+    // Binary Index Tree
+    NumMatrix(vector<vector<int>> matrix) {                 // 创建树状数组
         if (matrix.empty() || matrix[0].empty()) { return; }
-        mat.resize(matrix.size() + 1, vector<int>(matrix[0].size() + 1, 0));
-        bit.resize(matrix.size() + 1, vector<int>(matrix[0].size() + 1, 0));
-        for (int i = 0; i < matrix.size(); ++i) {
-            for (int j = 0; j < matrix[i].size(); ++j) {
+        int rows = matrix.size(), cols = matrix[0].size();
+        mat.resize(rows + 1, vector<int>(cols + 1, 0));     // 开头pad 0
+        bit.resize(rows + 1, vector<int>(cols + 1, 0));     // 开头pad 0
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
                 update(i, j, matrix[i][j]);
             }
         }
     }
-    void update(int row, int col, int val) {                // 将val加到[row,col]位置的数字上
+    void update(int row, int col, int val) {                // 将val加到[row,col]位置上
         int diff = val - mat[row + 1][col + 1];
         for (int i = row + 1; i < mat.size(); i += i&-i) {
             for (int j = col + 1; j < mat[i].size(); j += j&-j) {
@@ -114,9 +116,9 @@ public:
         }
         mat[row + 1][col + 1] = val;
     }
-    int sumRegion(int row1, int col1, int row2, int col2) { // 求从左上[row1,col1]到右下[row2,col2]位置的所有数字的和
-        return getSum(row2 + 1, col2 + 1) + getSum(row1, col1) -
-               getSum(row1, col2 + 1) - getSum(row2 + 1, col1) ;
+    int sumRegion(int row1, int col1, int row2, int col2) { // 求从左上[row1,col1]到右下[row2,col2]位置的所有数之和
+        return getSum(row2 + 1, col2 + 1) + getSum(row1, col1)
+               - getSum(row1, col2 + 1) - getSum(row2 + 1, col1) ;
     }
     int getSum(int row, int col) {
         int res = 0;
