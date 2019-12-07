@@ -32,6 +32,25 @@ public:
     * @param v1: A 1d vector
     * @param v2: A 1d vector
     */
+    // S1: queue<cur_iter, end_iter>
+    // T=O(n1+n2) S=O(1) // 耗空间
+    ZigzagIterator(vector<int>& v1, vector<int>& v2) {
+        if (!v1.empty()) { q.push(make_pair(v1.begin(), v1.end())); }   // 初始放v1首
+        if (!v2.empty()) { q.push(make_pair(v2.begin(), v2.end())); }   // 初始放v2首
+    }
+    int next() {
+        auto it = q.front().first, end = q.front().second;              // 取队列首元素对应<cur_iter,end_iter>
+        q.pop();                                                        // 退出队列首
+        if (it + 1 != end) { q.push(make_pair(it + 1, end)); }          // 若cur_iter没到尾end_iter,push<cur_iter+1,end>
+        return *it;                                                     // 返回当前队首
+    }
+    bool hasNext() {
+        return !q.empty();
+    }
+private:
+    queue<pair<vector<int>::iterator, vector<int>::iterator>> q;
+
+   /*
    // S2: 初始化时就创建好合并数组,之后顺序访问
    // T=O(n1+n2) S=O(n1+n2) // 耗空间
    ZigzagIterator(vector<int>& v1, vector<int>& v2) {
@@ -41,23 +60,15 @@ public:
             if (i < n2) v.push_back(v2[i]);
         }
     }
-
-    /*
-     * @return: An integer
-     */
     int next() {
         return v[i++];
     }
-
-    /*
-     * @return: True if has next
-     */
     bool hasNext() {
         return i < v.size();
     }
 private:
     vector<int> v;
-    int i = 0;
+    int i = 0; */
 };
 
 /**
