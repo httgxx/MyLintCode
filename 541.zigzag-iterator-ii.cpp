@@ -41,7 +41,7 @@ public:
     * @param vecs: a list of 1d vectors
     */
     ZigzagIterator2(vector<vector<int>>& vecs) {
-        for (auto & vec : vecs) {   // IMPORTANT!!!! 必须要&否则iterator出错
+        for (vector<int> & vec : vecs) {                           // IMPORTANT!!!! 必须要&否则iterator出错
             if (!vec.empty()) { q.push(make_pair(vec.begin(), vec.end())); }
         }
     }
