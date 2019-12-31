@@ -14,6 +14,29 @@
  * Design an algorithm and write code to serialize and deserialize a binary
  * tree. Writing the tree to a file is called 'serialization' and reading back
  * from the file to reconstruct the exact same binary tree is 'deserialization'.
+ * 
+ * Example
+ * Example 1:
+ * Input：{3,9,20,#,#,15,7}
+ * Output：{3,9,20,#,#,15,7}
+ * Explanation：
+ * Binary tree {3,9,20,#,#,15,7},  denote the following structure:
+ *	  3
+ *	 / \
+ *	9  20
+ *	  /  \
+ *	 15   7
+ * it will be serialized {3,9,20,#,#,15,7}
+ *
+ * Example 2:
+ * Input：{1,2,3}
+ * Output：{1,2,3}
+ * Explanation：
+ * Binary tree {1,2,3},  denote the following structure:
+ *   1
+ *  / \
+ * 2   3
+ * it will be serialized {1,2,3}
  */
 /**
  * Definition of TreeNode:
