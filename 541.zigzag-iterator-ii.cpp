@@ -34,6 +34,12 @@
  * ]
  * Output: [1,2,3,1,2,3,1,2,3]
  * 
+ * @Category queue + Iterator
+ * @Idea 队列+迭代器
+ * init:queue<pair<vector<int>::iterator, vector<int>::iterator>> q 保存每个数组的迭代器+尾指针
+ * next(): q的迭代指针+1!=尾指针
+ * hasNext(): q不为空
+ * T=O(mn) S=O(2n) n个数组 平均数组长度m
  */
 class ZigzagIterator2 {
 public:
