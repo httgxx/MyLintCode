@@ -29,6 +29,7 @@
  * 
  * @Category ostringstream + istringstream + recursion
  * @Idea 字符串输入输出流+递归
+ * T=O(n) S=O(n)
  * 坑: 用ostringstream out和istringstream in(string data), out << s, in >> s
  * 坑: 必须用' '分隔结点,用'#'标记空来建满二叉树,这样才能保证先根访问二叉树能被唯一还原
  * 坑: 结点值是int型 必须由istringstream>>s后通过stoi(s)转换成int val
@@ -42,24 +43,12 @@
 
 class Solution {
 public:
-    /**
-     * This method will be invoked first, you should design your own algorithm 
-     * to serialize a binary tree which denote by a root node to a string which
-     * can be easily deserialized by your own "deserialize" method later.
-     */
     string serialize(TreeNode * root) {
         ostringstream out;
         serialize(root, out);
         return out.str();
     }
 
-    /**
-     * This method will be invoked second, the argument data is what exactly
-     * you serialized at method "serialize", that means the data is not given by
-     * system, it's given by your own serialize method. So the format of data is
-     * designed by yourself, and deserialize it here as you serialize it in 
-     * "serialize" method.
-     */
     TreeNode * deserialize(string &data) {
         istringstream in(data);
         return deserialize(in);
