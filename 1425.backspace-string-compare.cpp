@@ -36,6 +36,20 @@
  * 
  * Challenge
  * Can you solve it in O(N) time and O(1) space?
+ * 
+ * @Category string compare
+ * @Idea
+ * S1: 不用额外空间,指针反向扫 T=O(n) S=O(1)
+ * 坑: 必须记录连续#的个数来跳过多个不用比较的字符 
+ * 坑: 必须考虑一个串比另一个串先结束的情况
+ *
+ * S2: 比较转换后的结果字符串 T=O(n) S=(n)
+ * 巧: 巧用?:和用void() 
+ * 
+ * S3:比较转换后的结果字符串 T=O(n) S=(n)
+ * 坑:不用stack或vector,因为string可当vector<char>用可push_back,pop_back
+ * 坑:str1==str2可比较值而不是比较指针
+ * 坑:须初始化string res=""
  */
 class Solution {
 public:
