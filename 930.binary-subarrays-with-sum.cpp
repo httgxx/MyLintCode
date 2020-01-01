@@ -30,13 +30,18 @@
  * 
  * @Category 2Sum
  * @Idea 2Sum变种
+ * T=O(n) S=O(n)
  * S1: map[子串和值v]=和为v的子串个数n,初始map[0]=1即和为0的子串个数初始为1(空串)
  * 左扫到右,累计前缀和sum,若先前出现过前缀和(sum-k),说明中间部分子串和为sum-(sum-k)=k
  * 每次遇到这种情况就累加已发现的所有具有该和值(sum-k)的子串个数即可 
+ * S2: 同S1但不用map而用vector因为只有0和1
+ * 坑: 必须vector大小=A.size+1因为可能vector[A.size]
+ * 坑: 必须先判断sum>=S再res += cnt[sum-S]
  */
 class Solution {
 public:
     // S1: 方法同LC560-sumarray sum to k(2sum变种)
+    // T=O(n) S=O(n)
     int numSubarraysWithSum1(vector<int>& A, int S) {
         unordered_map<int, int> map;    // map[子串和v]=和为v的子串个数n
         map[0] = 1;                     // 初始化: 和为0的子串个数初始为1(空串)
@@ -52,6 +57,7 @@ public:
     // S2: 同S1但不用map而用vector因为只有0和1
     // 坑: 必须vector大小=A.size+1因为可能vector[A.size]
     // 坑: 必须先判断sum>=S再res += cnt[sum-S]
+    // T=O(n) S=O(n)
     int numSubarraysWithSum(vector<int>& A, int S) {
         vector<int> cnt(A.size()+1, 0); // vector[子串和v]=和为v的子串个数n // 坑:必须A.size+1
         cnt[0] = 1;                     // 初始化: 和为0的子串个数初始为1(空串)
