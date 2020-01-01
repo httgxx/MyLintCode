@@ -31,7 +31,7 @@
  */
 class Solution {
 public:
-    // 2sum变种: map[子串和值v]=和为v的子串个数n,初始map[0]=1即和为0的子串个数初始为1(空串)
+    // 和为k的子串个数(2sum变种): map[子串和值v]=和为v的子串个数n,初始map[0]=1即和为0的子串个数初始为1(空串)
     // 左扫到右,累计前缀和sum,若先前出现过前缀和(sum-k),说明中间部分子串和为sum-(sum-k)=k
     // 每次遇到这种情况就累加已发现的所有具有该和值(sum-k)的子串个数即可 
     int subarraySum(vector<int>& nums, int k) {
