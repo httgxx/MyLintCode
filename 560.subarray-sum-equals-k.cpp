@@ -25,6 +25,7 @@
  * 
  * @Category 2Sum
  * @Idea 2Sum变种
+ * T=O(n) S=O(n)
  * map[子串和值v]=和为v的子串个数n,初始map[0]=1即和为0的子串个数初始为1(空串)
  * 左扫到右,累计前缀和sum,若先前出现过前缀和(sum-k),说明中间部分子串和为sum-(sum-k)=k
  * 每次遇到这种情况就累加已发现的所有具有该和值(sum-k)的子串个数即可 
@@ -36,9 +37,9 @@ public:
     // 每次遇到这种情况就累加已发现的所有具有该和值(sum-k)的子串个数即可 
     int subarraySum(vector<int>& nums, int k) {
         unordered_map<int,int> map; // map[子串和值v]=和为v的子串个数n
-        map[0] = 1;                 // 和为0的子串个数初始为1(空串)
+        map[0] = 1;                 // 初始化: 和为0的子串个数初始为1(空串)
         int sum = 0, res = 0;
-        for (int num : nums) {
+        for (int num : nums) {      // 左扫到右
             sum += num;             // 累加前缀和
             res += map[sum - k];    // 若先前出现过前缀和(sum-k),说明中间部分子串和为sum-(sum-k)=k,累加此类子串个数
             ++map[sum];             // 更新子串和对应的子串个数
