@@ -51,13 +51,14 @@ public:
 
     // S2: 同S1但不用map而用vector因为只有0和1
     // 坑: 必须vector大小=A.size+1因为可能vector[A.size]
+    // 坑: 必须先判断sum>=S再res += cnt[sum-S]
     int numSubarraysWithSum(vector<int>& A, int S) {
         vector<int> cnt(A.size()+1, 0); // vector[子串和v]=和为v的子串个数n // 坑:必须A.size+1
         cnt[0] = 1;                     // 初始化: 和为0的子串个数初始为1(空串)
         int sum = 0, res = 0;           // 前缀和sum,子串个数res
         for (int a : A) {               // 左扫到右
             sum += a;                   // 累加前缀和
-            if (sum >= S) {
+            if (sum >= S) {             // 坑: 必须先判断sum-S>=0
                 res += cnt[sum - S];    // 若先前出现过前缀和(sum-S),说明中间部分子串和为sum-(sum-S)=S,累加此类子串个数
             }
             ++cnt[sum];                 // 更新前缀和sum的子串个数
